@@ -1,12 +1,12 @@
 <template>
     <div class="app">
-      <!--default-header />
-      <default-navbar /-->
+      <layout-header-default />
+      <layout-navbar />
       <div class="main">
-        <!--dock name="leftDock" class="leftDock"/-->
+        <div id="leftDock" class="dock leftDock"/>
         <!--nuxt class="content" /-->
-        <!--dock name="rightDock" class="rightDock"/-->
         <slot />
+        <div id="rightDock" class="dock rightDock"/>
       </div>
       <!--default-footer /-->
     </div>
