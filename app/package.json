@@ -16,8 +16,11 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "cheerio": "^1.0.0-rc.12",
+    "gsap": "^3.12.4",
     "pinia": "^2.1.7",
     "sass": "^1.69.7",
+    "vue-date-fns": "^2.0.2",
     "vue-gtag-next": "^1.14.0"
   }
 }

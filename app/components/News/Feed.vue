@@ -6,8 +6,8 @@
                     <router-link to="/">{{ source.name }}</router-link>
                 </div>
             </div>
-        </portal>
-        <section-title :text="title" size="medium"/>
+        </portal>-->
+        <layout-section-title :text="title" size="medium"/>
         <transition-group
             name="staggered-fade"
             tag="div"
@@ -17,10 +17,9 @@
             v-on:leave="leave"
             class="t-group">
             <news-item v-for="(item, index) in articles" :key="item.id" :index="index" :item="item" />
-        </transition-group-->
+        </transition-group>
         News Feed
-        <news-item />
-        <div v-if="articles.length == 0" class="loading">
+        <div v-if="pending" class="loading">
             <img src="@/assets/loading.gif" >
         </div>
         <div class="more" v-else-if="more" @click="loadMore()">
@@ -31,119 +30,96 @@
     </div>
 </template>
 
-<script>
-//import { gsap } from 'gsap'
+<script setup>
+import { gsap } from 'gsap'
 
-
-export default {
-    name: "news-feed",
-    data() {
-        return {
-            title: "Verse Watch",
-            articles: [],
-            article_ids: [],
-            pages: 1,
-            loading: 0,
-            more: true,
-            search: {channel: "spectrum-dispatch", series: "news-update"},
-            sources: [
-                {
-                    name: "Verse Watch",
-                    search: {
-                        channel: "spectrum-dispatch",
-                        series: "news-update"
-                    }
-                },
-                {
-                    name: "RSI News",
-                    search: {
-                        channel: "transmission",
-                        series: "all"
-                    }
-                },
-                {
-                    name: "Historical Records",
-                    search: {
-                        channel: "spectrum-dispatch", 
-                        series: "time-capsule"
-                    }
-                },
-                {
-                    name: "Universe Fiction",
-                    search: {
-                        channel: "serialized-fiction",
-                        series: "all"
-                    }
-                }
-            ]
-        }
-    },
-    mounted() {
-        this.getNews()
-    },
-    methods: {
-        clearNews() {
-            this.articles = []
-            this.article_ids = []
-            this.pages = 1
-            this.more = true
-        },
-        async getNews() {
-            this.articles = []
-            /*this.loading = true
-            
-            // Use Axios to make a call to the API
-            this.$axios({
-                url: 'https://api.uee.life/news?channel=' + this.search.channel + '&series=' + this.search.series + '&page=' + this.pages,
-                method: 'GET'
-            }).then((res) => {
-                if(res.data.length < 10) {
-                    this.more = false
-                }
-                const new_articles = this.checkIDs(res.data)
-                this.articles = this.articles.concat(new_articles)
-                this.pages += 1;
-            }).catch((error) => {
-                // eslint-disable-next-line no-console
-                console.error(error) 
-            })
-            this.loading = false*/
-        },
-        checkIDs(arts) {
-            const filtered = arts.filter((item) => {
-                return !this.article_ids.includes(item.id)
-            })
-            for (let i in filtered) {
-                this.article_ids.push(filtered[i].id)
+const title = "Verse Watch"
+const articles = []
+const article_ids = []
+var pages = 1
+var loading = false
+var more = true
+const search = {channel: "spectrum-dispatch", series: "news-update"}
+const sources = [
+        {
+            name: "Verse Watch",
+            search: {
+                channel: "spectrum-dispatch",
+                series: "news-update"
             }
-            return filtered
         },
-        beforeEnter: function (el) {
-            el.style.opacity = 0
+        {
+            name: "RSI News",
+            search: {
+                channel: "transmission",
+                series: "all"
+            }
         },
-        enter: function (el) {
-            var delay = (el.getAttribute('index') % 10) * 250
-            setTimeout(function() {
-                gsap.to(el, {duration: 1, opacity: 0.9})
-            }, delay)
+        {
+            name: "Historical Records",
+            search: {
+                channel: "spectrum-dispatch", 
+                series: "time-capsule"
+            }
         },
-        leave: function(el) {
-            gsap.to(el, {duration: 2, opacity: 0})
-        },
-        loadMore: function() {
-            if(!this.loading && this.more) {
-                this.getNews()
+        {
+            name: "Universe Fiction",
+            search: {
+                channel: "serialized-fiction",
+                series: "all"
             }
         }
-    },
-    watch: {
-        search: function() {
-            this.clearNews()
-            this.getNews()
-        }
-    }
+    ]
 
+var pending = 0
+
+
+function clearNews() {
+    articles = []
+    article_ids = []
+    pages = 1
+    more = true
 }
+async function getNews() {
+    loading = true
+
+    const { data: articles, pending } = await useLazyFetch('/api/news', {
+        transform: (_articles) => _articles.data
+    })
+    console.log('testing')
+    console.log(articles)
+    loading = false
+}
+/*checkIDs(arts) {
+    const filtered = arts.filter((item) => {
+        return !this.article_ids.includes(item.id)
+    })
+    for (let i in filtered) {
+        this.article_ids.push(filtered[i].id)
+    }
+    return filtered
+},*/
+function beforeEnter(el) {
+    el.style.opacity = 0
+}
+function enter(el) {
+    var delay = (el.getAttribute('index') % 10) * 250
+    setTimeout(function() {
+        gsap.to(el, {duration: 1, opacity: 0.9})
+    }, delay)
+}
+function leave(el) {
+    gsap.to(el, {duration: 2, opacity: 0})
+}
+function loadMore() {
+    if(!loading && more) {
+        getNews()
+    }
+}
+
+onMounted(() => {
+    getNews()
+})
 </script>
 
 <style>

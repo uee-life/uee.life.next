@@ -25,3 +25,10 @@ const store = mainStore()
         <news-feed />
     </div>
 </template>
+
+<style>
+    @font-face {
+        font-family: spaceage;
+        src:url("@/assets/fonts/spaceage.ttf");
+    }
+</style>
