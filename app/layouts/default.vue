@@ -3,28 +3,13 @@
       <layout-header-default />
       <layout-navbar />
       <div class="main">
-        <div id="leftDock" class="dock leftDock"/>
-        <!--nuxt class="content" /-->
-        <slot />
-        <div id="rightDock" class="dock rightDock"/>
+        <layout-dock name="left-dock" />
+        <div class="content"><slot /></div>
+        <layout-dock name="right-dock"/>
       </div>
-      <!--default-footer /-->
+      <layout-footer-default />
     </div>
 </template>
-
-<script>
-/*import { Wormhole } from 'portal-vue'
-Wormhole.trackInstances = false
-
-export default {
-  components: {
-    DefaultHeader,
-    DefaultFooter,
-    DefaultNavbar,
-    Dock
-  }
-}*/
-</script>
 
 <style scoped>
 .app {

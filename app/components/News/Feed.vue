@@ -1,14 +1,18 @@
 <template>
     <div class="news-feed" id="news-feed">
-        <!--portal to="news-filter">
+        <teleport to="#news-filter">
             <div class="sources">
-                <div v-for="source in sources" v-on:click="search = source.search; title = source.name" :key="source.id" class="left-nav-button">
+                <div v-for="source in sources" @click.native="testClick(source)" :key="source.id" class="left-nav-button">
                     <router-link to="/">{{ source.name }}</router-link>
                 </div>
             </div>
-        </portal>-->
+        </teleport>
         <layout-section-title :text="title" size="medium"/>
-        <transition-group
+        <div v-if="pending" class="loading">
+            <img src="@/assets/loading.gif" >
+        </div>
+        <div v-if="pending" class="loading"><img src="@/assets/loading.gif" ></div>
+        <transition-group v-else
             name="staggered-fade"
             tag="div"
             :css="false"
@@ -18,11 +22,7 @@
             class="t-group">
             <news-item v-for="(item, index) in articles" :key="item.id" :index="index" :item="item" />
         </transition-group>
-        News Feed
-        <div v-if="pending" class="loading">
-            <img src="@/assets/loading.gif" >
-        </div>
-        <div class="more" v-else-if="more" @click="loadMore()">
+        <div class="more" v-if="more" @click="loadMore()">
             Load More
             <div class="endcap left"></div>
             <div class="endcap right"></div>
@@ -33,13 +33,14 @@
 <script setup>
 import { gsap } from 'gsap'
 
-const title = "Verse Watch"
-const articles = []
-const article_ids = []
-var pages = 1
-var loading = false
-var more = true
-const search = {channel: "spectrum-dispatch", series: "news-update"}
+let article_ids = []
+//var articles = []
+//var pending = false
+let pages = 1
+let more = true
+const search = ref({channel: "spectrum-dispatch", series: "news-update"})
+const title = ref("Verse Watch")
+
 const sources = [
         {
             name: "Verse Watch",
@@ -71,34 +72,25 @@ const sources = [
         }
     ]
 
-var pending = 0
+const { data: articles, pending } = await useFetch('/api/news?channel=' + search.value.channel + '&series=' + search.value.series + '&page=' + pages)
 
-
-function clearNews() {
-    articles = []
-    article_ids = []
-    pages = 1
-    more = true
+async function testClick(foo) {
+    search.value = foo.search
+    title.value = foo.name
+    await refreshNews()
 }
-async function getNews() {
-    loading = true
 
-    const { data: articles, pending } = await useLazyFetch('/api/news', {
-        transform: (_articles) => _articles.data
-    })
-    console.log('testing')
-    console.log(articles)
-    loading = false
-}
-/*checkIDs(arts) {
+function checkIDs(arts) {
     const filtered = arts.filter((item) => {
-        return !this.article_ids.includes(item.id)
+        return !article_ids.includes(item.id)
     })
     for (let i in filtered) {
-        this.article_ids.push(filtered[i].id)
+        article_ids.push(filtered[i].id)
     }
     return filtered
-},*/
+}
+
+// fancy transition event handlers
 function beforeEnter(el) {
     el.style.opacity = 0
 }
@@ -111,15 +103,23 @@ function enter(el) {
 function leave(el) {
     gsap.to(el, {duration: 2, opacity: 0})
 }
-function loadMore() {
-    if(!loading && more) {
-        getNews()
+
+// load more articles
+async function loadMore() {
+    if(!pending.value && more) {
+        pages += 1
+        const url = '/api/news?channel=' + search.value.channel + '&series=' + search.value.series + '&page=' + pages
+        const { data: news, pending } = await useFetch(url)
+        articles.value = articles.value.concat(checkIDs(news.value))
     }
 }
 
-onMounted(() => {
-    getNews()
-})
+async function refreshNews() {
+    pages = 0
+    articles.value = []
+    article_ids = []
+    await loadMore()
+}
 </script>
 
 <style>
