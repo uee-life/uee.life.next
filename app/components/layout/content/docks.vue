@@ -1,19 +1,11 @@
-<script setup lang="ts">
+<script setup>
 </script>
 
 <template>
     <div class="main">
         <layout-dock name="left-dock" />
         <div class="content">
-            <teleport to="#left-dock">
-            <layout-dock-item title="News Source" type="news-filter"/>
-        </teleport>
-        <!--site-news v-if="!isMobile" style="margin-bottom: 30px"/-->
-        <news-feed />
-
-        <teleport to="#right-dock">
-            <layout-dock-item title="Test" type="test"/>
-        </teleport>
+            <slot />
         </div>
         <layout-dock name="right-dock"/>
     </div>
@@ -33,5 +25,4 @@
   flex-grow: 1;
   flex-basis: 300px;
 }
- 
 </style>

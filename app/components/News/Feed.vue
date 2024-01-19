@@ -72,7 +72,11 @@ const sources = [
         }
     ]
 
-const { data: articles, pending } = await useFetch('/api/news?channel=' + search.value.channel + '&series=' + search.value.series + '&page=' + pages)
+const { data: articles, pending } = await useFetch('/api/news?channel=' + search.value.channel + '&series=' + search.value.series + '&page=' + pages, {
+    key: 'getNews',
+    server: false,
+    lazy: true
+})
 
 async function testClick(foo) {
     search.value = foo.search

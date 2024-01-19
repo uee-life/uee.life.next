@@ -1,10 +1,12 @@
 <template>
     <div class="app">
       <layout-header-default />
-      <layout-navbar />
+      <layout-navbar-default />
       <div class="main">
         <layout-dock name="left-dock" />
-        <div class="content"><slot /></div>
+        <div class="content">
+          <slot />
+        </div>
         <layout-dock name="right-dock"/>
       </div>
       <layout-footer-default />

@@ -16,10 +16,10 @@ export default defineNuxtConfig({
   ],
 
   modules: [
-    '@pinia/nuxt',
+    '@pinia/nuxt'
   ],
   routeRules: {
     // redirect, ssr, cors, headers, static/swr
-    '/myroute/**': {ssr: true},
+    //'/myroute/**': {ssr: true},
   }
 })

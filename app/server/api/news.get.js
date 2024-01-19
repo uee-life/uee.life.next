@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
             data[prop] = query[prop]
         }
     }
-    console.log("fetching news... ", query)
+    
     let news = await fetchNews(data)
     //const earliest = news[news.length - 1].posted_date
 

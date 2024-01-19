@@ -1,7 +1,7 @@
 <template>
     <div ref="newsitem" class="news-item" id="news-item">
         <a :href="item.link" style="text-decoration: none" target="blank">
-            <div class="content">
+            <div class="news-content">
                 <div class="background" :style="style"></div>
                 <div class="mask"></div>
                 <div class="article-image" :style="style">
@@ -68,7 +68,7 @@ export default {
         flex-grow: 1;
     }
 
-    .news-item .content {
+    .news-item .news-content {
         display: flex;
         flex-grow: 1;
     }

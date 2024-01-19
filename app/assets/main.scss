@@ -134,6 +134,13 @@
   border-right: 1px solid #546f84;
   }
   
+  .content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    text-overflow: ellipsis;
+}
+
   .hidden {
   opacity: 0;
   }

@@ -1,7 +1,7 @@
 <template>
     <div :class="divClass">
         <layout-section-title v-if="title" :text="title" />
-        <div :id="type" :class="type"></div>
+        <div :id="type" :class="type"><slot /></div>
         <span class="corner top left"></span>
         <span class="corner top right"></span>
         <span class="corner bottom left"></span>
