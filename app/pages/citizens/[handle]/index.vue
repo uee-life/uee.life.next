@@ -13,8 +13,8 @@
         </panel-dock-->
     </teleport>
     <teleport to="#right-dock">
-        <!--citizen-tools v-if="isOwner" @syncSuccess="refresh" />
-        <citizen-org v-if="citizen.org" :citizen="citizen"/-->
+        <!--citizen-tools v-if="isOwner" @syncSuccess="refresh" /-->
+        <citizen-org v-if="citizen.org" :citizen="citizen"/>
     </teleport>
 
     <div v-if="pending" class="loading">
@@ -71,9 +71,11 @@ const isOwner = ref(true)
 
 const pending = ref(true)
 
-function dossierLink() {
-    return `https://robertsspaceindustries.com/citizens/${route.params.handle}`
-}
+const dossierLink = computed({
+    get() {
+        return `https://robertsspaceindustries.com/citizens/${route.params.handle}`
+    }
+})
 
 function edit() {
 
@@ -95,8 +97,14 @@ async function getShips() {
 
 }
 
-async function getOrg() {
-
+async function getOrg(tag) {
+    pending.value = true
+    console.log('fetching org data', tag)
+    citizen.value.org = await useFetch(`/api/org/${tag}`, {
+        onResponse(_ctx) {
+            console.log("response", _ctx.response)
+        }
+    })
 }
 
 function refresh() {
@@ -106,12 +114,13 @@ function refresh() {
 async function getCitizen() {
     pending.value = true
     console.log('fetching citizen data')
-    const { data: citizen } = await useFetch('/api/citizen/rsiData?handle=' + route.params.handle, {
+    const { data: citizen } = await useFetch(`/api/citizen/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
         onResponse(_ctx) {
             console.log("response")
+            //getOrg()
         }
     })
     //console.log(citizen)
@@ -119,14 +128,15 @@ async function getCitizen() {
     //pending.value = false
 }
 
-const { data: info } = await useFetch('/api/citizen/rsiData?handle=' + route.params.handle, {
+const { data: info } = await useFetch(`/api/citizen/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
-        onResponse(_ctx) {
+        async onResponse(_ctx) {
             console.log("context:", _ctx.response._data)
             console.log("response:", info.value)
             citizen.value.info = info
+            //await getOrg(info.org)
             pending.value = false
         }
 })

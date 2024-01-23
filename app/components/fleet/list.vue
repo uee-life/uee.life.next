@@ -13,7 +13,7 @@
                 <ship-summary-small @selected="selected" v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove" />
             </template>
             <template v-else-if="display == 'table'">
-                <ship-table  @selected="selected" :ships="filteredShips" />
+                <layout-table-ship @selected="selected" :ships="filteredShips" />
             </template>
             <template v-else>
                 <ship-summary @selected="selected" v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove"/>
@@ -54,6 +54,10 @@ const props = defineProps({
         isAdmin: {
             type: Boolean,
             default: false
+        },
+        isMobile: {
+            type: Boolean,
+            default: false
         }
 })
 
@@ -89,7 +93,9 @@ function remove(ship) {
 
 onMounted(() => {
     display.value = props.view
-    gsap.to(".ships", {duration: 1, opacity: 1})
+    if (props.ships.length > 0) {
+        gsap.to(".ships", {duration: 1, opacity: 1})
+    }
 })
 </script>
 

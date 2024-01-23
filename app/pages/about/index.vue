@@ -12,22 +12,22 @@
             </teleport>
             <section id="about">
                 <panel-main class="content" title="About UEE.life">
-                    <panel-mdContent content="about.md"/>
+                    <panel-markdown content="about.md"/>
                 </panel-main>
             </section>
             <section id="social">
                 <panel-main class="content" title="Social Media">
-                    <panel-mdContent content="social.md"/>
+                    <panel-markdown content="social.md"/>
                 </panel-main>
             </section>
             <section id="support">
                 <panel-main class="content" title="Support Us">
-                    <panel-mdContent content="support.md"/>
+                    <panel-markdown content="support.md"/>
                 </panel-main>
             </section>
             <section id="releases">
                 <panel-main class="content" title="Releases">
-                    <panel-mdContent content="releases.md"/>
+                    <panel-markdown content="releases.md"/>
                 </panel-main>
             </section>
         </div>

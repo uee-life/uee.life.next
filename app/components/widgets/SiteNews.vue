@@ -1,7 +1,7 @@
 <template>
     <panel-main title="Site News" class="site-news" id="site-news" :style="newsHeight">
         <div class="content">
-            <panel-mdContent content="siteNews.md"/>
+            <panel-markdown content="siteNews.md"/>
             <div class="read-more" @click="toggleNews()">{{ buttonText }}</div>
         </div>
     </panel-main>
