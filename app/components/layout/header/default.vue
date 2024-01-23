@@ -20,6 +20,25 @@
 </template>
 
 <script>
+import { useAuthStore } from '~/stores/auth';
+
+const store = useAuthStore()
+
+const user = computed({
+    get() {
+        return store.user
+    }
+})
+
+const citizenLink = computed({
+    get() {
+        if(user) {
+            return `/citizens/${user}`
+        } else {
+            return `/citizens`
+        }
+    }
+})
 /*import { mapGetters } from 'vuex'
 
 export default {

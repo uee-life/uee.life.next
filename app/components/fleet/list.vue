@@ -25,12 +25,11 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { gsap } from 'gsap'
 
-export default {
-    props: {
-        ships: {
+const props = defineProps({
+    ships: {
             type: Array,
             default: function () {
                 return []
@@ -56,44 +55,42 @@ export default {
             type: Boolean,
             default: false
         }
-    },
-    data() {
-        return {
-            search: '',
-            display: 'large'
-        }
-    },
-    computed: {
-        filteredShips() {
-            return this.ships.filter(ship => {
-                return ship.short_name.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.name.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.make_text.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.model.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.type_text.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.focus_text.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.size_text.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.owner.name.toLowerCase().includes(this.search.toLowerCase()) ||
-                    ship.owner.handle.toLowerCase().includes(this.search.toLowerCase())
-            })
-        }
-    },
-    methods: {
-        show(display) {
-            this.display = display
-        },
-        selected(ship) {
-            this.$emit('selected', ship)
-        },
-        remove(ship) {
-            this.$emit('remove', ship)
-        }
-    },
-    mounted() {
-        this.display = this.view
-        gsap.to(".ships", {duration: 1, opacity: 1})
+})
+
+const search = ref('')
+const display = ref('large')
+
+const filteredShips = computed({
+    get() {
+        return props.ships.filter(ship => {
+            return ship.short_name.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.name.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.make_text.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.model.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.type_text.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.focus_text.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.size_text.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.owner.name.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.owner.handle.toLowerCase().includes(search.value.toLowerCase())
+        })
     }
+})
+
+function show(display) {
+    display = display
 }
+
+function selected(ship) {
+    $emit('selected', ship)
+}
+function remove(ship) {
+    $emit('remove', ship)
+}
+
+onMounted(() => {
+    display.value = props.view
+    gsap.to(".ships", {duration: 1, opacity: 1})
+})
 </script>
 
 <style>

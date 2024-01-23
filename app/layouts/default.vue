@@ -18,7 +18,7 @@
   position: relative;
   min-height: 100vh;
   max-width: 100vw;
-  padding-bottom: 100px;
+  /*padding-bottom: 175px;*/
   font-family: Electrolize;
 }
 
@@ -27,6 +27,7 @@
   flex-wrap: wrap;
   max-width: 2000px;
   margin: auto;
+  padding-bottom: 175px;
 }
 
 .app::before {

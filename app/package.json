@@ -25,5 +25,8 @@
     "sass": "^1.69.7",
     "vue-date-fns": "^2.0.2",
     "vue-gtag-next": "^1.14.0"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
