@@ -2,37 +2,33 @@
     <client-only>
         <div class="content">
             <teleport to="#left-dock">
-                <layout-dock-item class="nav" title="nav">
+                <panel-dock class="nav" title="nav">
                     <div class="left-nav-button"><nuxt-link :to="{ hash: '#about'}">About UEE.life</nuxt-link></div>
                     <div class="left-nav-button"><nuxt-link :to="{ hash: '#social' }">Social Links</nuxt-link></div>
                     <div class="left-nav-button"><nuxt-link :to="{ hash: '#support' }">Support Us</nuxt-link></div>
                     <div class="left-nav-button"><nuxt-link :to="{ hash: '#releases' }">Releases</nuxt-link></div>
-                </layout-dock-item>
+                </panel-dock>
                 <widgets-made-by />
             </teleport>
             <section id="about">
-                <layout-panel-main class="content">
-                    <h1>About UEE.life</h1>
-                    <div>Stuff and things</div>
-                </layout-panel-main>
+                <panel-main class="content" title="About UEE.life">
+                    <panel-mdContent content="about.md"/>
+                </panel-main>
             </section>
             <section id="social">
-                <layout-panel-main class="content">
-                    <h1>Socials</h1>
-                    <div>Stuff and things</div>
-                </layout-panel-main>
+                <panel-main class="content" title="Social Media">
+                    <panel-mdContent content="social.md"/>
+                </panel-main>
             </section>
             <section id="support">
-                <layout-panel-main class="content">
-                    <h1>How to support UEE.life</h1>
-                    <div>Stuff and things</div>
-                </layout-panel-main>
+                <panel-main class="content" title="Support Us">
+                    <panel-mdContent content="support.md"/>
+                </panel-main>
             </section>
             <section id="releases">
-                <layout-panel-main class="content">
-                    <h1>About UEE.life</h1>
-                    <div>Stuff and things</div>
-                </layout-panel-main>
+                <panel-main class="content" title="Releases">
+                    <panel-mdContent content="releases.md"/>
+                </panel-main>
             </section>
         </div>
     </client-only>
@@ -40,9 +36,9 @@
 
 <script>
 
-export default {
+/*export default {
   layout: ({ isMobile }) => isMobile ? 'mobile' : 'default',
-}
+}*/
 </script>
 
 <style scoped>

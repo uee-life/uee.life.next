@@ -1,7 +1,7 @@
 <template>
-    <layout-dock-item type="made-by" class="made-by">
+    <panel-dock type="made-by" class="made-by">
         <img class="made-by-img" src="@/assets/community.png" />
-    </layout-dock-item>
+    </panel-dock>
 </template>
   
 <script setup>

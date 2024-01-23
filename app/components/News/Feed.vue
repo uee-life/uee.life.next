@@ -2,12 +2,12 @@
     <div class="news-feed" id="news-feed">
         <teleport to="#news-filter">
             <div class="sources">
-                <div v-for="source in sources" @click.native="testClick(source)" :key="source.id" class="left-nav-button">
+                <div v-for="source in sources" @click.native="setSource(source)" :key="source.id" class="left-nav-button">
                     <router-link to="/">{{ source.name }}</router-link>
                 </div>
             </div>
         </teleport>
-        <layout-section-title :text="title" size="medium"/>
+        <panel-title :text="title" size="medium"/>
         <div v-if="pending" class="loading">
             <img src="@/assets/loading.gif" >
         </div>
@@ -34,8 +34,6 @@
 import { gsap } from 'gsap'
 
 let article_ids = []
-//var articles = []
-//var pending = false
 let pages = 1
 let more = true
 const search = ref({channel: "spectrum-dispatch", series: "news-update"})
@@ -78,9 +76,9 @@ const { data: articles, pending } = await useFetch('/api/news?channel=' + search
     lazy: true
 })
 
-async function testClick(foo) {
-    search.value = foo.search
-    title.value = foo.name
+async function setSource(source) {
+    search.value = source.search
+    title.value = source.name
     await refreshNews()
 }
 

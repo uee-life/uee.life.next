@@ -1,23 +1,13 @@
-<script setup lang="ts">
-</script>
-
 <template>
     <div class="main">
-        <layout-dock name="left-dock" />
         <div class="content">
-            <teleport to="#left-dock">
-            <layout-dock-item title="News Source" type="news-filter"/>
-        </teleport>
-        <!--site-news v-if="!isMobile" style="margin-bottom: 30px"/-->
-        <news-feed />
-
-        <teleport to="#right-dock">
-            <layout-dock-item title="Test" type="test"/>
-        </teleport>
+          Admin Page
         </div>
-        <layout-dock name="right-dock"/>
     </div>
 </template>
+
+<script setup lang="ts">
+</script>
 
 <style>
 

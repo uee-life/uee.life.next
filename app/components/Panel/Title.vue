@@ -8,29 +8,27 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "section-title",
-    props: {
-        text: {
-            type: String,
-            required: true
-        },
-        visibility: {
-            type: String,
-            default: ''
-        },
-        size: {
-            type: String,
-            default: 'small'
-        }
+<script setup>
+const props = defineProps({
+    text: {
+        type: String,
+        required: true
     },
-    computed: {
-        computedClass() {
-            return `section-title ${this.size} ${this.visibility}`
-        }
+    visibility: {
+        type: String,
+        default: ''
+    },
+    size: {
+        type: String,
+        default: 'small'
     }
-}
+})
+
+const computedClass = computed({
+    get() {
+        return `section-title ${props.size} ${props.visibility}`
+    }
+})
 </script>
 
 <style scoped>

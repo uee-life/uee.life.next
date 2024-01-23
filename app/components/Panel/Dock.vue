@@ -1,6 +1,6 @@
 <template>
     <div :class="divClass">
-        <layout-section-title v-if="title" :text="title" />
+        <panel-title v-if="title" :text="title" />
         <div :id="type" :class="type"><slot /></div>
         <span class="corner top left"></span>
         <span class="corner top right"></span>
@@ -9,29 +9,22 @@
     </div>
 </template>
 
-<script>
-
-export default {
-    name: 'dock-item',
-    props: {
-        title: {
-            type: String,
-            default: ""
-        },
-        type: {
-            type: String
-        }
+<script setup>
+const props = defineProps({
+    title: {
+        type: String,
+        default: ""
     },
-    computed: {
-        divClass() {
-            /*if (this.isMobile) {
-                return 'dock-item mobile'
-            } else {*/
-                return 'dock-item'
-            //}
-        }
+    type: {
+        type: String
     }
-}
+})
+
+const divClass = computed({
+    get() {
+        return 'dock-item'
+    }
+})
 </script>
 
 <style>

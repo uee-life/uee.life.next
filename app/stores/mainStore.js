@@ -2,15 +2,16 @@ import { defineStore } from "pinia"
 
 export const mainStore = defineStore('main', () => {
     // state
-    const test = ref('testing')
+    const isMobile = ref(false)
+    const isTablet = ref(false)
 
-    // computed getter
-    const updatedTest = computed(() => test.value = "getter test")
-
-    // action
-    function testAction() {
-        test.value = 'actoin test'
+    function setMobile() {
+        isMobile.value = true
     }
 
-    return { test, testAction }
+    function setTablet() {
+        isTablet.value = true
+    }
+
+    return { isMobile, setMobile }
 })

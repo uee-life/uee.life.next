@@ -15,8 +15,17 @@ export default defineNuxtConfig({
     '@/assets/main.scss'
   ],
 
+  googleFonts: {
+    families: {
+      Michroma: true
+    }
+  },
+
   modules: [
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@nuxt/content',
+    '@nuxtjs/google-fonts',
+    'nuxt-viewport'
   ],
   routeRules: {
     // redirect, ssr, cors, headers, static/swr

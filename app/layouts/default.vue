@@ -1,16 +1,16 @@
 <template>
-    <div class="app">
-      <layout-header-default />
-      <layout-navbar-default />
-      <div class="main">
-        <layout-dock name="left-dock" />
-        <div class="content">
-          <slot />
-        </div>
-        <layout-dock name="right-dock"/>
+  <div class="app">
+    <layout-header-default />
+    <layout-navbar-default />
+    <div class="main">
+      <layout-dock name="left-dock" />
+      <div class="content">
+        <slot />
       </div>
-      <layout-footer-default />
+      <layout-dock name="right-dock" />
     </div>
+    <layout-footer-default />
+  </div>
 </template>
 
 <style scoped>
@@ -21,30 +21,33 @@
   padding-bottom: 100px;
   font-family: Electrolize;
 }
+
 .main {
   display: flex;
   flex-wrap: wrap;
   max-width: 2000px;
   margin: auto;
 }
+
 .app::before {
   position: fixed;
   content: "";
   background: url("@/assets/starfield.jpg") repeat center;
   opacity: 0.6;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   bottom: 0;
   right: 0;
   z-index: -2;
 }
+
 .app::after {
   position: fixed;
   content: "";
   background: url("@/assets/gridbg_glow.png") repeat center top;
   opacity: 0.5;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   bottom: 0;
   right: 0;
   z-index: -1;
@@ -55,18 +58,17 @@
   flex-grow: 1;
   flex-basis: 300px;
 }
- 
- .dock {
-   max-width: 260px;
-   margin: 0 auto;
- }
 
- /*.leftDock {
+.dock {
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+/*.leftDock {
    min-width: 240px;
  }*/
- .vue-portal-target {
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
- }
-</style>
+.vue-portal-target {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}</style>

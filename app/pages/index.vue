@@ -1,24 +1,23 @@
-<script setup>
-import { mainStore } from '~/stores/mainStore'
-const store = mainStore()
-let isMobile = false
-</script>
-
 <template>
     <client-only>
         <div class="content">
             <teleport to="#left-dock">
-                <layout-dock-item title="News Source" type="news-filter"/>
+                <panel-dock title="News Source" type="news-filter"/>
             </teleport>
-            <!--site-news v-if="!isMobile" style="margin-bottom: 30px"/-->
+            <widgets-site-news v-if="!store.isMobile" style="margin-bottom: 30px"/>
             <news-feed />
 
             <teleport to="#right-dock">
-                <layout-dock-item title="Test" type="test"/>
+                <panel-dock title="Test" type="test"/>
             </teleport>
         </div>
     </client-only>
 </template>
+
+<script setup>
+import { mainStore } from '~/stores/mainStore'
+const store = mainStore()
+</script>
 
 <style>
     @font-face {

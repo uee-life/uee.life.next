@@ -1,6 +1,6 @@
 <template>
     <div class="main-panel" @click="$emit('click')">
-        <layout-section-title v-if="title" :text="title" :size="titleSize" />
+        <panel-title v-if="title" :text="title" :size="titleSize" />
         <slot></slot>
         <span class="corner top left"></span>
         <span class="corner top right"></span>
@@ -27,8 +27,8 @@ defineProps({
         position: relative;
         box-sizing: border-box;
         flex-grow: 1;
-        padding: 10px;
-        margin-top: 20px;
+        padding: 10px 20px;
+        margin: 20px 0;
         min-width: 240px;
         max-width: calc(100vw - 25px);
         background: url('/images/fading-bars.png') repeat;

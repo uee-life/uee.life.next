@@ -21,82 +21,84 @@
     </div>
 </template>
 
-<script>
-
-export default {
-    name: "news-item",
-    props: ["item"],
-    computed: {
-        style () {
-            return 'background: url("' + this.item.image + '"); background-size: cover; background-position: center center;'
-        }
+<script setup>
+const props = defineProps({
+    item: {
+        type: Object,
+        required: true
     }
-}
+})
+
+const style = computed({
+    get() {
+        return 'background: url("' + props.item.image + '"); background-size: cover; background-position: center center;'
+    }
+})
 </script>
 
 <style>
-    .article-image {
-        width: 170px;
-        max-width: 170px;
-        height: fit-content;
-        flex-basis: 90%;
-        flex-grow: 0;
-        z-index: 2;
-        border: 2px solid black;
-    }
+.article-image {
+    width: 170px;
+    max-width: 170px;
+    height: fit-content;
+    flex-basis: 90%;
+    flex-grow: 0;
+    z-index: 2;
+    border: 2px solid black;
+}
 
-    .article-image img {
-        display: block;
-        width: 100%;
-        height: auto;
-    }
+.article-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
 
-    .source-img {
-        position: absolute;
-        width: 32px;
-        height: 32px;
-        bottom: 5px;
-        right: 5px;
-    }
+.source-img {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    bottom: 5px;
+    right: 5px;
+}
 
-    .news-item {
-        display: flex;
-        margin: 10px;
-        padding: 9px;
-        position: relative;
-        opacity: 1;
-        flex-grow: 1;
-    }
+.news-item {
+    display: flex;
+    margin: 10px;
+    padding: 9px;
+    position: relative;
+    opacity: 1;
+    flex-grow: 1;
+}
 
-    .news-item .news-content {
-        display: flex;
-        flex-grow: 1;
-    }
+.news-item .news-content {
+    display: flex;
+    flex-grow: 1;
+}
 
-    .news-item-info {
-        margin-left: 10px;
-        text-decoration: none;
-        color: #dbf3ff;
-        text-shadow: 2px 2px 4px #000;
-    }
+.news-item-info {
+    margin-left: 10px;
+    text-decoration: none;
+    color: #dbf3ff;
+    text-shadow: 2px 2px 4px #000;
+}
 
-    .news-item .background {
-        opacity: 0.5 !important;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        position: absolute;
-        z-index: -1;
-    }
+.news-item .background {
+    opacity: 0.5 !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}
 
-    .news-item .mask {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background: url('/images/fading-bars.png') repeat;
-        z-index: 0;
-    }
+.news-item .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: url('/images/fading-bars.png') repeat;
+    z-index: 0;
+}
 </style>
