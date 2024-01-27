@@ -1,66 +1,39 @@
 <template>
-  <ContentRendererMarkdown :value="markdown" v-if="markdown" />
+    <ContentRendererMarkdown :value="markdown" v-if="markdown" />
 </template>
 
 <script setup>
 const { parseMarkdown } = useMarkdown();
 
 const props = defineProps({
-    content: {
+    markdown: {
         type: String,
-        required: true
+        default: ""
+    },
+    file: {
+        type: String,
+        default: ""
     }
 })
 
 const markdown = ref("")
+
 const loadMarkdown = async () => {
-  const data = await $fetch('/content/' + props.content)
+  let data = null
+  if (props.file) {
+    data = await $fetch('/content/' + props.file)
+  } else {
+    data = props.markdown
+  }
   markdown.value = await parseMarkdown(data)
 }
+
 loadMarkdown()
+
 </script>
   
 <style scoped>
-    .content {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        text-overflow: ellipsis;
-        padding: 0 15px;
-    }
-
-    .title {
-        margin-top: 15px;
-        margin-bottom: 20px;
-    }
-
-    .title h1 {
-        margin: 0px;
-        font-size: calc(20px + (24 - 20) * ((100vw - 300px) / (1600 - 300)));
-        line-height: calc(1.3em + (1.5 - 1.2) * ((100vw - 300px)/(1600 - 300)));
-    }
-
-    .title .date {
-        font-size: 12px;
-    }
-
-    .edit {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-
-    .edit-form {
-      display: flex;
-      flex-direction: column;
-      margin: 20px;
-    }
-
-    .edit-form .titleInput {
-      width: 100%;
-    }
-
-    .edit-form .contentInput {
-      height: 400px;
+    strong {
+        color: #dbf3ff;
     }
 </style>

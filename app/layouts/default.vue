@@ -25,7 +25,7 @@
 .main {
   display: flex;
   flex-wrap: wrap;
-  max-width: 2000px;
+  max-width: 1920px;
   margin: auto;
   padding-bottom: 175px;
 }

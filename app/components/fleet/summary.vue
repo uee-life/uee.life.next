@@ -21,8 +21,36 @@
     </div>
 </template>
 
-<script>
-export default {
+<script setup>
+const emit = defineEmits(['filter'])
+const props = defineProps({
+    fleet: {
+        type: Array,
+        default: []
+    }
+})
+
+const summary_type = ref('type')
+const summary = ref({})
+const isMobile = ref(false)
+
+function summarize(type) { 
+    summary_type.value = type
+    summary.value = {}
+    for(var i in props.fleet) {
+        const ship = props.fleet[i]
+        if(!Object.keys(summary.value).includes(ship[type])) {
+            this.summary[ship[type]] = 1
+        } else {
+            this.summary[ship[type]] += 1
+        }
+    }
+}
+
+function setFilter(value) {
+    emit('filter', value)
+}
+/*export default {
     name: "FleetSummary",
     props: {
         fleet: {
@@ -58,7 +86,7 @@ export default {
     mounted() {
         this.summarize('type')
     }
-}
+}*/
 </script>
 
 <style scoped>

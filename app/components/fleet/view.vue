@@ -55,7 +55,6 @@ function setFilter(value) {
 
 const filteredShips = computed({
     get () {
-        console.log(props.ships)
         return props.ships.filter(ship => {
             return ship.short_name.toLowerCase().includes(this.search.toLowerCase()) ||
                 ship.make_text.toLowerCase().includes(this.search.toLowerCase()) ||

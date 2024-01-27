@@ -1,6 +1,16 @@
 const cheerio = require('cheerio')
 const {convertToMarkdown } = require('./markdown')
 
+async function validCitizen(handle) {
+    const res = await fetchCitizen(handle)
+    console.log(res)
+    if (res) {
+        return true
+    } else {
+        return false
+    }
+}
+
 async function fetchCitizen(handle) {
     console.log('fetching citizen...', handle)
 
@@ -66,6 +76,8 @@ async function fetchOrg(org) {
     return info
 }
 
+
+//TODO: Can we deprecate this and just use the getOrgMembers function with rank=1?
 async function fetchOrgFounders(org) {
     try {
         const url = 'https://robertsspaceindustries.com/api/orgs/getOrgMembers'
@@ -94,7 +106,121 @@ async function fetchOrgFounders(org) {
     }
 }
 
+//TODO: remove this. temporary until we get user verification back in
+function getID(handle) {
+    return 0
+}
+
+async function checkCitizens(members) {
+    for(let i in members) {
+        if(members[i].handle !== 'Redacted') {
+            const id = await getID(members[i].handle)
+            if(id !== 0) {
+                members[i].verified = true
+            }
+        }
+    }
+    return members
+}
+
+function computeRank(stars) {
+    let rank = 0
+
+    if (stars) {
+        const starsize = parseInt(stars.match(/width\:\ (.*)\%/)[1])
+        if(starsize) {
+            rank = starsize / 20
+        }
+
+    } else {
+        rank = 0
+    }
+
+    return rank
+}
+
+async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
+
+    const url = "https://robertsspaceindustries.com/api/orgs/getOrgMembers"
+    let i = 0
+    const main = isMain ? "1" : "0"
+    const orgRank = rank ? `, "rank": "${rank}"` : ""
+    const data = `{"symbol": "${org}", "search":"", "pagesize": 32, "main_org": "${main}", "page": ${page}${orgRank}}`
+
+    console.log(data)
+
+    const resp = await $fetch(url, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    let members = []
+    const totalMembers = resp.data.totalrows
+    
+    const $ = cheerio.load(resp.data.html)
+
+    $('li.member-item').each(function (i, el) {
+        const handle = $(el).find('span.nick').text()
+        const name = $(el).find('span.name').text()
+
+        let thumb = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
+        const thumbimg = $(el).find('span.thumb').find('img')[0]
+        if(thumbimg && thumbimg.attribs.src) {
+            if(thumbimg.attribs.src.startsWith('https')) {
+                thumb = thumbimg.attribs.src
+            } else {
+                thumb = `https://robertsspaceindustries.com${thumbimg.attribs.src}`
+            }
+        }
+
+        const rank = computeRank($(el).find('span.stars').attr('style'))
+        let stars = 0
+
+        if(handle.trim() != '') {
+            const member = {
+                name: name,
+                handle: handle,
+                rank: rank,
+                thumb: thumb,
+                verified: false
+            }
+            members.push(member)
+        } else {
+            const member = {
+                name: 'Redacted',
+                handle: 'Redacted',
+                rank: rank,
+                thumb: thumb,
+                verified: false
+            }
+            members.push(member)
+        }
+    })
+
+    const result = {
+        count: totalMembers,
+        members: members
+    }
+    
+    result.members = await checkCitizens(result.members)
+    return result
+}
+
+async function fetchOrgRank(org, handle) {
+    const res = await fetchMembers(org, undefined, undefined, handle=handle)
+    const member = res.members[0]
+
+    return parseInt(member.rank)
+}
+
 module.exports = {
+    validCitizen,
     fetchCitizen,
-    fetchOrg
+    fetchOrg,
+    fetchOrgFounders,
+    fetchMembers,
+    fetchOrgRank
 }

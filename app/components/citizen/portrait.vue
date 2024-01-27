@@ -38,35 +38,6 @@ function portraitSize() {
 function citizenLink() {
     return `/citizens/${props.citizen.handle}`
 }
-
-console.log(props.citizen)
-
-/*export default {
-    props: {
-        citizen: {
-            type: Object
-        },
-        size: {
-            type: String,
-            default: 'medium',
-            validator: function (value) {
-                return ['tiny', 'small', 'medium'].indexOf(value) !== -1
-            }
-        },
-        showName: {
-            type: Boolean,
-            default: true
-        }
-    },
-    computed: {
-        portraitSize() {
-            return `portrait ${this.size}`
-        },
-        citizenLink() {
-            return `/citizens/${this.citizen.handle}`
-        }
-    }
-}*/
 </script>
 
 <style scoped>
@@ -109,6 +80,7 @@ console.log(props.citizen)
         box-sizing: border-box;
         width: 100%;
         vertical-align: middle;
+        border: 1px solid #546f84;
     }
 
     .portrait.medium .verified {

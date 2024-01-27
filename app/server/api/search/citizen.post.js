@@ -7,13 +7,13 @@ export default defineEventHandler(async (event) => {
         "ignore_self": true
     }
     const body = await readBody(event)
-    console.log(body)
+
     for (const prop in body) {
         if (prop in data) {
             data[prop] = body[prop]
         }
     }
-    console.log(data)
+
     const baseURI = "https://robertsspaceindustries.com"
     const res = await $fetch(baseURI + '/api/spectrum/search/member/autocomplete', {
         method: 'POST',

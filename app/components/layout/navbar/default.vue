@@ -4,8 +4,8 @@
           <nuxt-link class="nav-button" to="/" exact>Home</nuxt-link>
           <nuxt-link class="nav-button" to="/about">About</nuxt-link>
           <nuxt-link class="nav-button" to="/citizens">Citizens</nuxt-link>
-          <!--nuxt-link class="nav-button" to="/orgs">Organizations</nuxt-link>
-          <nuxt-link class="nav-button" to="/system/stanton">Star Systems</nuxt-link-->
+          <nuxt-link class="nav-button" to="/orgs">Organizations</nuxt-link>
+          <!--nuxt-link class="nav-button" to="/system/stanton">Star Systems</nuxt-link-->
         </div>
         <div class="nav-right">
           <!--<nuxt-link class="nav-button" to="/tools">Tools</nuxt-link>

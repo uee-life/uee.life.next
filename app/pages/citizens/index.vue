@@ -20,13 +20,7 @@
                 </router-link>
             </div>
         </div>
-        <div v-else class="no-results">
-            <span class="text big">
-                No Results
-                <div class="endcap left"></div>
-                <div class="endcap right"></div>
-            </span>
-        </div>
+        <widgets-no-result v-else />
     </div>
 </client-only>
 </template>
@@ -49,7 +43,7 @@ async function getResults() {
         text: input.value
     }
     console.log("data: ", data)
-    result.value = await $fetch(`/api/citizen/search`, {
+    result.value = await $fetch(`/api/search/citizen`, {
         method: 'POST',
         body: data
     })

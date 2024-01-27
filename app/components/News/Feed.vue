@@ -122,6 +122,10 @@ async function refreshNews() {
     article_ids = []
     await loadMore()
 }
+
+onMounted(() => {
+    gsap.to('.news-feed', {delay: 0.5, duration: 1, opacity: 1})
+})
 </script>
 
 <style>
@@ -134,6 +138,7 @@ async function refreshNews() {
         margin-top: 20px;
         margin-left: -10px;
         margin-right: -10px;
+        opacity: 0;
     }
 
     .news-filter .sources {

@@ -42,8 +42,7 @@ const tabPanelSlotName = computed({
 });
 
 function tabTitleSlotName(tabName) {
-    console.log(tabName)
-    return `tab-title-$tabName`
+    return `tab-title-${tabName}`
 };
 
 function switchTab(tabName) {
