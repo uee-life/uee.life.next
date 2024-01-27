@@ -20,6 +20,7 @@
     "@pinia/nuxt": "^0.5.1",
     "cheerio": "^1.0.0-rc.12",
     "gsap": "^3.12.4",
+    "neo4j-driver": "^5.16.0",
     "nuxt-viewport": "^2.1.2",
     "pinia": "^2.1.7",
     "sass": "^1.69.7",
