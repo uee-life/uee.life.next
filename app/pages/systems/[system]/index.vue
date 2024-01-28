@@ -1,35 +1,36 @@
 <template>
     <client-only>
         <div class="system">
-            <teleport to="leftDock">
+            <teleport to="#left-dock">
                 <panel-dock title="nav">
                     <div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div>
                 </panel-dock>
             </teleport>
-            <location :location="system" type="System">
+            <explorer-location :location="system" type="System">
                 <div class="location-tabs">
-                    <tabs :tabs="tabs" :initialTab="initialTab">
-                        <template slot="tab-title-planets">
+                    <layout-tabs :tabs="tabs" :initialTab="initialTab">
+                        <template #tab-title-planets>
                             PLANETS ( {{planets.length}} )
                         </template>
-                        <template slot="tab-content-planets">
+                        <template #tab-content-planets>
                             <planet-list :planets="planets"/>
                         </template>
 
-                        <template slot="tab-title-pois">
+                        <template #tab-title-pois>
                             POIs ( {{ pois.length }} )
                         </template>
-                        <template slot="tab-content-pois">
-                            <poi-list :pois="pois"/> 
+                        <template #tab-content-pois>
+                            <!--poi-list :pois="pois"/--> 
                         </template>
-                    </tabs>
+                    </layout-tabs>
                 </div>      
-            </location>
+            </explorer-location>
         </div>
     </client-only>
 </template>
 
 <script setup>
+const route = useRoute()
 
 const tabs = ["planets", "pois"]
 const initialTab = "planets"
@@ -41,8 +42,8 @@ const pois = ref([])
 
 const starmapLink = computed({
     get() {
-        if(this.system) {
-            return `https://robertsspaceindustries.com/starmap?location=${this.system.code}`
+        if(system) {
+            return `https://robertsspaceindustries.com/starmap?location=${system.code}`
         } else {
             return ""
         }
@@ -51,13 +52,13 @@ const starmapLink = computed({
 
 const sysLink = computed({
     get() {
-        return `/system/${this.system.name}`
+        return `/system/${system.name}`
     }
 })
 
 async function getSystems() {
 
-    await useFetch(`/api/systems`, {
+    await useFetch(`/api/explore/systems`, {
         onResponse(_ctx) {
             const res = _ctx.response._data
             for (let s in res) {
@@ -70,11 +71,11 @@ async function getSystems() {
 
 async function getSystem() {
     console.log('getting system')
-    const sys_name = this.$route.params.system
-    console.log(this.systems, this.sys_name)
-    if (Object.keys(this.systems).includes(sys_name)) {
-        const sid = this.systems[sys_name].id
-        this.$axios.get(`https://api.uee.life/locations/${sid}`).then((res) => {
+    const sys_name = route.params.system
+    console.log(systems, sys_name)
+    if (Object.keys(systems).includes(sys_name)) {
+        const sid = systems[sys_name].id
+        /*this.$axios.get(`https://api.uee.life/locations/${sid}`).then((res) => {
             console.log(res.data)
             if(res.status == 200) {
                 this.system = res.data
@@ -82,14 +83,19 @@ async function getSystem() {
         }).catch(error => {
             // eslint-disable-next-line
             console.error(error)
-        });
+        });*/
     }
     
 }
 
 async function getPlanets() {
-    const sys_name = this.$route.params.system
-    if (Object.keys(this.systems).includes(sys_name)) {
+    const sys_name = route.params.system
+    await useFetch(`/api/starmap/system/${sys_name}/planets`, {
+        onResponse(response) {
+            console.log(response._data)
+        }
+    })
+    /*if (Object.keys(this.systems).includes(sys_name)) {
         const sid = this.systems[sys_name].id
         this.$axios.get(`https://api.uee.life/locations/${sid}/locations`).then((res) => {
             if(res.status == 200) {
@@ -99,21 +105,23 @@ async function getPlanets() {
             //eslint-disable-next-line
             console.error(error)
         });
-    }
+    }*/
 }
 
+getPlanets()
+
 async function getPOIs() {
-    const sys_name = this.$route.params.system
-    if (Object.keys(this.systems).includes(sys_name)) {
-        const sid = this.systems[sys_name].id
-        this.$axios.get(`https://api.uee.life/locations/${sid}/pois`).then((res) => {
+    const sys_name = route.params.system
+    if (Object.keys(systems).includes(sys_name)) {
+        const sid = systems[sys_name].id
+        /*this.$axios.get(`https://api.uee.life/locations/${sid}/pois`).then((res) => {
             if(res.status == 200) {
                 this.pois = res.data
             }
         }).catch(error => {
             // eslint-disable-next-line
             console.error(error)
-        })
+        })*/
     }
 }
 

@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { sub, isBefore, formatDistance, differenceInMilliseconds } from 'date-fns'
+import { sub, isBefore, formatDistance } from 'date-fns'
 
 export default defineEventHandler(async (event) => {
     let data = {"channel": "","series":"","type":"","text":"","sort":"publish_new","page":1}

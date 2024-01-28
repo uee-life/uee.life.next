@@ -7,7 +7,7 @@
   <script setup>
   const systems = ref([])
 
-  await useFetch(`/api/starmap`, {
+  await useFetch(`/api/explore/systems`, {
     key: 'getSystems',
     server: false,
     lazy: true,
