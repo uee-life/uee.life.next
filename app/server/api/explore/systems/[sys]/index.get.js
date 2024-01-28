@@ -2,12 +2,9 @@ import { readQuery, writeQuery } from "~/server/helpers/neo4j"
 
 export default defineEventHandler(async (event) => {
     const tag = getRouterParam(event, 'sys')
-    const query = "MATCH (planet:Planet)-[:ORBITS]->(s:System {name: $name}) return planet"
+    const query = "MATCH (system:System {name: $name}) return system"
     console.log(query)
     const res =  await readQuery(query, { name: tag.toUpperCase() })
-    const systems = []
-    res.forEach(record => {
-        systems.push(record._fields[0].properties)
-    })
-    return systems
+    const system = res[0]._fields[0].properties
+    return system
 })
