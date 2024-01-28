@@ -1,21 +1,22 @@
 <template>
     <div class="location">
+        {{ location }}
         <panel-main v-if="location" class="location-panel">
             <div class="content">
-            <div v-if="location.thumbnail" class="location-image">
-                <img :src="location.thumbnail"/>
-            </div>
-            <div class="location-info">
-                <h3 class="title"> {{ location.name }}</h3>
-                <p>
-                    <span v-if="location.subtype">Type: <span class='value'>{{location.subtype}}</span><br></span>
-                    <span v-if="location.affiliation">Affiliation: <span class='value'>{{location.affiliation}}</span><br></span>
-                    <span v-if="location.habitable">Habitable: <span class='value'>{{isHabitable}}</span><br></span>
-                    <span v-if="location.population">Population: <span class='value'>{{rating(location.population)}}</span><br></span>
-                    <span v-if="location.danger">Risk: <span class='value'>{{rating(location.danger)}}</span><br></span>
-                </p>
-                <p>{{ location.description }}</p>
-            </div>
+                <div v-if="location.thumbnail" class="location-image">
+                    <img :src="location.thumbnail"/>
+                </div>
+                <div class="location-info">
+                    <h3 class="title"> {{ location.name }}</h3>
+                    <p>
+                        <span v-if="location.subtype">Type: <span class='value'>{{location.subtype}}</span><br></span>
+                        <span v-if="location.affiliation">Affiliation: <span class='value'>{{location.affiliation}}</span><br></span>
+                        <span v-if="location.habitable">Habitable: <span class='value'>{{isHabitable}}</span><br></span>
+                        <span v-if="location.population">Population: <span class='value'>{{rating(location.population)}}</span><br></span>
+                        <span v-if="location.danger">Risk: <span class='value'>{{rating(location.danger)}}</span><br></span>
+                    </p>
+                    <p>{{ location.description }}</p>
+                </div>
             </div>
         </panel-main>
         <div v-else>Location not found</div>
@@ -30,7 +31,7 @@ import { gsap } from "gsap"
 
 const props = defineProps({
     location: {
-        type: String
+        type: Object
     },
     type: {
         type: String
