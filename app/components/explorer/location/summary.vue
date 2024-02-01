@@ -40,10 +40,13 @@ const props = defineProps({
 <style scoped>
     .thumbnail {
         height: 100px;
+        width: 150px;
     }
 
     .thumbnail>img {
         height: 100%;
+        width: 100%;
+        object-fit: cover;
         border: 1px dotted #546f84;
     }
 

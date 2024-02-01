@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <layout-card-small v-for="sys in systems" :image="sys.image_url">
-          <h2>{{sys.name}} System</h2>
-        </layout-card-small>
+    <div class="system-list">
+        <explorer-location-summary v-for="sys in systems" :link="`/systems/${sys.code}`" :loc="{thumbnail: sys.image_url, name: sys.name}">
+          <!--h2>{{sys}}</h2-->
+        </explorer-location-summary>
     </div>
   </template>
   
@@ -30,5 +30,13 @@
   .layout-enter,
   .layout-leave-to {
     opacity: 0;
+  }
+
+  .system-list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: fit-content;
+    margin-left: -5px;
+    margin-right: -5px;
   }
   </style>
