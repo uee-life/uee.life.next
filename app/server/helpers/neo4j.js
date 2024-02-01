@@ -10,7 +10,7 @@ async function writeQuery(query, params) {
             tx.run(query, params)
         );
 
-        // put in a check here to make sure the write was successful
+        //TODO: put in a check here to make sure the write was successful
     } catch (error) {
         console.error(`Something went wrong: ${error}`);
     } finally {
@@ -20,8 +20,6 @@ async function writeQuery(query, params) {
 
 // return the full record set?
 async function readQuery(query, params) {
-    console.log('query: ', query)
-    console.log('params: ', params)
     const session = driver.session({ database: 'neo4j' });
     let records = [];
     try {
@@ -31,9 +29,6 @@ async function readQuery(query, params) {
 
         records = result.records;
 
-        result.records.forEach(record => {
-            console.log(`Found record: ${record.get('system')}`)
-        })
     } catch (error) {
         console.error(`Something went wrong: ${error}`);
     } finally {

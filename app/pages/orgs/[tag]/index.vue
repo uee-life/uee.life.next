@@ -3,8 +3,14 @@
         <div class="loading" v-if="pending">
             <img src="@/assets/loading.gif" >
         </div>
-        <template v-else-if="found">        
-            <org-banner v-if="org" :org="org"></org-banner>
+        <template v-else-if="found">
+            <layout-banner 
+                v-if="org" 
+                :name="org.name"
+                :tag="org.tag"
+                :type="org.tag.toUpperCase()"
+                :image="org.banner"
+                :logo="org.logo" />
             <org-overview :org="org" />
             <org-content v-if="org.intro" :content="org.intro" :centered="true"></org-content>
             <div class="org-tabs">

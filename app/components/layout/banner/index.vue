@@ -1,14 +1,14 @@
 <template>
-    <div class="org-banner">
+    <div class="banner">
       <div class="banner-img" :style="bannerImage"></div>
       <div class="mask">
-        <div class="org-banner-bottom">
-          <div class="org-logo" id="org-logo">
-            <img :src="org.logo" />
+        <div class="banner-bottom">
+          <div v-if="logo" class="banner-logo" id="banner-logo">
+            <img :src="logo" />
           </div>
-          <div class="org-summary">
-              <h1>{{org.name}} /  <span class="tag"><slot name="tag">{{ tag }}</slot></span></h1>
-              <slot><div class="org-model">{{org.model}}</div></slot>
+          <div class="banner-summary">
+              <h1>{{name}}<template v-if="tag"> /  <span class="tag"><slot name="tag">{{ tag.toUpperCase() }}</slot></span></template></h1>
+              <slot><div class="banner-type">{{type}}</div></slot>
           </div>
         </div>
       </div>
@@ -23,32 +23,41 @@
 import { gsap } from 'gsap'
 
 const props = defineProps({
-    org: {
-        type: Object
+    name: {
+        type: String,
+        required: true
+    },
+    tag: {
+        type: String,
+        default: ''
+    },
+    type: {
+        type: String,
+        default: ''
+    },
+    image: {
+        type: String,
+        default: ''
+    },
+    logo: {
+        type: String,
+        default: ''
     }
 })
 
 const bannerImage = computed({
     get() {
-        return `background: url("${props.org.banner}") top center / cover`
-    }
-})
-
-const tag = computed({
-    get() {
-        if(props.org.tag){
-            return props.org.tag.toUpperCase()
-        } else {
-            return props.org.tag
-        }
+        return `background: url("${props.image}") top center / cover`
     }
 })
 
 onMounted(() => {
-    gsap.to(".org-banner", {duration: 0.5, opacity: 1})
-    gsap.to(".org-logo", {duration: 1, opacity: 1})
-    gsap.to(".org-logo img", {duration: 1, opacity: 1})
-    gsap.to(".org-banner h1", {duration: 1, opacity: 1})  
+    gsap.to(".banner", {duration: 0.5, opacity: 1})
+    gsap.to(".banner h1", {duration: 1, opacity: 1})  
+    if(props.logo) {
+        gsap.to(".banner-logo", {duration: 1, opacity: 1})
+        gsap.to(".banner-logo img", {duration: 1, opacity: 1})
+    }
 })
 
 /*export default {
@@ -77,7 +86,7 @@ onMounted(() => {
 
 <style>
 
-    .org-banner {
+    .banner {
       position: relative;
       box-sizing: border-box;
       width: 100%;
@@ -90,7 +99,7 @@ onMounted(() => {
       opacity: 0;
     }
 
-    .org-banner .mask {
+    .banner .mask {
         top: 0;
         left: 0;
         bottom: 0;
@@ -98,9 +107,10 @@ onMounted(() => {
         background: url('/images/fading-bars.png') repeat;
         z-index: 0;
         padding-top: 0.1px;
+        padding-left: 5px;
     }
 
-    .org-banner .banner-img {
+    .banner .banner-img {
       position: absolute;
       width: 100%;
       height: 250px;
@@ -112,14 +122,14 @@ onMounted(() => {
       z-index: -1;
     }
 
-    .org-logo{
+    .banner-logo{
         width: 136px;
         height: 136px;
         margin-right: 20px;
         opacity: 0;
     }
 
-    .org-banner-bottom {
+    .banner-bottom {
       bottom: 0;
       left: 0;
       padding: 5px;
@@ -127,7 +137,7 @@ onMounted(() => {
       display: flex;
     }
 
-    .org-banner h1 {
+    .banner h1 {
       height: fit-content;
       opacity: 0;
       font-family: 'Michroma';
@@ -136,27 +146,27 @@ onMounted(() => {
       margin: 0;
     }
 
-    .org-banner h1 .tag {
+    .banner h1 .tag {
         color: #fff000;
         text-transform: uppercase;
     }
 
-    .org-logo img {
+    .banner-logo img {
         width: 136px;
         height: 136px;
         opacity: 0;
         margin-left: 5px;
     }
 
-    .org-summary {
+    .banner-summary {
       padding-top: 73px;
     }
     
-    .org-summary .org-model::before {
+    .banner-summary .banner-type::before {
       content: "[ "
     }
 
-    .org-summary .org-model::after {
+    .banner-summary .banner-type::after {
       content: " ]"
     }
 </style>

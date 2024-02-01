@@ -1,6 +1,8 @@
 <template>
     <div>
-        <div v-for="sys in systems" ><nuxt-link :to="`/systems/${sys.name}`">{{sys.name}} System</nuxt-link></div>
+        <layout-card-small v-for="sys in systems" :image="sys.image_url">
+          <h2>{{sys.name}} System</h2>
+        </layout-card-small>
     </div>
   </template>
   

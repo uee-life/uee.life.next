@@ -1,12 +1,21 @@
 <template>
     <div class="no-results">
         <span class="text big">
-            No Results
+            {{ text }}
             <div class="endcap left"></div>
             <div class="endcap right"></div>
         </span>
     </div>
 </template>
+
+<script setup>
+defineProps({
+    text: {
+        type: String,
+        default: "No Results"
+    }
+})
+</script>
 
 <style scoped>
     .no-results {
