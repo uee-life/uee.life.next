@@ -1,7 +1,7 @@
 <template>
     <div id="location-list" class="location-list">
         <div v-if="locations.length > 0" class="locations">
-            <explorer-location-summary v-for="(loc, index) in locations" :key="loc.code" :loc="loc" :link="getLink(loc.code)" :index="index">
+            <explorer-location-summary v-for="(loc, index) in locations" :key="loc.code" :loc="loc" :link="getLink(loc.name)" :index="index">
                 <div>Type: {{ loc.subtype }}</div>
                 <div>Affiliation: {{ loc.affiliation }}</div>
                 <div>Habitable: {{ isHabitable(loc) }}</div>

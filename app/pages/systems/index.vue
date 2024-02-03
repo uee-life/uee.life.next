@@ -1,7 +1,7 @@
 <template>
     <div class="system-list">
-        <explorer-location-summary v-for="sys in systems" :link="`/systems/${sys.code}`" :loc="{thumbnail: sys.image_url, name: sys.name}">
-          <!--h2>{{sys}}</h2-->
+        <explorer-location-summary v-for="sys in systems" :link="`/systems/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
+          <div>Type: <span class="data">{{ systemType(sys) }}</span></div>
         </explorer-location-summary>
     </div>
   </template>
@@ -18,6 +18,22 @@
         systems.value = _ctx.response._data
     }
   })
+
+function systemImage(img) {
+    if(img) {
+      return img
+    } else {
+      return "/images/systems/default.jpg"
+    }
+}
+
+function systemType(sys) {
+  if(sys.type == "BINARY") {
+    return "Binary Star System"
+  } else {
+    return "Star System"
+  }
+}
   </script>
   
   <style>
@@ -38,5 +54,9 @@
     flex-basis: fit-content;
     margin-left: -5px;
     margin-right: -5px;
+  }
+
+  .data {
+    color: #dbf3ff;
   }
   </style>
