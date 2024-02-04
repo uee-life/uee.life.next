@@ -27,7 +27,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 
 /*export default {
     layout: ({ isMobile }) => isMobile ? 'mobile' : 'default',
