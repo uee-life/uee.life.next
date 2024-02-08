@@ -1,11 +1,13 @@
 <template>
     <div class="system">
-        <teleport to="leftDock">
-          <panel-dock title="nav">
-            <!--div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div-->
-          </panel-dock>
-        </teleport>
-        <explorer-location :location="location" type="System">
+        <client-only>
+            <teleport to="#left-dock">
+            <panel-dock title="nav">
+                <!--div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div-->
+            </panel-dock>
+            </teleport>
+        </client-only>
+        <explorer-location v-if="location" :location="location" type="System">
             <!--div class="location-tabs">
                 <tabs :tabs="tabs" :initialTab="initialTab">
                     <template slot="tab-title-locations">
@@ -28,6 +30,22 @@
 </template>
 
 <script setup>
+const route = useRoute()
+
+const location = ref({})
+
+async function getLocation() {
+    await useFetch(`/api/explore/locations/${route.params.code}`, {
+        key: 'getLocation',
+        server: 'false',
+        lazy: true,
+        onResponse(_ctx) {
+            location = _ctx.response._data
+        }
+    })
+}
+
+getLocation()
 
 /*export default {
     layout: ({ isMobile }) => isMobile ? 'mobile' : 'default',

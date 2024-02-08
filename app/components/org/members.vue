@@ -5,30 +5,11 @@
             <img src="@/assets/loading.gif">
         </div>
         <div v-else-if="members" class="results">
-            <div v-for="(member, index) in members" :key="member.handle + index" class='org-cell'>
-                <router-link :to="citizenLink(member.handle)" :class='checkRedaction(member.handle, "")'>
-                    <div class="left">
-                        <div class="thumb">
-                            <img :src="member.thumb"/>
-                        </div>
-                        <div class="identity">
-                            <h3 :class='checkRedaction(member.handle, "")'>{{member.handle}}</h3>
-                            <!--span class="symbol"><img class="star" src="@/assets/star.png" v-for="n in parseInt(member.stars)" :key="n"></span-->
-                        </div>
-                    </div>
-                    <div :class='checkRedaction(member.handle, "mask")'></div>
-                    <img v-if="member.verified" class="verified" src="@/assets/verified.png">
-                </router-link>
-            </div>
+            <citizen-card v-for="(member, index) in members" :key="member.handle + index" :citizen="member" class='org-cell' />
+            
         </div>
-        <div v-else class="no-results">
-            <span class="text big">
-                No Results
-                <div class="endcap left"></div>
-                <div class="endcap right"></div>
-            </span>
-        </div>
-        <layout-pages
+        <widgets-no-result v-else />
+        <layout-pages v-if="members"
             @nextPage="pageChangeHandler('next')"
             @prevPage="pageChangeHandler('previous')"
             @load-page="pageChangeHandler" 

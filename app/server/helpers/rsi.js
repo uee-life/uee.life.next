@@ -184,7 +184,7 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
                 name: name,
                 handle: handle,
                 rank: rank,
-                thumb: thumb,
+                portrait: thumb,
                 verified: false
             }
             members.push(member)
@@ -193,7 +193,7 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
                 name: 'Redacted',
                 handle: 'Redacted',
                 rank: rank,
-                thumb: thumb,
+                portrait: thumb,
                 verified: false
             }
             members.push(member)

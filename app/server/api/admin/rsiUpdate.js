@@ -24,6 +24,7 @@ async function create_system(system) {
             rsi_id: $id, 
             name: $name, 
             code: $code, 
+            affiliation: $affiliation,
             description: $description, 
             type: $type,
             size: $size,
@@ -36,6 +37,7 @@ async function create_system(system) {
         id: system.id,
         name: system.name,
         code: system.code,
+        affiliation: system.affiliation[0].code.toUpperCase(),
         description: system.description,
         type: system.type,
         size: system.aggregated_size,
@@ -48,14 +50,15 @@ async function create_system(system) {
     return result
 }
 
-async function create_and_link_planet(planet, system) {
+async function create_and_link_object(object) {
     const query =
-        `MATCH (system:System { code: $system_code }) 
-         MERGE (planet:Planet { 
+        `MATCH (parent { rsi_id: $parent_id }) 
+         MERGE (child:OrbitalBody { 
             rsi_id: $rsi_id, 
             name: $name, 
             type: $type,
             subtype: $subtype,
+            affiliation: $affiliation,
             habitable: $habitable,
             description: $description,
             thumbnail: $thumbnail,
@@ -64,24 +67,12 @@ async function create_and_link_planet(planet, system) {
             population: $population,
             designation: $designation,
             fairchance: $fairchance
-        })
-         MERGE (planet)-[:ORBITS]->(system)
-         RETURN planet`
+         })
+         MERGE (child)-[:ORBITS]->(parent)
+         RETURN child`
     
-    const params = planet
-    params.system_code = system
+    const params = object
     const result = await writeQuery(query, params)
-}
-
-async function create_and_link_moon(data, rsi_id, parent) {
-    const query = (
-        "MATCH (planet:Planet { rsi_id: $parent }) " +
-        "MERGE (moon:Moon { rsi_id: $id, name: $moon_name, type: $moon_type}) " +
-        "MERGE (moon)-[:ORBITS]->(planet) " +
-        "RETURN moon"
-    )
-    const params = {parent: parent, id: rsi_id, name: data.name, type: data.type}
-    await writeQuery(query, params)
 }
 
 async function create_jump(data) {
@@ -132,9 +123,12 @@ async function loadSystems(systemdata) {
         create_system(system)
         const objects = await getObjects(system)
 
-        Object.entries(objects.planets).forEach(planet => {
+        objects.forEach(object => {
             count.bodies += 1
-            create_and_link_planet(objects.planets[planet[0]], system.code)
+            console.log(object.name, object.parent_id, system.id, system.code)
+            //console.log(body)
+            //body.affiliation = body.affiliation[0].code
+            create_and_link_object(object)
         })
     })
     return count
@@ -164,10 +158,7 @@ async function getObjects(system) {
         ["\u0113", "e"]
     ]
 
-    const objects = {
-        planets: {},
-        moons: {}
-    }
+    const objects = []
 
     const resp = await $fetch(url, {
         method: 'post',
@@ -185,7 +176,7 @@ async function getObjects(system) {
                     object.danger = Number(item.sensor_danger) ? Number(item.sensor_danger) : 0
                     object.economy = Number(item.sensor_economy) ? Number(item.sensor_economy) : 0
                     object.population = Number(item.sensor_population) ? Number(item.sensor_population) : 0
-                    object.parent_id = item.parent_id ? item.parent_id : system.id
+                    object.parent_id = item.type == "PLANET" ? system.id : item.parent_id 
                     object.designation = item.designation
                     object.name = item.name ? item.name : item.designation
                     object.description = item.description ? item.description : ""
@@ -193,6 +184,8 @@ async function getObjects(system) {
                     object.type = item.type
                     object.subtype = item.subtype.name
                     object.subtype_id = item.subtype.id
+                    object.affiliation = item.affiliation[0] ? item.affiliation[0].code.toUpperCase() : "Unknown"
+                    object.code = item.code
         
                     // clean up weird characters
                     replaces.forEach((from, to) => {
@@ -201,11 +194,12 @@ async function getObjects(system) {
                         object.description.replace(from, to)
                     })
                     
-                    if(object.subtype_id == 52) {
+                    /*if(object.subtype_id == 52) {
                         objects.moons[object.name] = object
                     } else {
                         objects.planets[object.name] = object
-                    }
+                    }*/
+                    objects.push(object)
                 } else {
                     // types: STAR, JUMPPOINT, ASTEROID_BELT, BLACKHOLE, MANMADE
                 }

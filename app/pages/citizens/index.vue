@@ -7,18 +7,9 @@
             </panel-dock>
         </teleport>
         <div v-if="result" class="results">
-            <div v-for="res in result" :key="res.handle" class="result">
-                <router-link class="no-decor" :to="citizenLink(res.handle)">
-                    <span class="thumb">
-                        <img :src="res.portrait" />
-                    </span>
-                    <span class="identity">
-                        <h2 class="name">{{res.name}}</h2>
-                        <span class="symbol">{{res.handle}}</span>
-                        <span v-if="res.org" class="org">Org: {{res.org}}</span>
-                    </span>
-                </router-link>
-            </div>
+            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result">
+
+            </citizen-card>
         </div>
         <widgets-no-result v-else />
     </div>
@@ -98,36 +89,12 @@ function citizenLink(handle) {
         padding-top: 14px;
     }
 
-    .no-results {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    .no-results>.text {
-        position: relative;
-        width: fit-content;
-        padding-left: 20px;
-        padding-right: 20px;
-        margin: 20px;
-    }
-
-    .no-results>.text.big {
-        font-family: 'Michroma';
-        font-size: 25px;
-    }
-
     .search-box .search-input {
         margin: 5px;
         width: calc(100% - 10px);
         box-sizing: border-box;
     }
 
-    .search-box .search-button {
-        margin: 5px;
-    }
     .results {
         position: relative;
         display: flex;

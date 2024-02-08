@@ -1,31 +1,40 @@
 <template>
-<ClientOnly>
     <div class="search-main">
-        <teleport to="#left-dock">
-        <panel-dock title="find orgs" class="search-box">
-            <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Org Handle"/>
-        </panel-dock>
-        </teleport>
+        <ClientOnly>
+            <teleport to="#left-dock">
+            <panel-dock title="find orgs" class="search-box">
+                <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Org Handle"/>
+            </panel-dock>
+            </teleport>
+        </ClientOnly>
         <div v-if="result" v-html="result" class="results"></div>
-        <div v-else class="no-results">
-        <span class="text big">
-            No Results
-            <div class="endcap left"></div>
-            <div class="endcap right"></div>
-        </span>
-    </div>
-    </div>
-</ClientOnly> 
+        <widgets-no-result v-else :text="noResultText"/>
+    </div> 
  </template>
 
 <script setup>
 
 const result = ref("")
 const input = ref("")
+const searching = ref(false)
+
+const noResultText = computed({
+    get() {
+        if (input.value.length >= 3) {
+            if(searching.value) {
+                return "Searching..."
+            } else {
+                return "No Results"
+            }
+        } else {
+            return "Search Orgs"
+        }
+    }
+})
 
 async function autoGetResults() {
-    console.log('autogetresult: ' + input.value)
     if(input.value.length >= 3) {
+        searching.value = true
         getResults()
     } else {
         result.value = null
@@ -36,14 +45,16 @@ async function getResults() {
     const data = {
         search: input.value
     }
-    console.log("data: ", data)
     await $fetch(`/api/search/org`, {
         method: 'POST',
         body: data,
         onResponse(_ctx) {
-            result.value = _ctx.response._data.html
+            if(_ctx.response._data) {
+                result.value = _ctx.response._data.html
                                 .replace(/\/media/g, 'https://robertsspaceindustries.com/media')
                                 .replace(/\/rsi/g, 'https://robertsspaceindustries.com/rsi')
+            }
+            searching.value = false
         }
     })
 }
