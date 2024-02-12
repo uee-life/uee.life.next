@@ -46,13 +46,13 @@ const debug = false
 
 const mainTitle = computed({
     get() {
-        return `${location.value.name} ${type.value} ( ${location.value.affiliation} )`
+        return `${props.location.value.name} ${type.value} ( ${props.location.value.affiliation} )`
     }
 })
 
 const isHabitable = computed({
     get() {
-        if(this.location.habitable) {
+        if(props.location.value && props.location.value.habitable) {
             return 'Yes'
         } else {
             return 'No'
@@ -101,40 +101,6 @@ function rating(metric) {
     }
 }
 
-/*export default {
-    computed: {
-        ...mapGetters([
-            'isMobile'
-        ]),
-    },
-    methods: {
-        rating(metric) {
-            if(metric >= 9) {
-                return "Extreme"
-            } else if(metric >= 7) {
-                return "Very High"
-            } else if(metric >= 5) {
-                return "Medium"
-            } else if(metric >= 3) {
-                return "Low"
-            } else if(metric >= 1) {
-                return "Very Low"
-            } else {
-                return "None"
-            }
-        }
-    },
-    watch: {
-        location: {
-            handler: function() {
-                gsap.to(".location", 1, {opacity: 1})
-                //timeline.to(".portrait", 1, {width: "150px", height: "150px"})
-                //timeline.to(".portrait img", 0.5, {opacity: 1})
-                //timeline.to(".citizen-info .info", 0.5, {opacity: 1})
-            }
-        }
-    }
-}*/
 onMounted(() => {
     gsap.to(".location", 1, {opacity: 1})
 })

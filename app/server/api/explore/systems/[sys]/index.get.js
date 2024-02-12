@@ -4,11 +4,11 @@ export default defineEventHandler(async (event) => {
     const tag = getRouterParam(event, 'sys')
     const query = "MATCH (system:System {code: $code}) return system"
 
-    const res =  await readQuery(query, { code: tag.toUpperCase() })
+    const { result, error } =  await readQuery(query, { code: tag.toUpperCase() })
 
     let system = {}
-    if(res.length > 0) {
-        system = res[0]._fields[0].properties
+    if(result.length > 0) {
+        system = result[0]._fields[0].properties
     }
 
     return system

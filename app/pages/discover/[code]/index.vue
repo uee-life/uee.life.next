@@ -1,30 +1,32 @@
 <template>
-    <div class="system">
+    <widgets-loading v-if="loading" />
+    <div v-else class="system">
         <client-only>
             <teleport to="#left-dock">
             <panel-dock title="nav">
-                <!--div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div-->
+                <div class="left-nav-button"><router-link :to="systemLink">Back to System</router-link></div>
+                <div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div>
             </panel-dock>
             </teleport>
         </client-only>
-        <explorer-location v-if="location" :location="location" type="System">
-            <!--div class="location-tabs">
-                <tabs :tabs="tabs" :initialTab="initialTab">
+        <explorer-location v-if="location.name" :location="location" type="System">
+            <div class="location-tabs">
+                <layout-tabs :tabs="tabs" :initialTab="initialTab">
                     <template slot="tab-title-locations">
                         LOCATIONS ( {{children.length}} )
                     </template>
                     <template slot="tab-content-locations">
-                        <location-list :locations="children"/>
+                        <explorer-location-list :locations="children"/>
                     </template>
 
                     <template slot="tab-title-pois">
                         POIs ( {{ pois.length }} )
                     </template>
                     <template slot="tab-content-pois">
-                        <poi-list :pois="pois"/> 
+                        <!--poi-list :pois="pois"/--> 
                     </template>
-                </tabs>
-            </div-->      
+                </layout-tabs>
+            </div>      
         </explorer-location>
     </div>
 </template>
@@ -33,19 +35,54 @@
 const route = useRoute()
 
 const location = ref({})
+const loading = ref(true)
+
+const children = ref([])
+const pois = ref([])
+const tabs = ref(["locations", "pois"])
+const initialTab = ref("locations")
+
+const starmapLink = computed({
+    get() {
+        if(location.value) {
+            return `https://robertsspaceindustries.com/starmap?location=${location.value.rsi_code}&system=${location.value.system}`
+        } else {
+            return ""
+        }
+    }
+})
+
+const systemLink = computed({
+    get() {
+        return `/systems/${location.value.system}`
+    }
+})
 
 async function getLocation() {
     await useFetch(`/api/explore/locations/${route.params.code}`, {
         key: 'getLocation',
-        server: 'false',
+        server: false,
         lazy: true,
         onResponse(_ctx) {
-            location = _ctx.response._data
+            location.value = _ctx.response._data
+            loading.value = false
         }
     })
 }
 
-getLocation()
+async function getChildren() {
+    await useFetch(`/api/explore/locations/${route.params.code}/children`, {
+        key: 'getChildren',
+        server: false,
+        lazy: true,
+        onResponse(_ctx) {
+            children.value = _ctx.response._data
+        }
+    })
+}
+
+
+await getLocation()
 
 /*export default {
     layout: ({ isMobile }) => isMobile ? 'mobile' : 'default',
