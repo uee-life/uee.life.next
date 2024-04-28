@@ -2,7 +2,23 @@ import { defineStore } from "pinia"
 
 export const useAuthStore = defineStore('auth', () => {
     // state
-    const user = ref('Capn_Flint')
+    const user = ref({})
+    const citizen = ref({})
+    const isLoggedIn = ref(false)
 
-    return { user }
+    async function loadCitizen() {
+        url = `/api/citizen/${user.value.app_metadata.handle}`
+        await useFetch(url, {
+            key: 'loadCitizen',
+            onResponse(_ctx) {
+                citizen.value = _ctx.response._data
+            }
+        })
+    }
+
+    function $reset() {
+        user.value = ''
+    }
+
+    return { user, citizen, isLoggedIn, $reset, loadCitizen }
 })

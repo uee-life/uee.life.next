@@ -8,8 +8,11 @@
         </div>
         <div class="page-head-right">
             <div class="user">
-                <div class="welcome">
-                    Welcome, Citizen!
+                <div v-if="user" class="welcome">
+                    Welcome, <nuxt-link :to="citizenLink">{{ user ? user['https://uee.life/app_metadata'].handle : 'Citizen' }}</nuxt-link>!
+                </div>
+                <div v-else>
+                    Welcome! Please Log In Below
                 </div>
             </div>
             <div class="search">
@@ -26,7 +29,7 @@ const store = useAuthStore()
 
 const user = computed({
     get() {
-        return store.user
+        return authStore.user
     }
 })
 

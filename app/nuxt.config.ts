@@ -28,9 +28,9 @@ export default defineNuxtConfig({
     'nuxt-viewport'
   ],
 
-  plugins: [
+  /*plugins: [
     { src: '~/plugins/vue-good-table', ssr: false }
-  ],
+  ],*/
 
   routeRules: {
     // redirect, ssr, cors, headers, static/swr
