@@ -1,12 +1,15 @@
 import * as cheerio from 'cheerio'
+import { getCitizen } from '~/server/helpers/citizen'
 
 export default defineEventHandler(async (event) => {
     const handle = getRouterParam(event, 'handle')
+    // put in a graph load here
+    //console.log(getCitizen(handle))
     return await fetchCitizen(handle)
 })
 
 async function fetchCitizen(handle) {
-    console.log('fetching citizen...', handle)
+    console.log('[citizen] fetching citizen...', handle)
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle)

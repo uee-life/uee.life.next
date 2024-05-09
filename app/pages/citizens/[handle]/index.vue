@@ -97,7 +97,7 @@ async function getShips() {
 
 async function getOrg(tag) {
     pending.value = true
-    await useFetch(`/api/org/${tag}`, {
+    await $fetch(`/api/org/${tag}`, {
         onResponse(_ctx) {
             citizen.value.org = _ctx.response._data
             pending.value = false

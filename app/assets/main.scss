@@ -190,6 +190,18 @@
   .swal2-content {
     color: #dbf3ff !important;
   }
+
+  .swal2-modal {
+    background: rgba(13, 46, 66, 0.7) !important;
+  }
+
+  button.swal2-confirm {
+    background-color: #41b882 !important;
+  }
+
+  button.swal2-cancel {
+    background-color: #ff7674 !important;
+  }
   
   .edit-button {
     position: absolute;

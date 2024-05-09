@@ -10,6 +10,7 @@
                 </panel-dock>
                 <widgets-made-by />
             </teleport>
+            {{ user }}
             <section id="about">
                 <panel-main class="content" title="About UEE.life">
                     <panel-markdown file="about.md"/>
@@ -34,11 +35,8 @@
     </client-only>
 </template>
 
-<script>
+<script setup>
 
-/*export default {
-  layout: ({ isMobile }) => isMobile ? 'mobile' : 'default',
-}*/
 </script>
 
 <style scoped>

@@ -32,7 +32,6 @@ export default defineEventHandler(async (event) => {
 
 async function fetchNews(data) {
     try {
-        console.log(data)
         const baseURI = "https://robertsspaceindustries.com"
         const response = await $fetch(baseURI + '/api/hub/getCommlinkItems', {
             method: 'POST',

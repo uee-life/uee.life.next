@@ -9,7 +9,7 @@
         <div class="page-head-right">
             <div class="user">
                 <div v-if="user" class="welcome">
-                    Welcome, <nuxt-link :to="citizenLink">{{ user ? user['https://uee.life/app_metadata'].handle : 'Citizen' }}</nuxt-link>!
+                    Welcome, <nuxt-link :to="citizenLink">{{ user.info.name ? user.info.name : user.handle }}</nuxt-link>!
                 </div>
                 <div v-else>
                     Welcome! Please Log In Below
@@ -22,21 +22,23 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { useAuthStore } from '~/stores/auth';
 
 const store = useAuthStore()
 
-const user = computed({
+const user = useUser()
+
+/*const user = computed({
     get() {
         return authStore.user
     }
-})
+})*/
 
 const citizenLink = computed({
     get() {
-        if(user) {
-            return `/citizens/${user}`
+        if(user.value) {
+            return `/citizens/${user.value.handle}`
         } else {
             return `/citizens`
         }

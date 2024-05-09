@@ -12,7 +12,7 @@ async function validCitizen(handle) {
 }
 
 async function fetchCitizen(handle) {
-    console.log('fetching citizen...', handle)
+    console.log('[srv] fetching citizen...', handle)
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle)
@@ -37,7 +37,7 @@ async function fetchCitizen(handle) {
         info.org = $('span:contains("Spectrum Identification (SID)")', '#public-profile').next().text()
         if(info.org) {
             info.orgTitle = $('span:contains("Organization rank")', '#public-profile').next().text()
-            info.orgRank = 'Grand Mugglewump'//await fetchOrgRank(info.org, info.handle)
+            info.orgRank = 'test' //FIXME: await fetchOrgRank(info.org, info.handle)
         } else {
             info.orgTitle = ''
             info.orgRank = 0
@@ -72,6 +72,8 @@ async function fetchOrg(org) {
     info.founders = await fetchOrgFounders(org)
     
     info.tag = org
+
+    console.log("ORGINFO: ", info)
 
     return info
 }

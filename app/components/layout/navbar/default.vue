@@ -7,12 +7,11 @@
           <nuxt-link class="nav-button" to="/orgs">Organizations</nuxt-link>
           <nuxt-link class="nav-button" to="/systems">The 'verse</nuxt-link>
         </div>
-        {{ auth0 }}
         <div class="nav-right">
           <!--<nuxt-link class="nav-button" to="/tools">Tools</nuxt-link>
           <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>-->
-          <a v-if="user.isLoggedIn" class="nav-button">Sign Off</a>
-          <a v-else class="nav-button" @click="login()">Sign In</a>
+          <a v-if="user && user.handle" class="nav-button" @click="useLogout()">Sign Off</a>
+          <a v-else class="nav-button" href="/auth/login">Sign In</a>
         </div>
       <span class="corner top left"></span>
       <span class="corner top right"></span>
@@ -22,41 +21,22 @@
   </template>
   
   <script setup>
-  import { useAuth0 } from '@auth0/auth0-vue'
+  /*import { useAuth0 } from '@auth0/auth0-vue'
 
-  const auth0 = useAuth0()
+  const auth0 = useAuth0()*/
 
   //const { loginWithRedirect } = useAuth0()
 
-  const user = computed({
+  import { useAuthStore } from '~/stores/auth';
+
+  const store = useAuthStore()
+  const user = useUser()
+
+  const isLoggedIn = computed({
     get() {
-      return authStore.user
+      return store.isLoggedIn
     }
   })
-
-  function login() {
-    //$auth.loginWithRedirect()
-  }
-  
-  
-  /*export default {
-    name: 'navbar',
-    computed: {
-      user() {
-        return this.$auth.user
-      }
-    },
-    methods: {
-      login() {
-        this.$auth.loginWith('auth0')
-      },
-      logout() {
-        const config = require('~/config.json')
-        this.$auth.logout()
-        window.location = `https://ueelife.auth0.com/v2/logout?returnTo=https%3A%2F%2Fuee.life&client_id=${config.AUTH0_CLIENT_ID}`
-      }
-    }
-  }*/
   </script>
   
   <style scoped>

@@ -4,29 +4,23 @@
     </panel-main>
 </template>
 
-<script>
+<script setup>
 import { gsap } from 'gsap'
 
-export default {
-    name: "citizen-bio",
-    props: ["bio"],
-    watch: {
-        'citizen.info': {
-            handler: function() {
-                
-                gsap.to(".citizen-bio", 1, {duration: 1, width: "100%", height: "200px"})
-                gsap.to(".citizen-bio .content", {delay: 1, duration: 1, opacity: 1})
-            }
-        }
-    },
-    mounted() {
+const props = defineProps({
+    bio: {
+        type: String
+    }
+})
 
+onMounted(() => {
+    nextTick(() => {
         gsap.to(".citizen-bio", {duration: 1, opacity: 1})
         gsap.to(".citizen-bio", 0.6, {width:"100%"})
         gsap.to(".citizen-bio .content", {duration: 0.6, width: "100%", height: "fit-content"})
         gsap.to(".citizen-bio .content", {delay: 1, duration: 1, opacity: 1}) 
-    }
-}
+    })
+})
 </script>
 
 <style>

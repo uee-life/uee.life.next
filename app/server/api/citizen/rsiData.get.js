@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 })
 
 async function fetchCitizen(handle) {
-    console.log('fetching citizen...', handle)
+    console.log('[rsi] fetching citizen...', handle)
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle)
