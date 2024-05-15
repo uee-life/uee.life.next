@@ -1,4 +1,4 @@
-import { readQuery, writeQuery } from "~/server/helpers/neo4j"
+import { readQuery, writeQuery } from "~/server/utils/neo4j"
 
 export default defineEventHandler(async (event) => {
     const code = getRouterParam(event, 'loc')

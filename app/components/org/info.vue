@@ -22,7 +22,7 @@ const props = defineProps({
 
 const tabs = ["history", "manifesto", "charter"]
 const initialTab = "history"
-const founders = ref([])
+const founders = ref({})
 const orgIntro = ref("")
   
   /*export default {

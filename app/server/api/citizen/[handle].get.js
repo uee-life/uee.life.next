@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { getCitizen } from '~/server/helpers/citizen'
+import { getOrCreateCitizen } from '~/server/helpers/citizen'
 
 export default defineEventHandler(async (event) => {
     const handle = getRouterParam(event, 'handle')

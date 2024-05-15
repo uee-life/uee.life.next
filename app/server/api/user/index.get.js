@@ -8,8 +8,10 @@ export default defineEventHandler(async (event) => {
     } else {
         user = event.context.user
     }
+    console.log("user ", user)
     if(user) {
-        user.info = await getCitizen(user)
+        console.log('user found, getting citizen')
+        user.info = await getCitizen(user, true)
     }
     return user
 })

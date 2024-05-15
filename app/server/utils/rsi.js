@@ -1,5 +1,5 @@
 const cheerio = require('cheerio')
-const {convertToMarkdown } = require('./markdown')
+const {convertToMarkdown } = require('../helpers/markdown')
 
 async function validCitizen(handle) {
     const res = await fetchCitizen(handle)
@@ -55,27 +55,30 @@ async function fetchOrg(org) {
     const baseURI = "https://robertsspaceindustries.com"
     const resp = await $fetch(`${baseURI}/orgs/${org}`)
 
-    const $ = cheerio.load(resp)
-    let info = {}
-    info.name = $('h1', '#organization').text().split("/")[0].trim()
-    info.banner = baseURI + $('div.banner', '#organization').find('img').attr('src')
-    info.logo = baseURI + $('div.logo', '#organization').find('img').attr('src')
-    info.count = $('div.logo', '#organization').find('span').text().split(" ")[0]
-    info.model = $('ul.tags', '#organization').find('li.model').text()
-    info.roles = {}
-    info.roles.primary = $('ul.focus', '#organization').find('li.primary').find('img').attr('alt')
-    info.roles.secondary = $('ul.focus', '#organization').find('li.secondary').find('img').attr('alt')
-    info.intro = convertToMarkdown($('div.join-us', '#organization').find('div.markitup-text').html())
-    info.history = convertToMarkdown($('h2:contains("History")', '#organization').next().html())
-    info.manifesto = convertToMarkdown($('h2:contains("Manifesto")', '#organization').next().html())
-    info.charter = convertToMarkdown($('h2:contains("Charter")', '#organization').next().html())
-    info.founders = await fetchOrgFounders(org)
-    
-    info.tag = org
+    try {
+        const $ = cheerio.load(resp)
+        let info = {}
+        info.name = $('h1', '#organization').text().split("/")[0].trim()
+        info.banner = baseURI + $('div.banner', '#organization').find('img').attr('src')
+        info.logo = baseURI + $('div.logo', '#organization').find('img').attr('src')
+        info.count = $('div.logo', '#organization').find('span').text().split(" ")[0]
+        info.model = $('ul.tags', '#organization').find('li.model').text()
+        info.roles = {}
+        info.roles.primary = $('ul.focus', '#organization').find('li.primary').find('img').attr('alt')
+        info.roles.secondary = $('ul.focus', '#organization').find('li.secondary').find('img').attr('alt')
+        info.intro = convertToMarkdown($('div.join-us', '#organization').find('div.markitup-text').html())
+        info.history = convertToMarkdown($('h2:contains("History")', '#organization').next().html())
+        info.manifesto = convertToMarkdown($('h2:contains("Manifesto")', '#organization').next().html())
+        info.charter = convertToMarkdown($('h2:contains("Charter")', '#organization').next().html())
+        info.founders = await fetchOrgFounders(org)
+        
+        info.tag = org
 
-    console.log("ORGINFO: ", info)
-
-    return info
+        return info
+    } catch (error) {
+        console.error(error)
+        return null
+    }
 }
 
 
