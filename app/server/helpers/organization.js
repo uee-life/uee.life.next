@@ -1,28 +1,57 @@
-import { readQuery, writeQuery } from "./neo4j"
-import { fetchOrg } from "./rsi"
+import { readQuery, writeQuery } from "../utils/neo4j"
+import * as rsi from "../utils/rsi"
 
-export const getOrganization = async (tag) => {
+export const getOrganization = async (tag, create = false) => {
+
     // try to load citizen from neo4j
-    console.log(tag)
     let org = await loadOrganization(tag)
-    // if not found, grab from RSI data
-    if(Object.keys(org).length === 0) {
-        org = await fetchOrg(tag)
+
+    // if not found, grab from RSI data and create it
+    if(org == null) {
+        org = await rsi.fetchOrg(tag)
+        if (create && Object.keys(org).length != 0) {
+            await createOrganization(org)
+        }
     }
-
-    console.log("Org: ", org)
-
-    // if verified, store citizen information in neo4j
-    await saveOrganization(org)
 
     return org
 }
 
-export const joinOrganization = async (handle, tag, rank) => {
+async function loadOrganization(tag) {
+    const query = "MATCH (o:Organization {tag: $tag}) return o"
+    const {result, error} = await readQuery(query, {tag: tag})
+
+    if (error) {
+        return null
+    }
+
+    let org = null
+    if(result.length > 0) {
+        org = result[0]._fields[0].properties
+    }
+
+    return org
+}
+
+async function createOrganization(org) {
+    const query = 
+        `MERGE (o:Organization {
+            tag: $tag,
+            name: $name
+        })`
+
+    const params = {
+        tag: org.tag,
+        name: org.name
+    }
+    await writeQuery(query, params)
+}
+
+export const orgAddMember = async (handle, tag, rank) => {
     const query =
         `MATCH (c:Citizen {handle: $handle})
          MATCH (o:Organization {tag: $tag})
-         MERGE (c)-[:MEMBER_OF {rank: $rank}]->[o]
+         MERGE (c)-[:MEMBER_OF {rank: $rank}]->(o)
          RETURN c`
     const params = {
         handle: handle,
@@ -32,29 +61,15 @@ export const joinOrganization = async (handle, tag, rank) => {
     const error = await writeQuery(query, params)
 }
 
-async function loadOrganization(tag) {
-    const query = "MATCH (o:Organization {tag: $tag}) return o"
-    const {result, error} = await readQuery(query, {tag: tag})
-    console.log("loadOrganization: ", result)
-
-    let org = {}
-    if(result.length > 0) {
-        org = result[0]._fields[0].properties
-    }
-
-    console.log(org)
-
-    return org
-}
-
-async function saveOrganization(org) {
-    const query = 
-        `MERGE (o:Organization {
-            tag: $tag
-        })`
-
+export const orgAddFounder = async (handle, tag) => {
+    const query =
+        `MATCH (c:Citizen {handle: $handle})
+         MATCH (o:Organization {tag: $tag})
+         MERGE (c)-[:OWNER_OF]->(o)
+         RETURN c`
     const params = {
-        tag: org.tag
+        handle: handle,
+        tag: tag
     }
-    await writeQuery(query, params)
+    const error = await writeQuery(query, params)
 }
