@@ -1,12 +1,12 @@
 <template>
-    <panel-dock :title="citizen.org.model" class="citizen-org">
+    <panel-dock :title="affiliate ? 'Affiliation' : org.model" class="citizen-org">
         <div class="content">
-          <nuxt-link :to="orgLink" class="org-link"><img class="logo" :src="citizen.org.logo" /></nuxt-link>
+          <nuxt-link :to="orgLink" class="org-link"><img class="logo" :src="org.logo" /></nuxt-link>
           <div class="org-name">
-            {{ citizen.org.name }}
+            {{ org.name }}
           </div>
           <div class="org-title">
-            Title: {{ citizen.info.orgTitle }}
+            Title: {{ org.rank.title }}
           </div>
         </div>
     </panel-dock>
@@ -16,9 +16,13 @@
 import { gsap } from "gsap"
 
 const props = defineProps({
-citizen: {
+org: {
     type: Object,
     required: true
+},
+affiliate: {
+  type: Boolean,
+  default: false
 }
 })
 
@@ -27,7 +31,7 @@ const logo = ref("https://robertsspaceindustries.com/media/2weountodg09pr/heap_i
 
 const orgLink = computed({
     get() {
-        return `/orgs/${props.citizen.org.tag}`
+        return `/orgs/${props.org.tag}`
     }
 })
 </script>

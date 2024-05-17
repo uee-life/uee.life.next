@@ -14,7 +14,8 @@
             </teleport>
             <teleport to="#right-dock">
                 <!--citizen-tools v-if="isOwner" @syncSuccess="refresh" /-->
-                <citizen-org v-if="found && citizen.info.orgRank" :citizen="citizen"/>
+                <citizen-org v-if="citizen.info.orgs" :org="citizen.info.orgs.main"/>
+                <citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/>
             </teleport>
         </client-only>
         <div v-if="pending" class="loading">
@@ -57,7 +58,7 @@ const citizen = ref({
     },
     home: {},
     ships: [],
-    org: null,
+    orgs: null,
     links: []
 })
 const showModal = ref(true)
@@ -95,16 +96,6 @@ async function getShips() {
 
 }
 
-async function getOrg(tag) {
-    pending.value = true
-    await $fetch(`/api/org/${tag}`, {
-        onResponse(_ctx) {
-            citizen.value.org = _ctx.response._data
-            pending.value = false
-        }
-    })
-}
-
 function refresh() {
 
 }
@@ -116,9 +107,6 @@ await useFetch(`/api/citizen/${route.params.handle}`, {
         lazy: true,
         async onResponse(_ctx) {
             citizen.value.info = _ctx.response._data
-            if(citizen.value.info.org) {
-                await getOrg(citizen.value.info.org)
-            }
             if(citizen.value.info.website) {
                 citizen.value.links.push({text: 'Website', url: citizen.value.info.website})
             }
