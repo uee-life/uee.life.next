@@ -1,6 +1,8 @@
 const cheerio = require('cheerio')
 const {convertToMarkdown } = require('../helpers/markdown')
 
+const config = require('~/config.json')
+
 async function validCitizen(handle) {
     const res = await fetchCitizen(handle)
     console.log(res)
@@ -15,12 +17,19 @@ async function fetchCitizen(handle) {
     console.log('[srv] fetching citizen...', handle)
 
     const baseURI = 'https://robertsspaceindustries.com'
-    const response = await $fetch(baseURI + '/citizens/' + handle)
+    const response = await $fetch(baseURI + '/citizens/' + handle, {
+        headers: {
+            'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+        }
+    })
     
     try {
         const $ = cheerio.load(response)
         let info = {}
         info.handle = handle
+        if($('p:contains("authenticated")').text()) {
+            console.error($('p:contains("authenticated")').text())
+        }
         info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
         info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
         info.bio = $('span:contains("Bio")', '#public-profile').next().text()
@@ -34,14 +43,7 @@ async function fetchCitizen(handle) {
                 info.portrait = `${baseURI}${image.attribs.src}`
             }
         }
-        info.org = $('span:contains("Spectrum Identification (SID)")', '#public-profile').next().text()
-        if(info.org) {
-            info.orgTitle = $('span:contains("Organization rank")', '#public-profile').next().text()
-            info.orgRank = 'test' //FIXME: await fetchOrgRank(info.org, info.handle)
-        } else {
-            info.orgTitle = ''
-            info.orgRank = 0
-        }
+        info.orgs = await fetchOrgList(handle)
         info.website = $('span:contains("Website")', '#public-profile').next().attr('href') || ''
         info.verified = 0
         return info
@@ -75,6 +77,56 @@ async function fetchOrg(org) {
         info.tag = org
 
         return info
+    } catch (error) {
+        console.error(error)
+        return null
+    }
+}
+
+async function fetchOrgList(handle) {
+    //TODO: Get logos here too
+    console.log('[srv] fetching citizen...', handle)
+
+    const baseURI = 'https://robertsspaceindustries.com'
+    const response = await $fetch(baseURI + '/citizens/' + handle + '/organizations', {
+        headers: {
+            'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+        }
+    })
+    
+    try {
+        let orgs = {
+            main: null,
+            affiliated: []
+        }
+        const $ = cheerio.load(response)
+        
+        const main = $('.main .info')[0]
+        if (main) {
+            orgs.main = {
+                tag: $(main).find('a').prop('href').split('/')[2],
+                name: $(main).find('a').text(),
+                logo: baseURI + $('.main').find('.thumb').find('img').prop('src'),
+                model: $('.main').find('.right-col').find('span:contains("Archetype")').next().text(),
+                rank: {
+                    title: $(main).find('.ranking').prev().find('strong').text(),
+                    level: $(main).find('.ranking').find('.active').length
+                }
+            }
+            const links = $('.affiliation').each( function (i, el) {
+                orgs.affiliated.push({
+                    tag: $(el).find('.info').find('a').prop('href').split('/')[2],
+                    name: $(el).find('.info').find('a').text(),
+                    logo: baseURI + $(el).find('.thumb').find('img').prop('src'),
+                    rank: {
+                        title: $(el).find('.ranking').prev().find('strong').text(),
+                        level: $(el).find('.ranking').find('.active').length,
+                    }
+                })
+            })
+        }
+
+        return orgs
     } catch (error) {
         console.error(error)
         return null
@@ -225,6 +277,7 @@ module.exports = {
     validCitizen,
     fetchCitizen,
     fetchOrg,
+    fetchOrgList,
     fetchOrgFounders,
     fetchMembers,
     fetchOrgRank
