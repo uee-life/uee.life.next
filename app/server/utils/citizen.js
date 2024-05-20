@@ -1,6 +1,6 @@
-import { readQuery, writeQuery } from "../utils/neo4j"
-import { getOrganization, orgAddMember, orgAddFounder } from "./organization"
-import * as rsi from "../utils/rsi"
+import { readQuery, writeQuery } from "./neo4j"
+import { getOrganization, orgAddMember, orgAddFounder } from "../helpers/organization"
+import * as rsi from "./rsi"
 
 export const getCitizen = async (user, create = false) => {
 
@@ -71,5 +71,23 @@ async function createCitizen(citizen) {
             await orgAddFounder(citizen.handle, citizen.org)
         }
     }
+}
 
+export const updateCitizen = async (citizen) => {
+    console.log("Updating Citizen: ", citizen.handle)
+    const query = 
+        `MATCH (c:Citizen {handle: $handle})
+         SET c += {
+            name: $name,
+            verified: $verified
+         }
+         return c`
+    
+    const params = {
+        handle: citizen.handle,
+        name: citizen.name,
+        verified: citizen.verified
+    }
+
+    await writeQuery(query, params)
 }

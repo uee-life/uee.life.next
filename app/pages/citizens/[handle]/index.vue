@@ -11,11 +11,13 @@
                         <div class="left-nav-button"><a :href="link.url" target="_blank">{{link.text}}</a></div>
                     </div>
                 </panel-dock>
+                <panel-dock v-if="isOwner" title="Tools">
+                    <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
+                </panel-dock>
             </teleport>
             <teleport to="#right-dock">
-                <!--citizen-tools v-if="isOwner" @syncSuccess="refresh" /-->
                 <citizen-org v-if="citizen.info.orgs" :org="citizen.info.orgs.main"/>
-                <citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/>
+                <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
             </teleport>
         </client-only>
         <div v-if="pending" class="loading">
@@ -63,9 +65,12 @@ const citizen = ref({
 })
 const showModal = ref(true)
 
-// temp vars
-const loading = ref(false)
-const isOwner = ref(true)
+const isOwner = computed({
+    get() {
+        const user = useUser()
+        return user.value != undefined && citizen.value.info.handle == user.value.handle
+    }
+})
 
 const pending = ref(true)
 const found = ref(false)
@@ -75,6 +80,27 @@ const dossierLink = computed({
         return `https://robertsspaceindustries.com/citizens/${route.params.handle}`
     }
 })
+
+async function sync() {
+    console.log('Syncing...')
+    await useFetch('/api/user/sync', {
+        key: 'syncCitizen',
+        onResponse(_ctx) {
+            console.log('Sync done!')
+            const result = _ctx.response._data
+            console.log(result)
+            $swal.fire({
+                title: result.status,
+                text: result.message,
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Sync Error', _ctx.response._data)
+        }
+    })
+}
 
 function edit() {
 
