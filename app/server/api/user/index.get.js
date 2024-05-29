@@ -1,16 +1,15 @@
-import { getCitizen } from "~/server/helpers/citizen"
+import { getCitizen } from "~/server/utils/citizen"
+import { loadUser } from "~/server/utils/user"
 
 export default defineEventHandler(async (event) => {
     let user = null
     if (event.context.user) {
-        const existingUser = db.prepare("SELECT * FROM user WHERE id = ?").get(event.context.user.id)
-        user = existingUser
-    } else {
-        user = event.context.user
+        user = await loadUser(event.context.user)
     }
-    console.log("user ", user)
+
     if(user) {
         console.log('user found, getting citizen')
+        console.log(user)
         user.info = await getCitizen(user, true)
     }
     return user
