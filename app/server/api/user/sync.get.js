@@ -1,7 +1,11 @@
-import { useUser } from "~/composables/auth"
 import { updateCitizen } from "~/server/utils/citizen"
 import * as rsi from '~/server/utils/rsi'
 import { loadUser } from "~/server/utils/user"
+
+/* 
+Currently this doesn't do much useful, as we don't store much data in our citizen entity
+but this is here if that ever changes! 
+*/
 
 export default defineEventHandler(async (event) => {
     if (event.context.user) {

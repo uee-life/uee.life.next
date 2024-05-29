@@ -54,8 +54,17 @@
     </div>
 </template>
 
-<script>
-//import { mapActions, mapMutations } from 'vuex'
+<script setup>
+const props = defineProps({
+    citizen: {
+        type: Object,
+        required: true,
+    },
+    isOwner: {
+        type: Boolean,
+        default: false
+    }
+})
 
 /*export default {
     name: 'citizen-location',
