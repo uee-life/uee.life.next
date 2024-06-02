@@ -2,9 +2,9 @@
     <div id="location-list" class="location-list">
         <div v-if="locations.length > 0" class="locations">
             <explorer-location-summary v-for="(loc, index) in locations" :key="loc.code" :loc="loc" :link="getLink(loc.code)" :index="index">
-                <div>Type: {{ loc.subtype }}</div>
-                <div>Affiliation: {{ loc.affiliation }}</div>
-                <div>Habitable: {{ isHabitable(loc) }}</div>
+                <div>Type: <span class="value">{{ loc.subtype }}</span></div>
+                <div>Affiliation: <span class="value">{{ loc.affiliation }}</span></div>
+                <div>Habitable: <span class="value">{{ isHabitable(loc) }}</span></div>
             </explorer-location-summary>
         </div>
         <div class="no-locations" v-else>
@@ -48,7 +48,7 @@ onMounted(() => {
         margin-bottom: 20px;
         margin-left: -5px;
         margin-right: -5px;
-        opacity: 0;
+        opacity: 1;
     }
     .no-locations {
         text-align: center;
@@ -59,5 +59,9 @@ onMounted(() => {
         display: flex;
         flex-wrap: wrap;
         opacity: 1;
+    }
+
+    .value {
+        color: #dbf3ff;
     }
 </style>

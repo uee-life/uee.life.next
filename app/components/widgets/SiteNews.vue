@@ -41,10 +41,6 @@ const toggleNews = () => {
         text-overflow: ellipsis;
     }
 
-    .site-news>.content>h3 {
-        word-spacing: 8px;
-    }
-
     .site-news>.read-more {
         position: absolute;
         bottom: 5px;

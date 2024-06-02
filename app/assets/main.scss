@@ -12,9 +12,15 @@
     color: #dbf3ff;
     font-family: 'Michroma';
     /*font-size: 18px;*/
-    margin-bottom: 3px;
+    margin-bottom: 5px;
     margin-top: 10px;
     letter-spacing: 1.5px;
+  }
+
+  p {
+    font-family: monospace;
+    font-size: calc(14px + (14 - 10) * ((100vw - 300px) / 4000));
+    line-height: calc(1.3em + (1.5 - 1.2) * ((100vw - 300px)/(1600 - 300)));
   }
   
   h1 {
@@ -223,7 +229,9 @@
   }
   
   .left-nav-button::before {
-    content: "≡ "
+    content: "≡ ";
+    font-size: 15px;
+    font-family: 'Michroma';
   }
   .left-nav-button {
       margin-left: 10px;
@@ -235,6 +243,8 @@
     text-decoration: none;
     color: #39ced8;
     cursor: pointer;
+    font-family: 'Michroma';
+    font-size: 12px;
   }
   
   .left-nav-button a:hover {

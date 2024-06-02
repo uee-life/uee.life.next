@@ -1,4 +1,4 @@
-import { manager } from '~/server/helpers/auth0'
+import { manager } from '~/server/utils/auth0'
 
 export default defineEventHandler(async (event) => {
     manager()

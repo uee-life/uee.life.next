@@ -2,11 +2,23 @@
     <div class="main">
         <div class="content">
           Admin Page
+          <ship-summary-model v-if="shipModels" v-for="ship in shipModels" :ship="ship"/>
+          {{ shipModels }}
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
+const shipModels = ref([])
+
+await useFetch('/api/ship/models', {
+    key: 'getShipModels',
+    server: false,
+    lazy: true,
+    async onResponse(_ctx) {
+      shipModels.value = _ctx.response._data
+    }
+})
 </script>
 
 <style>

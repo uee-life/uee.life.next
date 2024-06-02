@@ -1,5 +1,5 @@
 const cheerio = require('cheerio')
-const {convertToMarkdown } = require('../helpers/markdown')
+const {convertToMarkdown } = require('./markdown')
 
 const config = require('~/config.json')
 
@@ -68,7 +68,7 @@ async function fetchOrg(org) {
         info.roles = {}
         info.roles.primary = $('ul.focus', '#organization').find('li.primary').find('img').attr('alt')
         info.roles.secondary = $('ul.focus', '#organization').find('li.secondary').find('img').attr('alt')
-        info.intro = convertToMarkdown($('div.join-us', '#organization').find('div.markitup-text').html())
+        info.description = convertToMarkdown($('div.join-us', '#organization').find('div.markitup-text').html())
         info.history = convertToMarkdown($('h2:contains("History")', '#organization').next().html())
         info.manifesto = convertToMarkdown($('h2:contains("Manifesto")', '#organization').next().html())
         info.charter = convertToMarkdown($('h2:contains("Charter")', '#organization').next().html())

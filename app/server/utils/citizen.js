@@ -1,5 +1,5 @@
 import { readQuery, writeQuery } from "./neo4j"
-import { getOrganization, orgAddMember, orgAddFounder } from "../helpers/organization"
+import { getOrganization, orgAddMember, orgAddFounder } from "./organization"
 import * as rsi from "./rsi"
 
 export const getCitizen = async (user, create = false) => {
@@ -61,14 +61,19 @@ async function createCitizen(citizen) {
     }
     await writeQuery(query, params)
 
+    console.log(citizen)
+
     // then, if they are part of an org, see if the ORG already exists, if not, add that too
-    if(citizen.org) {
-        const org = await getOrganization(citizen.org, true)
+    if(citizen.orgs.main) {
+        console.log("Found org, adding as member")
+        const mainOrg = citizen.orgs.main
+        const org = await getOrganization(mainOrg.tag, true)
+        console.log(org)
         //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
-        await orgAddMember(citizen.handle, citizen.org, citizen.orgTitle)
+        await orgAddMember(citizen.handle, mainOrg.tag, mainOrg.rank.level, mainOrg.rank.title)
 
         if (org.founders.find(item => item.handle === citizen.handle)) {
-            await orgAddFounder(citizen.handle, citizen.org)
+            await orgAddFounder(citizen.handle, mainOrg.tag)
         }
     }
 }

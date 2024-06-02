@@ -128,6 +128,7 @@ onMounted(() => {
     .citizen-data .data {
         display: flex;
         flex-direction: column;
+        font-family: monospace;
         font-size: 14px;
         line-height: 19.5px;
         margin-left: 10px;
