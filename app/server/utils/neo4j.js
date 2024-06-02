@@ -24,7 +24,7 @@ async function writeQuery(query, params) {
 }
 
 // return the full record set?
-async function readQuery(query, params) {
+async function readQuery(query, params={}) {
     const session = driver.session({ database: 'neo4j' });
     let records = [];
     let error = null;

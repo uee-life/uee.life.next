@@ -64,6 +64,8 @@ const locationType = computed({
     get() {
         if (props.location.type == "SINGLE_STAR") {
             return "Binary Star System"
+        } else {
+            return props.location.type
         }
     }
 })
@@ -145,6 +147,7 @@ onMounted(() => {
         margin: 0 10px;
         flex-grow: 1;
         flex-basis: 200px;
+        font-family: monospace;
     }
 
     .location-info .title {

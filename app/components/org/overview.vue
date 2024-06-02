@@ -1,17 +1,30 @@
 <template>
     <div class="info">
         <panel-main title="roles" class="info-panel">
-            <ul class="info-items">
-                <li v-if="org.roles" class="line-item"><span>Primary Role</span><span>{{ org.roles.primary }}</span></li>
-                <li v-if="org.roles" class="line-item"><span>Secondary Role</span><span>{{ org.roles.secondary }}</span></li>
-            </ul>
+            <div class="info-items">
+                <div class="labels">
+                    <span>Primary Role:</span>
+                    <span>Secondary Role:</span>
+                </div>
+                <div class="data">
+                    <span>{{ org.roles.primary }}</span>
+                    <span>{{ org.roles.secondary }}</span>
+                </div>
+            </div>
         </panel-main>
         <panel-main title="headquarters" class="info-panel">
-            <ul class="info-items">
-                <li class="line-item"><div>System</div><div>Unknown</div></li>
-                <li class="line-item"><div>Planet</div><div>Unknown</div></li>
-                <li class="line-item"><div>City:</div><div>Unknown</div></li>
-            </ul>
+            <div class="info-items">
+                <div class="labels">
+                    <span>System:</span>
+                    <span>Planet:</span>
+                    <span>Location:</span>
+                </div>
+                <div class="data">
+                    <span>Unknown</span>
+                    <span>Unknown</span>
+                    <span>Unknown</span>
+                </div>
+            </div>
         </panel-main>
         <panel-main title="founders" class="info-panel">
             <div class="founders">
@@ -75,6 +88,24 @@ loadFounders()
 ul.info-items {
     padding-left: 0;
     margin: 0 20px 0 20px;
+}
+
+.info-items {
+    display: flex;
+    font-family: monospace;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.info-items .labels {
+    display: flex;
+    flex-direction: column;
+}
+.info-items .data {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    color: #dbf3ff;
 }
 
 .info .line-item {

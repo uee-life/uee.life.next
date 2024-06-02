@@ -67,6 +67,7 @@ const props = defineProps({
         margin: 0 10px;
         font-size: calc(13px + 3*(100vw - 300px)/1300);
         min-width: 130px;
+        font-family: monospace;
     }
 
     .summary-name {

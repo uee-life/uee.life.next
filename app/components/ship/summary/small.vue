@@ -1,6 +1,6 @@
 <template>
     <div class="ship-summary" @click="selected" :title="ship.model">
-        <section-title v-if="ship.name" :text="ship.name"/>
+        <panel-title v-if="ship.name" :text="ship.name"/>
         <img :src="shipImage" />
         <img class="manufacturer" :src="manufacturerImage" />
         <div class="ship-info">
@@ -34,19 +34,19 @@ const props = defineProps({
 
 const shipImage = computed({
     get() {
-        return `/images/ships/${this.ship.short_name}.jpg`
+        return `/images/ships/${props.ship.identifier}.jpg`
     }
 })
 
 const manufacturerImage = computed({
     get() {
-        return `/images/manufacturers/${this.ship.make_abbr}.png`
+        return `/images/manufacturers/${props.ship.manufacturer}.png`
     }
 })
 
 const citizenLink = computed({
     get() {
-        return `/citizens/${this.ship.owner.handle}`
+        return `/citizens/${props.ship.owner.handle}`
     }
 })
 

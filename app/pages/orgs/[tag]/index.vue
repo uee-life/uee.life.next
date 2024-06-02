@@ -11,8 +11,8 @@
                 :type="org.tag.toUpperCase()"
                 :image="org.banner"
                 :logo="org.logo" />
+            <org-content v-if="org.description" :content="org.description" :centered="true"></org-content>
             <org-overview :org="org" />
-            <org-content v-if="org.intro" :content="org.intro" :centered="true"></org-content>
             <div class="org-tabs">
                 <layout-tabs :tabs="tabs" :initialTab="initialTab">
                     <template #tab-title-about>

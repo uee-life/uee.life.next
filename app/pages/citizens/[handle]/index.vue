@@ -32,7 +32,7 @@
                         SHIPS ({{ citizen.ships.length }})
                     </template>
                     <template #tab-content-ships>
-                        <fleet-view :isOwner="isOwner" :ships="citizen.ships" @add="addShip" @remove="removeShip"/>
+                        <fleet-view v-if="citizen.ships" :isOwner="isOwner" :ships="citizen.ships" @add="addShip" @remove="removeShip"/>
                     </template>
 
                     <template v-if="isOwner" #tab-title-location>
@@ -49,6 +49,8 @@
 </template>
 
 <script setup>
+import Swal from 'sweetalert2';
+
 
 const route = useRoute()
 const tabs = ref(['ships', 'location'])
@@ -88,7 +90,7 @@ const dossierLink = computed({
 
 async function sync() {
     console.log('Syncing...')
-    await useFetch('/api/user/sync', {
+    await $fetch('/api/user/sync', {
         key: 'syncCitizen',
         onResponse(_ctx) {
             console.log('Sync done!')
@@ -116,23 +118,56 @@ function save() {
 }
 
 async function addShip(ship) {
-
+    console.log("adding ship: ", ship)
+    await $fetch('/api/ship/add', {
+        key: 'addShip',
+        method: 'POST',
+        body: ship,
+        onResponse(_ctx) {
+            $swal.fire({
+                title: "Added",
+                text: "Ship successfully added",
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Add Error: ', _ctx.response._data)
+        }
+    })
+    await refresh()
 }
 
 async function removeShip(ship) {
-
+    await $fetch('/api/ship/remove', {
+        key: 'removeShip',
+        method: 'POST',
+        body: ship,
+        onResponse(_ctx) {
+            $swal.fire({
+                title: "Removed",
+                text: "Ship successfully removed",
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Remove error: ', _ctx.response._data)
+        }
+    })
+    await refresh()
 }
 
 async function getShips() {
-
+    await $fetch(`/api/citizen/${route.params.handle}/ships`, {
+        key: 'getShips',
+        async onResponse(_ctx) {
+            citizen.value.ships = _ctx.response._data
+        }
+    })
 }
 
-function refresh() {
-
-}
-
-
-await useFetch(`/api/citizen/${route.params.handle}`, {
+const { refresh } = await useFetch(`/api/citizen/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
@@ -143,6 +178,7 @@ await useFetch(`/api/citizen/${route.params.handle}`, {
             }
             found.value = true
             pending.value = false
+            getShips()
         },
         onResponseError(_ctx) {
             found.value = false

@@ -12,17 +12,17 @@
         <explorer-location v-if="location.name" :location="location" type="System">
             <div class="location-tabs">
                 <layout-tabs :tabs="tabs" :initialTab="initialTab">
-                    <template slot="tab-title-locations">
+                    <template #tab-title-locations>
                         LOCATIONS ( {{children.length}} )
                     </template>
-                    <template slot="tab-content-locations">
+                    <template #tab-content-locations>
                         <explorer-location-list :locations="children"/>
                     </template>
 
-                    <template slot="tab-title-pois">
+                    <template #tab-title-pois>
                         POIs ( {{ pois.length }} )
                     </template>
-                    <template slot="tab-content-pois">
+                    <template #tab-content-pois>
                         <!--poi-list :pois="pois"/--> 
                     </template>
                 </layout-tabs>
@@ -63,19 +63,21 @@ async function getLocation() {
         key: 'getLocation',
         server: false,
         lazy: true,
-        onResponse(_ctx) {
+        async onResponse(_ctx) {
             location.value = _ctx.response._data
+            await getChildren()
             loading.value = false
         }
     })
 }
 
 async function getChildren() {
-    await useFetch(`/api/explore/locations/${route.params.code}/children`, {
+    await useFetch(`/api/explore/locations/${route.params.code}/locations`, {
         key: 'getChildren',
         server: false,
         lazy: true,
         onResponse(_ctx) {
+            console.log('got children: ', _ctx.response._data)
             children.value = _ctx.response._data
         }
     })

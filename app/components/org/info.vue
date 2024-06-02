@@ -1,8 +1,8 @@
 <template>
     <div id="org-info" class="org-info">
-        <org-content v-if="org.intro" title="Manifesto" :content="org.manifesto"></org-content>
-        <org-content v-if="org.intro" title="Charter" :content="org.charter"></org-content>
-        <org-content v-if="org.intro" title="History" :content="org.history"></org-content>
+        <org-content v-if="org.manifesto" title="Manifesto" :content="org.manifesto"></org-content>
+        <org-content v-if="org.charter" title="Charter" :content="org.charter"></org-content>
+        <org-content v-if="org.history" title="History" :content="org.history"></org-content>
     </div>
 </template>
   
@@ -25,19 +25,7 @@ const initialTab = "history"
 const founders = ref({})
 const orgIntro = ref("")
   
-  /*export default {
-    name: 'org-info',
-    props: ['org', 'isOwner'],
-    components: {
-      OrgFleetView
-    },
-    data() {
-      return {
-        tabs: ["overview", "history", "manifesto", "charter"],
-        initialTab: "overview",
-        founders: []
-      }
-    },
+  /*
     methods: {
       citizenLink(handle) {
         return `/citizens/${handle}`

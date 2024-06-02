@@ -2,17 +2,18 @@
     <div id="fleet-view" class="fleet-view">
         <fleet-summary v-if="showSummary" @filter="setFilter" :fleet="ships"/>
         <fleet-list :ships="filteredShips" @selected="selected" @remove="removeShip" :isAdmin="isOwner"/>
-        <!--main-panel v-if="isOwner" class="add-ship" @click="showModal = true">
+        <panel-main v-if="isOwner" class="add-ship" @click="showModal = true">
             ADD SHIP
-        </main-panel>
-        <modal v-if="showModal" title="Add Ship" @close="showModal = false">
-            <ship-form @add="addShip" />
-        </modal-->
+        </panel-main>
+        <layout-modal v-if="showModal" title="Add Ship" @close="showModal = false">
+            <fleet-add @add="addShip" />
+        </layout-modal>
     </div>
 </template>
 
 <script setup>
 import { gsap } from 'gsap'
+const emit = defineEmits(['add', 'remove'])
 
 const props = defineProps({
     ships: {
@@ -43,25 +44,26 @@ function selected(ship) {
     //this.$emit('selected', ship)
 }
 function addShip(ship) {
-    this.showModal = false
-    this.$emit('add', ship)
+    showModal.value = false
+    emit('add', ship)
 }
 function removeShip(ship) {
-    this.$emit('remove', ship)
+    console.log('(view) removing ship: ', ship)
+    emit('remove', ship)
 }
 function setFilter(value) {
-    this.search = value
+    search.value = value
 }
 
 const filteredShips = computed({
     get () {
         return props.ships.filter(ship => {
-            return ship.short_name.toLowerCase().includes(this.search.toLowerCase()) ||
-                ship.make_text.toLowerCase().includes(this.search.toLowerCase()) ||
+            return ship.identifier.toLowerCase().includes(search.value.toLowerCase()) //||
+                /*ship.make_text.toLowerCase().includes(this.search.toLowerCase()) ||
                 ship.model.toLowerCase().includes(this.search.toLowerCase()) ||
                 ship.type_text.toLowerCase().includes(this.search.toLowerCase()) ||
                 ship.focus_text.toLowerCase().includes(this.search.toLowerCase()) ||
-                ship.size_text.toLowerCase().includes(this.search.toLowerCase())
+                ship.size_text.toLowerCase().includes(this.search.toLowerCase())*/
         })
     }
 })
@@ -72,6 +74,9 @@ const filteredShips = computed({
         margin: 6px;
         text-align: center;
         cursor: pointer;
+        font-family: 'Michroma';
+        font-size: 12px;
+        text-transform: uppercase;
     }
     .fleet-view {
         position: relative;
