@@ -147,7 +147,6 @@ onMounted(() => {
         margin: 0 10px;
         flex-grow: 1;
         flex-basis: 200px;
-        font-family: monospace;
     }
 
     .location-info .title {

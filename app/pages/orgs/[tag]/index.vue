@@ -3,9 +3,8 @@
         <div class="loading" v-if="pending">
             <img src="@/assets/loading.gif" >
         </div>
-        <template v-else-if="found">
+        <template v-else-if="org.tag">
             <layout-banner 
-                v-if="org" 
                 :name="org.name"
                 :tag="org.tag"
                 :type="org.tag.toUpperCase()"
@@ -57,21 +56,16 @@ const initialTab = "about"
 const org = ref({})
 const fleet = ref([])
 
-const pending = ref(true)
-const found = ref(false)
 
-await useFetch(`/api/org/${route.params.tag}`, {
+const {pending} = await useFetch(`/api/org/${route.params.tag}`, {
     key: 'getOrg',
     server: false,
     lazy: true,
     async onResponse(_ctx) {
         org.value = _ctx.response._data
-        found.value = true
-        pending.value = false
     },
     async onResponseError(_ctx) {
         console.log(_ctx.response.statusText)
-        found.value = false
     }
 })
 

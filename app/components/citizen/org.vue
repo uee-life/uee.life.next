@@ -57,8 +57,8 @@ const orgLink = computed({
 }
 .citizen-org .org-name {
   align-self: center;
-  font-size: 20px;
   text-align: center;
+  font-weight: bold;
   color: #dbf3ff;
 }
 .citizen-org .org-title {

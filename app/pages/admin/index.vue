@@ -2,22 +2,16 @@
     <div class="main">
         <div class="content">
           Admin Page
-          <ship-summary-model v-if="shipModels" v-for="ship in shipModels" :ship="ship"/>
-          {{ shipModels }}
+          <ship-summary-model v-if="shipModels" v-for="ship in shipModels.ships" :ship="ship"/>
         </div>
     </div>
 </template>
 
 <script setup>
-const shipModels = ref([])
-
-await useFetch('/api/ship/models', {
+const {data: shipModels} = await useFetch('/api/ship/models', {
     key: 'getShipModels',
     server: false,
     lazy: true,
-    async onResponse(_ctx) {
-      shipModels.value = _ctx.response._data
-    }
 })
 </script>
 

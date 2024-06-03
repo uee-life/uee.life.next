@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="addShip" class="ship-form">
+    <form v-if="!pending" @submit.prevent="addShip" class="ship-form">
         <div>
             Manufacturer: 
             <select v-model="make">
@@ -46,27 +46,14 @@ const addShip = () => {
     }          
 }
 
-const getShips = async () => {
-    await useFetch('/api/ship/models', {
-        key: 'getShips',
-        onResponse(_ctx) {
-            console.log("got response: ", _ctx.response._data.manufacturers)
-            ships.value = _ctx.response._data.ships
-            makes.value = _ctx.response._data.manufacturers
-        }
-    })
-    /*this.$axios({
-        url: 'https://api.uee.life/ships',
-        method: 'GET'
-    }).then((res) => {
-        this.ships = res.data.ships
-        this.makes = res.data.makes
-    }).catch((err) => {
-        console.error(err)
-    })*/
-}
-
-getShips()
+const {data, pending, refresh} = await useFetch('/api/ship/models', {
+    key: 'getShips',
+    onResponse(_ctx) {
+        console.log("got response: ", _ctx.response._data.manufacturers)
+        ships.value = _ctx.response._data.ships
+        makes.value = _ctx.response._data.manufacturers
+    }
+})
 </script>
 
 <style>

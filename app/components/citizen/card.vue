@@ -1,5 +1,5 @@
 <template>
-    <div class="result">
+    <div :class="redacted">
         <router-link class="no-decor" :to="citizenLink(citizen.handle)">
             <span class="thumb">
                 <img :src="citizen.portrait" />
@@ -21,6 +21,16 @@ const props = defineProps({
     }
 })
 
+const redacted = computed({
+    get() {
+        if (props.citizen.handle == "Redacted") {
+            return "result redacted"
+        } else {
+            return "result"
+        }
+    }
+})
+
 function citizenLink(handle) {
     return `/citizens/${handle}`;
 }
@@ -31,6 +41,11 @@ function citizenLink(handle) {
         display: flex;
         flex-grow: 1;
         margin: 5px;
+        position: relative;
+    }
+
+    .result.redacted {
+        background-color: rgba(255,34,34,0.2);
     }
 
     .result>a {
@@ -44,6 +59,10 @@ function citizenLink(handle) {
         height: fit-content;
         border: 1px solid #546f84;
         flex-grow: 1;
+    }
+
+    .result.redacted>a {
+        border: 1px solid #ff2222;
     }
 
     .result>a>.thumb {
@@ -88,7 +107,7 @@ function citizenLink(handle) {
     .result>a>.right {
         display: none;
     }
-
+    
     .no-decor {
         text-decoration: none;
     }

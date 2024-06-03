@@ -68,45 +68,6 @@ async function remove() {
     console.log('removing ship: ', props.ship)
     emit('remove', props.ship)
 }
-/*
-export default {
-    name: 'ship-summary',
-    props: {
-        ship: {
-            type: Object,
-            default: function() {
-                return {}
-            }
-        },
-        isAdmin: {
-            type: Boolean,
-            default: false
-        }
-    },
-    computed: {
-        ...mapGetters({
-            citizen: 'loggedCitizen'
-        }),
-        shipImage: function() {
-            return `/images/ships/${this.ship.short_name}.jpg`
-        },
-        manufacturerImage: function () {
-            return `/images/manufacturers/${this.ship.make_abbr}.png`
-        },
-        citizenLink: function () {
-            return `/citizens/${this.ship.owner.handle}`
-        }
-    },
-    methods: {
-        selected() {
-            this.$emit('selected', this.ship.id)
-        },
-        remove() {
-            console.log('remove clicked')
-            this.$emit('remove', this.ship.id)
-        }
-    }
-}*/
 </script>
 
 <style scoped>
@@ -160,7 +121,6 @@ export default {
     .ship-info .data {
         display: flex;
         flex-direction: column;
-        font-family: monospace;
         font-size: 14px;
         line-height: 19.5px;
         margin-left: 10px;

@@ -1,5 +1,6 @@
 <template>
-    <div class="system-list">
+    <widgets-loading v-if="pending"/>
+    <div v-else class="system-list">
         <explorer-location-summary v-for="sys in systems" :link="`/systems/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
           <div>Type: <span class="data">{{ systemType(sys) }}</span></div>
         </explorer-location-summary>
@@ -9,7 +10,7 @@
   <script setup>
   const systems = ref([])
 
-  await useFetch(`/api/explore/systems`, {
+  const {pending} = await useFetch(`/api/explore/systems`, {
     key: 'getSystems',
     server: false,
     lazy: true,
