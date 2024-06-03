@@ -19,7 +19,7 @@
   min-height: 100vh;
   max-width: 100vw;
   /*padding-bottom: 175px;*/
-  font-family: Electrolize;
+  font-family: larabie;
 }
 
 .main {

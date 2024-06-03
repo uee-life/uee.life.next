@@ -46,7 +46,7 @@ const props = defineProps({
 const founders = ref([])
 
 async function addFounder(handle) {
-    await useFetch(`/api/citizen/${handle}`, {
+    await $fetch(`/api/citizen/${handle}`, {
         key: 'getFounder',
         server: false,
         lazy: true,
@@ -92,7 +92,6 @@ ul.info-items {
 
 .info-items {
     display: flex;
-    font-family: monospace;
     font-size: 14px;
     text-transform: uppercase;
 }

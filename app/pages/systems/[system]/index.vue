@@ -1,14 +1,14 @@
 <template>
     <client-only>
         <div class="system">
-            <widgets-loading v-if="loading"/>
-            <template v-else-if="found">
+            <widgets-loading v-if="pending"/>
+            <template v-else-if="system.code">
                 <teleport to="#left-dock">
                     <panel-dock title="nav">
                         <div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div>
                     </panel-dock>
                 </teleport>
-                <explorer-location v-if="found" :location="system" type="System">
+                <explorer-location :location="system" type="System">
                     <div class="location-tabs">
                         <layout-tabs :tabs="tabs" :initialTab="initialTab">
                             <template #tab-title-planets>
@@ -42,8 +42,6 @@ const system = ref({})
 const systems = ref({})
 const planets = ref([])
 const pois = ref([])
-
-const loading = ref(true)
 const found = ref(false)
 
 
@@ -63,23 +61,17 @@ const sysLink = computed({
     }
 })
 
-async function getSystem() {
-    await useFetch(`/api/explore/systems/${route.params.system}`, {
-        key: 'getSystem',
-        server: false,
-        lazy: true,
-        onResponse(_ctx) {
-            const res = _ctx.response._data
-            system.value = res
-            console.log("res: ", res)
-            if(res.code) {
-                found.value = true
-            }
-            getPlanets()
-            loading.value = false
-        }
-    })
-}
+//TODO make this work SSR...
+const {pending} = await useFetch(`/api/explore/systems/${route.params.system}`, {
+    key: 'getSystem',
+    server: false,
+    lazy: true,
+    async onResponse(_ctx) {
+        system.value = _ctx.response._data
+        await getPlanets()
+    }
+})
+
 
 async function getPlanets() {
     const sys_name = route.params.system
@@ -105,8 +97,6 @@ async function getPOIs() {
         })*/
     }
 }
-
-await getSystem()
 </script>
 
 <style scoped>

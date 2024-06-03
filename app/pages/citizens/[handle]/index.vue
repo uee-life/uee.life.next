@@ -23,7 +23,7 @@
         <div v-if="pending" class="loading">
             <img src="@/assets/loading.gif" >
         </div>
-        <template v-else-if="found">
+        <template v-else-if="citizen.info.handle">
             <citizen-info :isOwner="isOwner" :citizen="citizen.info" @refresh="refresh" />
             <citizen-bio :bio="citizen.info.bio"/>
             <div class="citizen-tabs">
@@ -49,9 +49,7 @@
 </template>
 
 <script setup>
-import Swal from 'sweetalert2';
-
-
+const {$swal} = useNuxtApp()
 const route = useRoute()
 const tabs = ref(['ships', 'location'])
 const initialTab = ref('ships')
@@ -65,7 +63,6 @@ const citizen = ref({
     orgs: null,
     links: []
 })
-const showModal = ref(true)
 
 const isOwner = computed({
     get() {
@@ -78,9 +75,6 @@ function linkDomain(link) {
     const url = new URL(link)
     return url.hostname
 }
-
-const pending = ref(true)
-const found = ref(false)
 
 const dossierLink = computed({
     get() {
@@ -107,14 +101,6 @@ async function sync() {
             console.error('Sync Error', _ctx.response._data)
         }
     })
-}
-
-function edit() {
-
-}
-
-function save() {
-
 }
 
 async function addShip(ship) {
@@ -167,7 +153,7 @@ async function getShips() {
     })
 }
 
-const { refresh } = await useFetch(`/api/citizen/${route.params.handle}`, {
+const { refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
@@ -176,12 +162,9 @@ const { refresh } = await useFetch(`/api/citizen/${route.params.handle}`, {
             if(citizen.value.info.website) {
                 citizen.value.links.push({text: 'Website', url: citizen.value.info.website})
             }
-            found.value = true
-            pending.value = false
             getShips()
         },
         onResponseError(_ctx) {
-            found.value = false
         }
 })
 </script>

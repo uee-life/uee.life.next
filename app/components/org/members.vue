@@ -1,12 +1,11 @@
 <template>
     <client-only>
     <div class="org-members">
-        <div v-if="loading" class="loading">
+        <div v-if="pending" class="loading">
             <img src="@/assets/loading.gif">
         </div>
         <div v-else-if="members" class="results">
             <citizen-card v-for="(member, index) in members" :key="member.handle + index" :citizen="member" class='org-cell' />
-            
         </div>
         <widgets-no-result v-else />
         <layout-pages v-if="members"
@@ -20,11 +19,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-
 const route = useRoute()
-
-//import Pagination from '@/components/layout/Pagination.vue'
 
 const props = defineProps({
     affiliate: {
@@ -32,8 +27,6 @@ const props = defineProps({
         default: false
     }
 })
-
-const loading = ref(false)
 const members = ref([])
 const memberCount = ref(0)
 const currentPage = ref(1)
@@ -43,14 +36,6 @@ const pageCount = computed({
         return Math.ceil(memberCount.value / 32)
     }
 })
-
-function citizenLink(handle) {
-    if(handle == "Redacted") {
-        return `/citizens/${route.params.tag}`
-    } else {
-        return `/citizens/${handle}`
-    }
-}
 
 function checkRedaction(handle, cls) {
     if(handle == "Redacted") {
@@ -71,30 +56,20 @@ function pageChangeHandler(value) {
         default:
             currentPage.value = value
     }
-    getMembers()
+    refresh()
 }
 
-async function getMembers() {
-    const org = route.params.tag
-    let type = "members"
-    if(props.affiliate) {
-        type = "affiliates"
+
+const {pending, refresh} = await useFetch(() => `/api/org/${route.params.tag}/${props.affiliate ? "affiliates" : "members"}?page=${currentPage.value}`, {
+    key: 'getMembers',
+    server: false,
+    lazy: true,
+    onResponse(_ctx) {
+        const res = _ctx.response._data
+        members.value = res.members
+        memberCount.value = res.count
     }
-    await useFetch(`/api/org/${org}/${type}?page=${currentPage.value}`, {
-        key: 'getMembers',
-        server: false,
-        lazy: true,
-        onResponse(_ctx) {
-            const res = _ctx.response._data
-            members.value = res.members
-            memberCount.value = res.count
-            loading.value = false
-        }
-    })
-}
-
-
-getMembers()
+})
 </script>
 
 <style scoped>
@@ -103,19 +78,6 @@ getMembers()
         display: flex;
         flex-grow: 1;
         margin: 5px;
-    }
-
-    .org-cell .mask {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.1;
-    }
-
-    .org-cell .mask.redacted {
-        background-color: #ff2222;
     }
 
     .org-cell>a {

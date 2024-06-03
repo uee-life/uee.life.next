@@ -41,9 +41,6 @@ loadMarkdown()
 </script>
 
 <style>
-.org-content {
-    font-family: monospace;
-}
 .org-content.centered {
     text-align: center;
 }

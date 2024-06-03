@@ -1,5 +1,5 @@
 <template>
-    <widgets-loading v-if="loading" />
+    <widgets-loading v-if="pending" />
     <div v-else class="system">
         <client-only>
             <teleport to="#left-dock">
@@ -35,7 +35,6 @@
 const route = useRoute()
 
 const location = ref({})
-const loading = ref(true)
 
 const children = ref([])
 const pois = ref([])
@@ -58,24 +57,20 @@ const systemLink = computed({
     }
 })
 
-async function getLocation() {
-    await useFetch(`/api/explore/locations/${route.params.code}`, {
-        key: 'getLocation',
-        server: false,
-        lazy: true,
-        async onResponse(_ctx) {
-            location.value = _ctx.response._data
-            await getChildren()
-            loading.value = false
-        }
-    })
-}
+//TODO make this work SSR
+const {pending} = await useFetch(`/api/explore/locations/${route.params.code}`, {
+    key: 'getLocation',
+    server: false,
+    lazy: true,
+    async onResponse(_ctx) {
+        location.value = _ctx.response._data
+        await getChildren()
+    }
+})
 
 async function getChildren() {
-    await useFetch(`/api/explore/locations/${route.params.code}/locations`, {
+    await $fetch(`/api/explore/locations/${route.params.code}/locations`, {
         key: 'getChildren',
-        server: false,
-        lazy: true,
         onResponse(_ctx) {
             console.log('got children: ', _ctx.response._data)
             children.value = _ctx.response._data
@@ -83,88 +78,9 @@ async function getChildren() {
     })
 }
 
-
-await getLocation()
-
-/*export default {
-    layout: ({ isMobile }) => isMobile ? 'mobile' : 'default',
-    name: "system",
-    components: {
-        Location,
-        LocationList,
-        PoiList
-    },
-    data() {
-        return {
-            tabs: ["locations", "pois"],
-            initialTab: "locations",
-            location: {},
-            children: [],
-            pois: []
-        }
-    },
-    methods: {
-        async getLocation() {
-            const code = this.$route.params.location
-            this.$axios.get(`https://api.uee.life/locations/${code}`).then(res => {
-                if(res.status == 200) {
-                    this.location = res.data
-                }
-            }).catch(error => {
-                // eslint-disable-next-line
-                console.error(error)
-            });
-        },
-        async getLocations() {
-            const code = this.$route.params.location
-            this.$axios.get(`https://api.uee.life/locations/${code}/locations`).then(res => {
-                if(res.status == 200) {
-                    this.children = res.data
-                }
-            }).catch(error => {
-                //eslint-disable-next-line
-                console.error(error)
-            });
-        },
-        async getPOIs() {
-            const sid = this.$route.params.location
-            this.$axios.get(`https://api.uee.life/locations/${sid}/pois`).then(res => {
-                if(res.status == 200) {
-                    this.pois = res.data
-                }
-            }).catch(error => {
-                // eslint-disable-next-line
-                console.error(error)
-            })
-        }
-    },
-    computed: {
-        starmapLink() {
-            if(this.location) {
-                return `https://robertsspaceindustries.com/starmap?location=${this.location.code}`
-            } else {
-                return ""
-            }
-        },
-        sysLink() {
-            return `/system/${this.location.name}`
-        }
-    },
-    mounted() {
-        this.getLocation()
-        this.getLocations()
-        this.getPOIs()
-    },
-    watch: {
-        $route: {
-            handler: function () {
-                this.getSystem()
-                this.getPlanets()
-                this.getPOIs()
-            }
-        }
-    }
-}*/
+async function getPOIs() {
+    //TODO
+}
 </script>
 
 <style scoped>

@@ -25,7 +25,7 @@ onMounted(async () => {
             }
         })
     } else {
-        await useFetch('/auth/callback', {
+        await $fetch('/auth/callback', {
             key: 'authCallback',
             query: route.query,
             async onResponse(_ctx) {
