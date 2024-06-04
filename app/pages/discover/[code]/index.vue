@@ -3,10 +3,10 @@
     <div v-else class="system">
         <client-only>
             <teleport to="#left-dock">
-            <panel-dock title="nav">
-                <div class="left-nav-button"><router-link :to="systemLink">Back to System</router-link></div>
-                <div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div>
-            </panel-dock>
+                <panel-dock title="nav">
+                    <div v-if="location.system" class="left-nav-button"><router-link :to="systemLink">Back to System</router-link></div>
+                    <div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div>
+                </panel-dock>
             </teleport>
         </client-only>
         <explorer-location v-if="location.name" :location="location" type="System">
@@ -28,6 +28,7 @@
                 </layout-tabs>
             </div>      
         </explorer-location>
+        <widgets-no-result v-else text="Location Not Found"/>
     </div>
 </template>
 
@@ -41,6 +42,7 @@ const pois = ref([])
 const tabs = ref(["locations", "pois"])
 const initialTab = ref("locations")
 
+// needs fixing for systems
 const starmapLink = computed({
     get() {
         if(location.value) {
@@ -53,7 +55,7 @@ const starmapLink = computed({
 
 const systemLink = computed({
     get() {
-        return `/systems/${location.value.system}`
+        return `/discover/${location.value.system}`
     }
 })
 
