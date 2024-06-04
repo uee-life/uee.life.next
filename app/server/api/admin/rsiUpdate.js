@@ -20,19 +20,24 @@ async function create_system(system) {
     - image_url - thumbnail.source (optional)
     */
     const query =
-        `MERGE (s:System {
+        `MERGE (s:System {rsi_id: $id})
+         set s :Location
+         SET s = {
             rsi_id: $id, 
             name: $name, 
-            code: $code, 
+            type: "SYSTEM",
+            subtype: $type,
             affiliation: $affiliation,
-            description: $description, 
-            type: $type,
-            size: $size,
-            population: $population,
-            economy: $economy,
+            description: $description,
+            image_url: $image_url,
             danger: $danger,
-            image_url: $image})
-            RETURN s`
+            economy: $economy,
+            population: $population,
+            designation: $name,
+            rsi_code: $code,
+            code: $code
+        }
+        RETURN s`
     const params = { 
         id: system.id,
         name: system.name,
@@ -44,7 +49,7 @@ async function create_system(system) {
         population: system.aggregated_population,
         economy: system.aggregated_economy,
         danger: system.aggregated_danger,
-        image: system.thumbnail ? system.thumbnail.source : ""
+        image_url: system.thumbnail ? system.thumbnail.source : ""
     }
     const result = await writeQuery(query, params)
     return result
@@ -53,7 +58,8 @@ async function create_system(system) {
 async function create_and_link_object(object) {
     const query =
         `MATCH (parent { rsi_id: $parent_id }) 
-         MERGE (child:Location:OrbitalBody { 
+         MERGE (child:Location:OrbitalBody { rsi_id: $rsi_id })
+         SET child = { 
             rsi_id: $rsi_id, 
             name: $name, 
             type: $type,
@@ -70,7 +76,7 @@ async function create_and_link_object(object) {
             rsi_code: $rsi_code,
             code: $code,
             system: $system
-         })
+         }
          MERGE (child)-[:ORBITS]->(parent)
          RETURN child`
     

@@ -29,12 +29,6 @@ const store = useAuthStore()
 
 const user = useUser()
 
-/*const user = computed({
-    get() {
-        return authStore.user
-    }
-})*/
-
 const citizenLink = computed({
     get() {
         if(user.value) {
@@ -44,23 +38,6 @@ const citizenLink = computed({
         }
     }
 })
-/*import { mapGetters } from 'vuex'
-
-export default {
-    name: 'main-header',
-    computed: {
-        user() {
-            return this.$auth.user
-        },
-        citizenLink() {
-            if(this.user) {
-                return `/citizens/${this.user['https://uee.life/app_metadata'].handle}`
-            } else {
-                return `/citizens`
-            }
-        }
-    }
-}*/
 </script>
 
 <style scoped>
