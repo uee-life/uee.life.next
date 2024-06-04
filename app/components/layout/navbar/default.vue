@@ -20,7 +20,7 @@
       <span class="corner bottom right"></span>
     </div>
 </template>
-  
+
 <script setup>
 
 import { useAuthStore } from '~/stores/auth';
