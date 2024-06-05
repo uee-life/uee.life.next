@@ -2,7 +2,7 @@ version: "3"
 
 services:
     app:
-        build: ./app/
+        build: ./
         container_name: uee-life-test
         restart: unless-stopped
         command:
