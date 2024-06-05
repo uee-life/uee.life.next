@@ -129,7 +129,7 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         font-size: 14px;
-        line-height: 19.5px;
+        line-height: 19px;
         margin-left: 10px;
         color: #dbf3ff;
     }

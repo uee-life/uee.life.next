@@ -43,43 +43,6 @@ async function getResults() {
 function citizenLink(handle) {
     return `/citizens/${handle}`;
 }
-
-/*export default {
-    layout: ({ isMobile }) => isMobile ? 'mobile' : 'default',
-    asyncData() {
-        return {
-            result: null,
-            input: ""
-        }
-    },
-    methods: {
-        async autoGetResults() {
-            if(this.input.length >= 3) {
-                this.getResults()
-            } else {
-                this.result = null
-            }
-        },
-        async getResults() {
-            const data = {
-                query: this.input
-            }
-            this.$axios({
-                url: `https://api.uee.life/citizen/search`,
-                method: 'POST',
-                data: data
-            }).then((res) => {
-                console.log(res)
-                this.result = res.data
-            }).catch((err) => {
-                console.error(err)
-            })
-        },
-        citizenLink(handle) {
-            return `/citizens/${handle}`;
-        }
-    }
-}*/
 </script>
 
 <style scoped>

@@ -70,7 +70,8 @@ const sources = [
         }
     ]
 
-const { data: articles, pending } = await useFetch('/api/news?channel=' + search.value.channel + '&series=' + search.value.series + '&page=' + pages, {
+// client only, because hydration issues
+const { data: articles, pending, refresh } = await useFetch(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages}`, {
     key: 'getNews',
     server: false,
     lazy: true
@@ -111,16 +112,16 @@ async function loadMore() {
     if(!pending.value && more) {
         pages += 1
         const url = '/api/news?channel=' + search.value.channel + '&series=' + search.value.series + '&page=' + pages
-        const { data: news, pending } = await useFetch(url)
+        const news = await $fetch(url)
         articles.value = articles.value.concat(checkIDs(news.value))
     }
 }
 
 async function refreshNews() {
-    pages = 0
+    pages = 1
     articles.value = []
     article_ids = []
-    await loadMore()
+    await refresh()
 }
 
 onMounted(() => {

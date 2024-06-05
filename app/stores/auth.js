@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (user.value) {
             console.log("loading citizen")
             url = `/api/citizen/${user.value.app_metadata.handle}`
-            await useFetch(url, {
+            await $fetch(url, {
                 key: 'loadCitizen',
                 onResponse(_ctx) {
                     citizen.value = _ctx.response._data

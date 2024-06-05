@@ -8,7 +8,7 @@
           </div>
           <div class="banner-summary">
               <h1>{{name}}<template v-if="tag"> /  <span class="tag"><slot name="tag">{{ tag.toUpperCase() }}</slot></span></template></h1>
-              <slot><div class="banner-type">{{type}}</div></slot>
+              <slot><div class="banner-type">{{type.toUpperCase()}}</div></slot>
           </div>
         </div>
       </div>
@@ -59,29 +59,6 @@ onMounted(() => {
         gsap.to(".banner-logo img", {duration: 1, opacity: 1})
     }
 })
-
-/*export default {
-  name: 'org-banner',
-  props: ["org"],
-  computed: {
-    style () {
-      return 'background: url("' + this.org.banner + '") center center / cover'
-    },
-    tag () {
-      if(this.org.tag){
-        return this.org.tag.toUpperCase()
-      } else {
-        return this.org.tag
-      }
-    }
-  },
-  mounted() {
-      gsap.to(".org-banner", {duration: 0.5, opacity: 1})
-        gsap.to(".org-logo", {duration: 1, opacity: 1})
-        gsap.to(".org-logo img", {duration: 1, opacity: 1})
-        gsap.to(".org-banner h1", {duration: 1, opacity: 1})   
-  }
-}*/
 </script>
 
 <style>
@@ -160,6 +137,11 @@ onMounted(() => {
 
     .banner-summary {
       padding-top: 73px;
+    }
+
+    .banner-summary .banner-type {
+      font-family: "Michroma";
+      font-size: 12px;
     }
     
     .banner-summary .banner-type::before {

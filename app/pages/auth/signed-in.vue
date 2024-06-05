@@ -1,6 +1,8 @@
 <template>
     <div class="loading">
+      <client-only>
         <widgets-loading />
+      </client-only>
     </div>
 </template>
 
@@ -10,7 +12,7 @@ const {$swal} = useNuxtApp()
 const route = useRoute()
 
 onMounted(async () => {
-    console.log(route.query)
+  nextTick(async () => {
     if (route.query.error) {
         $swal.fire({
             title: route.query.error,
@@ -23,14 +25,12 @@ onMounted(async () => {
             }
         })
     } else {
-        await useFetch('/auth/callback', {
+        await $fetch('/auth/callback', {
             key: 'authCallback',
-            server: false,
-            lazy: true,
             query: route.query,
             async onResponse(_ctx) {
                 const result = _ctx.response._data
-                console.log(result)
+                console.log("onResponse: ", result)
                 if(result.status == "success") {
                     $swal.fire({
                         title: 'Success!',
@@ -45,6 +45,7 @@ onMounted(async () => {
             }
         })
     }
+  })
 })
 
 /*const config = require('~/config.json')

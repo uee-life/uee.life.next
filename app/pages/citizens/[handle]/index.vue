@@ -8,19 +8,22 @@
                 </panel-dock>
                 <panel-dock v-if="citizen && citizen.links.length > 0" title="Citizen links">
                     <div v-for="link in citizen.links" :key="link.url" class="link">
-                        <div class="left-nav-button"><a :href="link.url" target="_blank">{{link.text}}</a></div>
+                        <div class="left-nav-button"><a :href="link.url" target="_blank">{{linkDomain(link.url)}}</a></div>
                     </div>
+                </panel-dock>
+                <panel-dock v-if="isOwner" title="Tools">
+                    <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
                 </panel-dock>
             </teleport>
             <teleport to="#right-dock">
-                <!--citizen-tools v-if="isOwner" @syncSuccess="refresh" /-->
-                <citizen-org v-if="found && citizen.info.orgRank" :citizen="citizen"/>
+                <citizen-org v-if="citizen.info.orgs" :org="citizen.info.orgs.main"/>
+                <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
             </teleport>
         </client-only>
         <div v-if="pending" class="loading">
             <img src="@/assets/loading.gif" >
         </div>
-        <template v-else-if="found">
+        <template v-else-if="citizen.info.handle">
             <citizen-info :isOwner="isOwner" :citizen="citizen.info" @refresh="refresh" />
             <citizen-bio :bio="citizen.info.bio"/>
             <div class="citizen-tabs">
@@ -29,14 +32,14 @@
                         SHIPS ({{ citizen.ships.length }})
                     </template>
                     <template #tab-content-ships>
-                        <fleet-view :isOwner="isOwner" :ships="citizen.ships" @add="addShip" @remove="removeShip"/>
+                        <fleet-view v-if="citizen.ships" :isOwner="isOwner" :ships="citizen.ships" @add="addShip" @remove="removeShip"/>
                     </template>
 
                     <template v-if="isOwner" #tab-title-location>
                         LOCATION
                     </template>
                     <template v-if="isOwner" #tab-content-location>
-                        <citizen-location :citizen="citizen"/>
+                        <citizen-location :isOwner="isOwner" :citizen="citizen"/>
                     </template>
                 </layout-tabs>
             </div>
@@ -46,7 +49,7 @@
 </template>
 
 <script setup>
-
+const {$swal} = useNuxtApp()
 const route = useRoute()
 const tabs = ref(['ships', 'location'])
 const initialTab = ref('ships')
@@ -57,17 +60,21 @@ const citizen = ref({
     },
     home: {},
     ships: [],
-    org: null,
+    orgs: null,
     links: []
 })
-const showModal = ref(true)
 
-// temp vars
-const loading = ref(false)
-const isOwner = ref(true)
+const isOwner = computed({
+    get() {
+        const user = useUser()
+        return user.value != undefined && citizen.value.info.handle == user.value.handle
+    }
+})
 
-const pending = ref(true)
-const found = ref(false)
+function linkDomain(link) {
+    const url = new URL(link)
+    return url.hostname
+}
 
 const dossierLink = computed({
     get() {
@@ -75,58 +82,89 @@ const dossierLink = computed({
     }
 })
 
-function edit() {
-
-}
-
-function save() {
-
-}
-
-async function addShip(ship) {
-
-}
-
-async function removeShip(ship) {
-
-}
-
-async function getShips() {
-
-}
-
-async function getOrg(tag) {
-    pending.value = true
-    await $fetch(`/api/org/${tag}`, {
+async function sync() {
+    console.log('Syncing...')
+    await $fetch('/api/user/sync', {
+        key: 'syncCitizen',
         onResponse(_ctx) {
-            citizen.value.org = _ctx.response._data
-            pending.value = false
+            console.log('Sync done!')
+            const result = _ctx.response._data
+            console.log(result)
+            $swal.fire({
+                title: result.status,
+                text: result.message,
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Sync Error', _ctx.response._data)
         }
     })
 }
 
-function refresh() {
-
+async function addShip(ship) {
+    console.log("adding ship: ", ship)
+    await $fetch('/api/ship/add', {
+        key: 'addShip',
+        method: 'POST',
+        body: ship,
+        onResponse(_ctx) {
+            $swal.fire({
+                title: "Added",
+                text: "Ship successfully added",
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Add Error: ', _ctx.response._data)
+        }
+    })
+    await refresh()
 }
 
+async function removeShip(ship) {
+    await $fetch('/api/ship/remove', {
+        key: 'removeShip',
+        method: 'POST',
+        body: ship,
+        onResponse(_ctx) {
+            $swal.fire({
+                title: "Removed",
+                text: "Ship successfully removed",
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Remove error: ', _ctx.response._data)
+        }
+    })
+    await refresh()
+}
 
-await useFetch(`/api/citizen/${route.params.handle}`, {
+async function getShips() {
+    await $fetch(`/api/citizen/${route.params.handle}/ships`, {
+        key: 'getShips',
+        async onResponse(_ctx) {
+            citizen.value.ships = _ctx.response._data
+        }
+    })
+}
+
+const { refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
         async onResponse(_ctx) {
             citizen.value.info = _ctx.response._data
-            if(citizen.value.info.org) {
-                await getOrg(citizen.value.info.org)
-            }
             if(citizen.value.info.website) {
                 citizen.value.links.push({text: 'Website', url: citizen.value.info.website})
             }
-            found.value = true
-            pending.value = false
+            getShips()
         },
         onResponseError(_ctx) {
-            found.value = false
         }
 })
 </script>

@@ -1,15 +1,23 @@
 <template>
     <div class="ship-summary" :title="ship.model">
-        <section-title v-if="ship.name" :text="ship.name"/>
+        <panel-title v-if="ship.name" :text="ship.name"/>
         <img  @click="selected" :src="shipImage" />
         <img class="manufacturer" :src="manufacturerImage" />
         <div class="ship-info">
-            <h5 @click="selected">{{ ship.model }}</h5>
-            <div class="info">
-                <div class="line-item"><span class="label">Ship &nbsp; ID:</span><span class="data">{{ shipID(ship.id) }}</span></div>
-                <div class="line-item"><span class="label">Type:</span><span class="data">{{ ship.type_text }} - {{ ship.focus_text }}</span></div>
-                <div v-if="ship.owner" class="line-item"><span class="label">Owner:</span><span class="data"><nuxt-link :to="citizenLink">{{ship.owner.name}}</nuxt-link></span></div>
-                <div v-if="ship.crew >= 0" class="line-item"><span class="label">Crew:</span><span class="data">{{ ship.crew }} / {{ ship.max_crew }}</span></div>
+            <h5 @click="selected"></h5>
+            <div class="labels">
+                <span>Ship Type:</span>
+                <span>Ship ID:</span>
+                <span>Type:</span>
+                <span v-if="ship.owner">Owner:</span>
+                <span v-if="ship.crew">Crew:</span>
+            </div>
+            <div class="data">
+                <span>{{ ship.model }}</span>
+                <span>{{ shipID(ship.id) }}</span>
+                <span>{{ ship.career }} - {{ ship.role }}</span>
+                <span v-if="ship.owner"><nuxt-link :to="citizenLink">ship.owner.name</nuxt-link></span>
+                <span v-if="ship.crew">{{ ship.crew }} / {{ ship.max_crew }}</span>
             </div>
         </div>
         <div class="mask" @click="$emit('selected', ship.id)"></div>
@@ -36,15 +44,17 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['remove'])
+
 const shipImage = computed({
     get() {
-        return `/images/ships/${props.ship.short_name}.jpg`
+        return `/images/ships/${props.ship.identifier}.jpg`
     }
 })
 
 const manufacturerImage = computed({
     get() {
-        return `/images/manufacturers/${props.ship.make_abbr}.png`
+        return `/images/manufacturers/${props.ship.manufacturer}.png`
     }
 })
 
@@ -53,45 +63,11 @@ const citizenLink = computed({
         return `/citizens/${props.ship.owner.handle}`
     }
 })
-/*
-export default {
-    name: 'ship-summary',
-    props: {
-        ship: {
-            type: Object,
-            default: function() {
-                return {}
-            }
-        },
-        isAdmin: {
-            type: Boolean,
-            default: false
-        }
-    },
-    computed: {
-        ...mapGetters({
-            citizen: 'loggedCitizen'
-        }),
-        shipImage: function() {
-            return `/images/ships/${this.ship.short_name}.jpg`
-        },
-        manufacturerImage: function () {
-            return `/images/manufacturers/${this.ship.make_abbr}.png`
-        },
-        citizenLink: function () {
-            return `/citizens/${this.ship.owner.handle}`
-        }
-    },
-    methods: {
-        selected() {
-            this.$emit('selected', this.ship.id)
-        },
-        remove() {
-            console.log('remove clicked')
-            this.$emit('remove', this.ship.id)
-        }
-    }
-}*/
+
+async function remove() {
+    console.log('removing ship: ', props.ship)
+    emit('remove', props.ship)
+}
 </script>
 
 <style scoped>
@@ -126,14 +102,32 @@ export default {
 
     .ship-info {
         display: flex;
-        flex-direction: column;
+        margin-left: 10px;
+        /*flex-direction: column;
         margin-left: 10px;
         margin-top: -10px;
         z-index: 2;
-        flex-grow: 1;
+        flex-grow: 1;*/
     }
 
-    .ship-info .info {
+    .ship-info .labels {
+        display: flex;
+        flex-direction: column;
+        font-family: 'Michroma';
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+    .ship-info .data {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        line-height: 19.5px;
+        margin-left: 10px;
+        color: #dbf3ff;
+    }
+
+    /*.ship-info .info {
         display: flex;
         flex-direction: column;
         font-size: 12px;
@@ -157,7 +151,7 @@ export default {
         min-width: 100px;
         margin-right: 85px;
         color: #dbf3ff;
-    }
+    }*/
 
     .ship-info>h5 {
         font-size: 14px;

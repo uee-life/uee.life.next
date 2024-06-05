@@ -2,24 +2,24 @@
     <panel-main title="Site News" class="site-news" id="site-news" :style="newsHeight">
         <div class="content">
             <panel-markdown file="siteNews.md"/>
-            <div class="read-more" @click="toggleNews()">{{ buttonText }}</div>
         </div>
+        <div class="read-more" @click="toggleNews()">{{ buttonText }}</div>
     </panel-main>
 </template>
 
 <script setup>
 import { gsap } from 'gsap/gsap-core';
 let showing = false
-let newsHeight = "height: 100px"
+let newsHeight = "height: 130px"
 let buttonText = ref("Read More")
 
 const toggleNews = () => {
     if(showing) {
-        gsap.to(".site-news", {duration: 0.5, height: '100px'})
+        gsap.to(".site-news", {duration: 0.5, height: '130px'})
         buttonText.value = "Read More"
         showing = false
     } else {
-        gsap.fromTo(".site-news", {duration: 0.5, height: '100px'}, {height: 'auto'})
+        gsap.fromTo(".site-news", {duration: 0.5, height: '130px'}, {height: 'auto'})
         buttonText.value = "Hide"
         showing = true
     }
@@ -41,17 +41,13 @@ const toggleNews = () => {
         text-overflow: ellipsis;
     }
 
-    .site-news>.content>h3 {
-        word-spacing: 8px;
-    }
-
-    .site-news>.content>.read-more {
+    .site-news>.read-more {
         position: absolute;
-        top: 0px;
-        right: 0px;
+        bottom: 5px;
+        right: 10px;
     }
 
-    .site-news>.content>.read-more:hover {
+    .site-news>.read-more:hover {
         color: #dbf3ff;
         cursor: pointer;
     }

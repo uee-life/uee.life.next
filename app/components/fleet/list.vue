@@ -61,21 +61,23 @@ const props = defineProps({
         }
 })
 
+const emit = defineEmits(['remove', 'selected'])
+
 const search = ref('')
 const display = ref('large')
 
 const filteredShips = computed({
     get() {
         return props.ships.filter(ship => {
-            return ship.short_name.toLowerCase().includes(search.value.toLowerCase()) ||
+            return ship.identifier.toLowerCase().includes(search.value.toLowerCase()) ||
                 ship.name.toLowerCase().includes(search.value.toLowerCase()) ||
-                ship.make_text.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.manufacturer.toLowerCase().includes(search.value.toLowerCase()) ||
                 ship.model.toLowerCase().includes(search.value.toLowerCase()) ||
-                ship.type_text.toLowerCase().includes(search.value.toLowerCase()) ||
-                ship.focus_text.toLowerCase().includes(search.value.toLowerCase()) ||
-                ship.size_text.toLowerCase().includes(search.value.toLowerCase()) ||
-                ship.owner.name.toLowerCase().includes(search.value.toLowerCase()) ||
-                ship.owner.handle.toLowerCase().includes(search.value.toLowerCase())
+                ship.career.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.role.toLowerCase().includes(search.value.toLowerCase()) //||
+//                ship.size_text.toLowerCase().includes(search.value.toLowerCase()) ||
+//                ship.owner.name.toLowerCase().includes(search.value.toLowerCase()) ||
+//                ship.owner.handle.toLowerCase().includes(search.value.toLowerCase())
         })
     }
 })
@@ -85,10 +87,11 @@ function show(display) {
 }
 
 function selected(ship) {
-    $emit('selected', ship)
+    emit('selected', ship)
 }
 function remove(ship) {
-    $emit('remove', ship)
+    console.log('remove clicked! ', ship)
+    emit('remove', ship)
 }
 
 onMounted(() => {

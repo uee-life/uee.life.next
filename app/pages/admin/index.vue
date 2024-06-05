@@ -2,11 +2,17 @@
     <div class="main">
         <div class="content">
           Admin Page
+          <ship-summary-model v-if="shipModels" v-for="ship in shipModels.ships" :ship="ship"/>
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
+const {data: shipModels} = await useFetch('/api/ship/models', {
+    key: 'getShipModels',
+    server: false,
+    lazy: true,
+})
 </script>
 
 <style>
