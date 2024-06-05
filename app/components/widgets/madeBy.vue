@@ -5,10 +5,10 @@
 </template>
   
 <script setup>
-import Gsap from 'gsap';
+import { gsap } from 'gsap';
 
 onMounted(() => {
-    Gsap.to('.made-by', {delay: 0.5, duration: 1, opacity: 1})
+    Ggap.to('.made-by', {delay: 0.5, duration: 1, opacity: 1})
 })
 </script>
 

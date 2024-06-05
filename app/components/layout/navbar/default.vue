@@ -23,16 +23,8 @@
 
 <script setup>
 
-import { useAuthStore } from '~/stores/auth';
-
-const store = useAuthStore()
 const user = useUser()
 
-const isLoggedIn = computed({
-  get() {
-    return store.isLoggedIn
-  }
-})
 </script>
 
 <style scoped>

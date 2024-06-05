@@ -5,10 +5,10 @@
     console.log('Is mobile', ctx.isMobile)
   }*/
 
-import { mainStore } from "@/stores/mainStore.js"
+//import { mainStore } from "@/stores/mainStore.js"
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  const store = mainStore()
+  //const store = mainStore()
   console.log('firing mobile check middleware')
-  console.log(store.isMobile)
+  //console.log(store.isMobile)
 })

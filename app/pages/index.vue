@@ -10,7 +10,7 @@
                     <widgets-links :links="communityLinks"/>
                 </panel-dock>
             </teleport>
-            <widgets-site-news v-if="!store.isMobile" style="margin-bottom: 30px"/>
+            <widgets-site-news style="margin-bottom: 30px"/>
             <news-feed />
 
             <teleport to="#right-dock">
@@ -21,8 +21,6 @@
 </template>
 
 <script setup>
-import { mainStore } from '~/stores/mainStore'
-const store = mainStore()
 
 const officialLinks = [
     {name: "RSI Main Site", url: "https://robertsspaceindustries.com"},
@@ -41,6 +39,7 @@ const communityLinks = [
     {name: "GameGlass", url: "https://gameglass.gg"},
     {name: "Bar Citizens", url: "https://barcitizen.sc"}
 ]
+
 </script>
 
 <style>

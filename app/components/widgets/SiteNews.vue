@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { gsap } from 'gsap/gsap-core';
+import { gsap } from 'gsap';
 let showing = false
 let newsHeight = "height: 130px"
 let buttonText = ref("Read More")
