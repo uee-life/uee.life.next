@@ -1,5 +1,6 @@
 <template>
     <router-link class="summary" :to="link">
+        <panel-title v-if="loc.type" :text="loc.type"/>
         <div v-if="loc.thumbnail" class="thumbnail"><img :src="loc.thumbnail" /></div>
         <div class="summary-info">
             <div><h3 class="summary-name">{{ loc.name }}</h3></div>

@@ -1,14 +1,14 @@
 <template>
     <div id="location-list" class="location-list">
         <div v-if="locations.length > 0" class="locations">
-            <explorer-location-summary v-for="(loc, index) in locations" :key="loc.code" :loc="loc" :link="getLink(loc.code)" :index="index">
-                <div>Type: <span class="value">{{ loc.subtype }}</span></div>
+            <explore-location-summary v-for="(loc, index) in locations" :key="loc.code" :loc="loc" :link="getLink(loc.code)" :index="index">
+                <div>Type: <span class="value">{{ loc.subtype ? loc.subtype : loc.type }}</span></div>
                 <div>Affiliation: <span class="value">{{ loc.affiliation }}</span></div>
                 <div>Habitable: <span class="value">{{ isHabitable(loc) }}</span></div>
-            </explorer-location-summary>
+            </explore-location-summary>
         </div>
         <div class="no-locations" v-else>
-            No locations found here
+            No Locations Found
         </div>
     </div>
 </template>
@@ -26,7 +26,7 @@ const props = defineProps({
 })
 
 function getLink(code) {
-    return `/discover/${code}`
+    return `/explore/${code}`
 }
 
 function isHabitable(loc) {
