@@ -71,7 +71,7 @@ const sources = [
     ]
 
 // client only, because hydration issues
-const { data: articles, pending, refresh } = await useFetch(`/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages}`, {
+const { data: articles, pending, refresh } = await useFetch(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages}`, {
     key: 'getNews',
     server: false,
     lazy: true
