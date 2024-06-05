@@ -2,7 +2,7 @@
     <div class="location">
         <layout-banner v-if="location.name"
             :name="location.name"
-            :tag="location.code"
+            :tag="location.designation"
             :type="locationType"
             :image="locationImage" 
             :logo="logoImage" />
@@ -34,21 +34,12 @@ import { gsap } from "gsap"
 const props = defineProps({
     location: {
         type: Object
-    },
-    type: {
-        type: String
     }
 })
 
 const tabs = ["info", "fleet", "members"]
 const initialTab = "info"
 const debug = false
-
-const mainTitle = computed({
-    get() {
-        return `${props.location.value.name} ${type.value} ( ${props.location.value.affiliation} )`
-    }
-})
 
 const isHabitable = computed({
     get() {
@@ -72,7 +63,7 @@ const locationType = computed({
 
 const locationImage = computed({
     get() {
-        return props.location.image_url ? props.location.image_url : '/images/systems/default.jpg'
+        return props.location.image_url ? props.location.image_url : `/images/default/${props.location.type.replace(' ', '_').toLowerCase()}.jpg`
     }
 })
 

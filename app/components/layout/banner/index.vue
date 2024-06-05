@@ -8,7 +8,7 @@
           </div>
           <div class="banner-summary">
               <h1>{{name}}<template v-if="tag"> /  <span class="tag"><slot name="tag">{{ tag.toUpperCase() }}</slot></span></template></h1>
-              <slot><div class="banner-type">{{type}}</div></slot>
+              <slot><div class="banner-type">{{type.toUpperCase()}}</div></slot>
           </div>
         </div>
       </div>

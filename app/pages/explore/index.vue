@@ -1,9 +1,16 @@
 <template>
     <widgets-loading v-if="pending"/>
     <div v-else class="system-list">
-        <explorer-location-summary v-for="sys in systems" :link="`/discover/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
-            <div>Type: <span class="data">{{ systemType(sys) }}</span></div>
-        </explorer-location-summary>
+      <client-only>
+            <teleport to="#left-dock">
+                <panel-dock title="nav">
+                    <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
+                </panel-dock>
+            </teleport>
+        </client-only>
+        <explore-location-summary v-for="sys in systems" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
+            <div><span class="data">{{ systemType(sys) }}</span></div>
+        </explore-location-summary>
     </div>
 </template>
   
@@ -24,7 +31,7 @@ function systemImage(img) {
     if(img) {
       return img
     } else {
-      return "/images/systems/default.jpg"
+      return "/images/default/system.jpg"
     }
 }
 
