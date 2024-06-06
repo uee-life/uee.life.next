@@ -1,4 +1,4 @@
-FROM node:current
+FROM node:lts-alpine
 
 ENV APP_ROOT /src
 
