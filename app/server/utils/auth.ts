@@ -5,8 +5,8 @@ import { Auth0 } from "arctic";
 
 import type { DatabaseUser } from "./db";
 
-import { webcrypto } from "crypto";
-global.crypto = webcrypto as Crypto;
+//import { webcrypto } from "crypto";
+//global.crypto = webcrypto as Crypto;
 
 const adapter = new BetterSqlite3Adapter(db, {
     user: "user",
