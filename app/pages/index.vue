@@ -34,7 +34,6 @@ const communityLinks = [
     {name: "SC Wiki", url: "https://starcitizen.tools"},
     {name: "Erkul fitting Calculator", url: "https://erkul.games/calculator"},
     {name: "Gallog Trade Tool", url: "https://gallog.co/trading/"},
-    {name: "Mining Yield Calculator", url: "https://robertsspaceindustries.com/community/citizen-spotlight/16649-Mining-Yield-Calculator"},
     {name: "Starship42 Ship Viewer", url: "https://www.starship42.com"},
     {name: "GameGlass", url: "https://gameglass.gg"},
     {name: "Bar Citizens", url: "https://barcitizen.sc"}
