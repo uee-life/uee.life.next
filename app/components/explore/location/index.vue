@@ -69,8 +69,8 @@ const locationImage = computed({
 
 const logoImage = computed({
     get() {
-        if(props.location.affiliation == "UEE") {
-            return "/images/factions/UEE.png"
+        if(["UEE","BANU"].includes(props.location.affiliation)) {
+            return `/images/factions/${props.location.affiliation}.png`
         } else {
             return ""
         }

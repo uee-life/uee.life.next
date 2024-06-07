@@ -10,6 +10,7 @@
         </client-only>
         <explore-location-summary v-for="sys in systems" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
             <div><span class="data">{{ systemType(sys) }}</span></div>
+            <img class="icon" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
         </explore-location-summary>
     </div>
 </template>
@@ -66,5 +67,12 @@ function systemType(sys) {
 
 .data {
     color: #dbf3ff;
+}
+
+.icon {
+  position: absolute;
+  width: 30px;
+  right: 5px;
+  bottom: 5px;
 }
 </style>
