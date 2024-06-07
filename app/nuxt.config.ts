@@ -63,13 +63,13 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    host_uri: "http://localhost:3000",
+    base_uri: process.env.BASE_URL || "http://localhost:3000",
     auth0: {
       domain: config.AUTH0_DOMAIN,
       client_id: config.AUTH0_CLIENT_ID,
       client_secret: config.AUTH0_CLIENT_SECRET,
       audience: config.AUTH0_AUDIENCE,
-      redirect_uri: "http://localhost:3000/auth/signed-in",
+      redirect_uri: "/auth/signed-in",
     }
   }
 })
