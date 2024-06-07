@@ -37,4 +37,4 @@ declare module "lucia" {
 
 const config = useRuntimeConfig();
 
-export const auth0 = new Auth0(config.auth0.domain, config.auth0.client_id, config.auth0.client_secret, config.base_uri + config.auth0.redirect_uri)
+export const auth0 = new Auth0(config.auth0.domain, config.auth0.client_id, config.auth0.client_secret, config.auth0.redirect_uri)
