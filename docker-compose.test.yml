@@ -7,9 +7,10 @@ services:
         restart: unless-stopped
         command:
             "npm run start"
-        ulimit:
-            soft: 5000
-            hard: 5000
+        ulimits:
+            nofile:
+                soft: 5000
+                hard: 5000
     
     nginx:
         image: nginx
