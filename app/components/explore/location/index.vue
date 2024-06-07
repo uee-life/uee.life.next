@@ -12,7 +12,7 @@
                     <h3 class="title"> {{ location.name }}</h3>
                     <p>
                         <span v-if="location.subtype">Type: <span class='value'>{{location.subtype}}</span><br></span>
-                        <span v-if="location.affiliation">Affiliation: <span class='value'>{{location.affiliation}}</span><br></span>
+                        <span v-if="location.affiliation">Affiliation: <span class='value'>{{affiliationText}}</span><br></span>
                         <span v-if="location.habitable">Habitable: <span class='value'>{{isHabitable}}</span><br></span>
                         <span>Population: <span class='value'>{{rating(location.population)}}</span><br></span>
                         <span>Risk: <span class='value'>{{rating(location.danger)}}</span><br></span>
@@ -64,6 +64,20 @@ const locationType = computed({
 const locationImage = computed({
     get() {
         return props.location.image_url ? props.location.image_url : `/images/default/${props.location.type.replace(' ', '_').toLowerCase()}.jpg`
+    }
+})
+
+const affiliationText = computed({
+    get() {
+        const affiliations = {
+            "UNC": "Unclaimed",
+            "XIAN": "Xian",
+            "VNCL": "Vanduul",
+            "UEE": "UEE",
+            "BANU": "Banu",
+            "DEV": "Developing"
+        }
+        return affiliations[props.location.affiliation]
     }
 })
 
