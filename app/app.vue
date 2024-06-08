@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NuxtLayout v-if="$viewport.isLessThan('tablet')" name="default">
+    <NuxtLayout v-if="$viewport.isLessThan('tablet')" name="mobile">
       <NuxtPage />
     </NuxtLayout>
     <NuxtLayout v-else name="default">
