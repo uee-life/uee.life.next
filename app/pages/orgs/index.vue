@@ -111,7 +111,7 @@ async function getResults() {
     .org-cell>a {
         display: flex;
         align-items: center;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
         padding: 5px 10px;
         position: relative;
         height: fit-content;

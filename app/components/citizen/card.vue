@@ -53,7 +53,7 @@ function citizenLink(handle) {
         box-sizing: border-box;
         height: 100%;
         align-items: center;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
         padding: 5px 10px;
         position: relative;
         height: fit-content;

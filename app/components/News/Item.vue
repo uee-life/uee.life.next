@@ -98,7 +98,7 @@ const style = computed({
     left: 0;
     bottom: 0;
     right: 0;
-    background: url('/images/fading-bars.png') repeat;
+    background: url('@/assets/fading-bars.png') repeat;
     z-index: 0;
 }
 </style>

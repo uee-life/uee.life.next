@@ -160,7 +160,7 @@ onMounted(() => {
         font-size: 18px;
         cursor: pointer;
         margin: 5px 10px 20px 10px;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
     }
 
     .news-feed .more:hover {

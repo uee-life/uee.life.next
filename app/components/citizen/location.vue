@@ -278,7 +278,7 @@ const props = defineProps({
 
     .line-item select {
         color: #39ced8;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
         border: 1px solid #546f84;
         margin: 2px;
     }

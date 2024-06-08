@@ -58,7 +58,7 @@ const props = defineProps({
         margin: 10px;
         padding: 9px;
         position: relative;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         text-decoration: none;
         color: inherit;

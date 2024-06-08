@@ -82,7 +82,7 @@ const {pending, refresh} = await useFetch(() => `/api/org/${route.params.tag}/${
 
     .org-cell>a {
         display: flex;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
         padding: 5px;
         position: relative;
         height: fit-content;
