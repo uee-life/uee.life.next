@@ -11,6 +11,7 @@
 
 <script setup>
 import Gsap from 'gsap';
+const { $viewport } = useNuxtApp()
 
 const props = defineProps({
     title: {
@@ -24,7 +25,11 @@ const props = defineProps({
 
 const divClass = computed({
     get() {
-        return 'dock-item'
+        if ($viewport.isLessThan('tablet')) {
+            return 'dock-item mobile'
+        } else {
+            return 'dock-item'
+        }
     }
 })
 
@@ -48,6 +53,6 @@ onMounted(() => {
         opacity: 0;
     }
     .dock-item.mobile {
-        width: calc(100% - 5px)
+        width: calc(100vw - 37px);
     }
 </style>

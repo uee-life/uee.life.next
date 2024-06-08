@@ -8,7 +8,7 @@
 import { gsap } from 'gsap';
 
 onMounted(() => {
-    Ggap.to('.made-by', {delay: 0.5, duration: 1, opacity: 1})
+    gsap.to('.made-by', {delay: 0.5, duration: 1, opacity: 1})
 })
 </script>
 

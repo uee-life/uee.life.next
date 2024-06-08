@@ -49,6 +49,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
+    '@nuxtjs/device',
     'nuxt-viewport'
   ],
 
