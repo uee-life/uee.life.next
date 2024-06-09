@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     console.log("In AUTH middleware: ", getHeaders(event))
     if (event.method !== "GET") {
         const originHeader = getHeader(event, "Origin") ?? null;
-        const hostHeader = getHeader(event, "Host") ?? null;
+        const hostHeader = getHeader(event, "x-forwarded-host") ?? null;
         console.log("Origin: ", originHeader)
         console.log("Host: ", hostHeader)
         if (!originHeader || !hostHeader || !verifyRequestOrigin(originHeader, [hostHeader])) {
