@@ -14,8 +14,6 @@ export default defineEventHandler(async (event) => {
         }
     }
 
-    console.log("TESTING!!!")
-
     const baseURI = "https://robertsspaceindustries.com"
     const res = await $fetch(baseURI + '/api/spectrum/search/member/autocomplete', {
         method: 'POST',
@@ -25,8 +23,6 @@ export default defineEventHandler(async (event) => {
         }
     })
     const citizen = {}
-
-    console.log(res)
     
     if (res.success) {
         const data = []
