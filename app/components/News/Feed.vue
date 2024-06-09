@@ -1,12 +1,14 @@
 <template>
     <div class="news-feed" id="news-feed">
-        <teleport to="#news-filter">
-            <div class="sources">
-                <div v-for="source in sources" @click.native="setSource(source)" :key="source.id" class="left-nav-button">
-                    <router-link to="/">{{ source.name }}</router-link>
+        <client-only>
+            <teleport to="#news-filter">
+                <div class="sources">
+                    <div v-for="source in sources" @click.native="setSource(source)" :key="source.id" class="left-nav-button">
+                        <router-link to="/">{{ source.name }}</router-link>
+                    </div>
                 </div>
-            </div>
-        </teleport>
+            </teleport>
+        </client-only>
         <panel-title :text="title" size="medium"/>
         <div v-if="pending" class="loading">
             <img src="@/assets/loading.gif" >

@@ -11,11 +11,6 @@
                         <widgets-links :links="communityLinks"/>
                     </panel-dock>
                 </teleport>
-            </client-only>
-            <widgets-site-news v-if="!isMobile" style="margin-bottom: 30px"/>
-            <news-feed />
-
-            <client-only>
                 <teleport to="#right-dock">
                     <panel-dock v-if="isMobile" title="Official Links" type="links">
                         <widgets-links :links="officialLinks"/>
@@ -26,6 +21,9 @@
                     <panel-dock title="Test" type="test"/>
                 </teleport>
             </client-only>
+
+            <widgets-site-news v-if="!isMobile" style="margin-bottom: 30px"/>
+            <news-feed />
         </div>
 </template>
 

@@ -1,11 +1,12 @@
 <template>
-<client-only>
     <div class='citizen-results'>
-        <teleport to="#left-dock">
-            <panel-dock title="find citizen" class="search-box">
-                <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Citizen Handle"/>
-            </panel-dock>
-        </teleport>
+        <client-only>
+            <teleport to="#left-dock">
+                <panel-dock title="find citizen" class="search-box">
+                    <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Citizen Handle"/>
+                </panel-dock>
+            </teleport>
+        </client-only>
         <div v-if="result" class="results">
             <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result">
 
@@ -13,7 +14,6 @@
         </div>
         <widgets-no-result v-else />
     </div>
-</client-only>
 </template>
 
 <script setup>

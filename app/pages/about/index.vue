@@ -1,16 +1,16 @@
 <template>
-    <client-only>
         <div class="content">
-            <teleport to="#left-dock">
-                <panel-dock class="nav" title="nav">
-                    <div class="left-nav-button"><nuxt-link :to="{ hash: '#about'}">About UEE.life</nuxt-link></div>
-                    <div class="left-nav-button"><nuxt-link :to="{ hash: '#social' }">Social Links</nuxt-link></div>
-                    <div class="left-nav-button"><nuxt-link :to="{ hash: '#support' }">Support Us</nuxt-link></div>
-                    <div class="left-nav-button"><nuxt-link :to="{ hash: '#releases' }">Releases</nuxt-link></div>
-                </panel-dock>
-                <widgets-made-by />
-            </teleport>
-            {{ user }}
+            <client-only>
+                <teleport to="#left-dock">
+                    <panel-dock class="nav" title="nav">
+                        <div class="left-nav-button"><nuxt-link :to="{ hash: '#about'}">About UEE.life</nuxt-link></div>
+                        <div class="left-nav-button"><nuxt-link :to="{ hash: '#social' }">Social Links</nuxt-link></div>
+                        <div class="left-nav-button"><nuxt-link :to="{ hash: '#support' }">Support Us</nuxt-link></div>
+                        <div class="left-nav-button"><nuxt-link :to="{ hash: '#releases' }">Releases</nuxt-link></div>
+                    </panel-dock>
+                    <widgets-made-by />
+                </teleport>
+            </client-only>
             <section id="about">
                 <panel-main class="content" title="About UEE.life">
                     <panel-markdown file="about.md"/>
@@ -32,7 +32,6 @@
                 </panel-main>
             </section>
         </div>
-    </client-only>
 </template>
 
 <script setup>
