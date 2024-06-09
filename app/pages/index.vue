@@ -1,26 +1,42 @@
 <template>
-    <client-only>
         <div class="content">
-            <teleport to="#left-dock">
-                <panel-dock title="News Source" type="news-filter"/>
-                <panel-dock title="Official Links" type="links">
-                    <widgets-links :links="officialLinks"/>
-                </panel-dock>
-                <panel-dock title="Community Links" type="links">
-                    <widgets-links :links="communityLinks"/>
-                </panel-dock>
-            </teleport>
-            <widgets-site-news style="margin-bottom: 30px"/>
+            <client-only>
+                <teleport to="#left-dock">
+                    <widgets-site-news v-if="isMobile" style="margin: 20px 10px"/>
+                    <panel-dock title="News Source" type="news-filter"/>
+                    <panel-dock v-if="!isMobile" title="Official Links" type="links">
+                        <widgets-links :links="officialLinks"/>
+                    </panel-dock>
+                    <panel-dock v-if="!isMobile" title="Community Links" type="links">
+                        <widgets-links :links="communityLinks"/>
+                    </panel-dock>
+                </teleport>
+            </client-only>
+            <widgets-site-news v-if="!isMobile" style="margin-bottom: 30px"/>
             <news-feed />
 
-            <teleport to="#right-dock">
-                <panel-dock title="Test" type="test"/>
-            </teleport>
+            <client-only>
+                <teleport to="#right-dock">
+                    <panel-dock v-if="isMobile" title="Official Links" type="links">
+                        <widgets-links :links="officialLinks"/>
+                    </panel-dock>
+                    <panel-dock v-if="isMobile" title="Community Links" type="links">
+                        <widgets-links :links="communityLinks"/>
+                    </panel-dock>
+                    <panel-dock title="Test" type="test"/>
+                </teleport>
+            </client-only>
         </div>
-    </client-only>
 </template>
 
 <script setup>
+const { $viewport } = useNuxtApp()
+
+const isMobile = computed({
+    get() {
+        return $viewport.isLessThan('tablet')
+    }
+})
 
 const officialLinks = [
     {name: "RSI Main Site", url: "https://robertsspaceindustries.com"},

@@ -16,6 +16,7 @@
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/about">About</nuxt-link>
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/citizens">Citizen Registry</nuxt-link>
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/orgs">Organizations</nuxt-link>
+            <nuxt-link class="nav-button" to="/explore">Explore</nuxt-link>
             <!--nuxt-link class="nav-button" to="/system/stanton">System Directory</nuxt-link-->
             <br>
             <nuxt-link v-if="user && user.handle" class="nav-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
