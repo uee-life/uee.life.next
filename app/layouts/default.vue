@@ -8,8 +8,8 @@
         <slot />
       </div>
       <layout-dock name="right-dock" />
+      <layout-footer-default />
     </div>
-    <layout-footer-default />
   </div>
 </template>
 
@@ -22,12 +22,22 @@
   font-family: larabie;
 }
 
+.main::-webkit-scrollbar {
+  background: rgba(84, 111, 132, 0.5);
+}
+
+.main::-webkit-scrollbar-thumb {
+  background: rgba(13, 46, 66, 0.8);
+}
+
 .main {
   display: flex;
   flex-wrap: wrap;
   max-width: 1920px;
   margin: auto;
-  padding-bottom: 175px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 148px)
 }
 
 .app::before {
