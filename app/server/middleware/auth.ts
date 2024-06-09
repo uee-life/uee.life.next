@@ -4,7 +4,7 @@ import type {Session, User} from "lucia";
 
 
 export default defineEventHandler(async (event) => {
-    console.log("In AUTH middleware")
+    console.log("In AUTH middleware: ", getHeaders(event))
     if (event.method !== "GET") {
         const originHeader = getHeader(event, "Origin") ?? null;
         const hostHeader = getHeader(event, "Host") ?? null;
