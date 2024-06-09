@@ -23,6 +23,8 @@ export default defineEventHandler(async (event) => {
         }
     })
     const citizen = {}
+
+    console.log(res)
     
     if (res.success) {
         const data = []
