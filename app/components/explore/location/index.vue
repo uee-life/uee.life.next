@@ -6,7 +6,7 @@
             :type="locationType"
             :image="locationImage" 
             :logo="logoImage" />
-        <panel-main v-if="location" class="location-panel">
+        <panel v-if="location" class="location-panel">
             <div class="content">
                 <div class="location-info">
                     <h3 class="title"> {{ location.name }}</h3>
@@ -20,7 +20,7 @@
                     <p>{{ location.description }}</p>
                 </div>
             </div>
-        </panel-main>
+        </panel>
         <div v-else>Location not found</div>
         <slot></slot>
         <div v-if="debug">{{ JSON.stringify(location, null, 2) }}</div>
@@ -117,22 +117,6 @@ onMounted(() => {
     .location {
         width: 100%;
         opacity: 0;
-    }
-
-    .location-panel {
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background: url('@/assets/fading-bars.png') repeat;
-        z-index: 0;
-        padding-top: 0.1px;
-    }
-
-    .location-panel .content {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
     }
 
     .location-image {

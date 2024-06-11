@@ -20,7 +20,7 @@
             <!--nuxt-link class="nav-button" to="/system/stanton">System Directory</nuxt-link-->
             <br>
             <nuxt-link v-if="user && user.handle" class="nav-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
-            <nuxt-link v-if="user && user.handle" class="nav-button" @click="toggleMenu()" to="/settings">settings</nuxt-link>
+            <!--nuxt-link v-if="user && user.handle" class="nav-button" @click="toggleMenu()" to="/settings">settings</nuxt-link-->
             <a v-if="user && user.handle" class="burger-button" @click="toggleMenu() && useLogout()">Sign Off</a>
             <a v-else class="burger-button" @click="toggleMenu()" href="/auth/login">Sign In</a>
         </div>

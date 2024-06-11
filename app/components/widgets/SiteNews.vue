@@ -1,10 +1,10 @@
 <template>
-    <panel-main title="Site News" class="site-news" id="site-news" :style="newsHeight">
-        <div class="content">
-            <panel-markdown file="siteNews.md"/>
+    <panel title="Site News" class="site-news" id="site-news">
+        <div class="news">
+            <markdown file="siteNews.md"/>
         </div>
         <div class="read-more" @click="toggleNews()">{{ buttonText }}</div>
-    </panel-main>
+    </panel>
 </template>
 
 <script setup>
@@ -15,11 +15,11 @@ let buttonText = ref("Read More")
 
 const toggleNews = () => {
     if(showing) {
-        gsap.to(".site-news", {duration: 0.5, height: '130px'})
+        gsap.to(".news", {duration: 0.5, height: '130px'})
         buttonText.value = "Read More"
         showing = false
     } else {
-        gsap.fromTo(".site-news", {duration: 0.5, height: '130px'}, {height: 'auto'})
+        gsap.fromTo(".news", {height: '130px'}, {height: 'auto', duration: 0.5})
         buttonText.value = "Hide"
         showing = true
     }
@@ -27,12 +27,18 @@ const toggleNews = () => {
 </script>
 
 <style scoped>
-
-    .site-news .title .date {
-        font-size: 12px;
+    .news {
+        height: 130px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .site-news>.content {
+    .news .title .date {
+        font-size: 12px;
+        padding-top: 10px;
+    }
+
+    .news>.news-content {
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -41,13 +47,13 @@ const toggleNews = () => {
         text-overflow: ellipsis;
     }
 
-    .site-news>.read-more {
+    .read-more {
         position: absolute;
         bottom: 5px;
         right: 10px;
     }
 
-    .site-news>.read-more:hover {
+    .read-more:hover {
         color: #dbf3ff;
         cursor: pointer;
     }

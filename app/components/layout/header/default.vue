@@ -3,7 +3,7 @@
         <div class="page-head-left">
             <nuxt-link to="/"><img class="logo" alt="logo" src="@/assets/logo.png"></nuxt-link>
             <div class="title">
-                Explore. Manage. Connect.
+                Connect. Manage. Explore.
             </div>
         </div>
         <div class="page-head-right">

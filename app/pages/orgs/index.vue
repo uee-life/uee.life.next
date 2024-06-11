@@ -1,5 +1,5 @@
 <template>
-    <div class="search-main">
+    <div class="org-search">
         <ClientOnly>
             <teleport to="#left-dock">
             <panel-dock title="find orgs" class="search-box">
@@ -16,12 +16,12 @@
 
 const result = ref("")
 const input = ref("")
-const searching = ref(false)
+const pending = ref(false)
 
 const noResultText = computed({
     get() {
         if (input.value.length >= 3) {
-            if(searching.value) {
+            if(pending.value) {
                 return "Searching..."
             } else {
                 return "No Results"
@@ -34,7 +34,7 @@ const noResultText = computed({
 
 async function autoGetResults() {
     if(input.value.length >= 3) {
-        searching.value = true
+        pending.value = true
         getResults()
     } else {
         result.value = null
@@ -54,38 +54,17 @@ async function getResults() {
                                 .replace(/\/media/g, 'https://robertsspaceindustries.com/media')
                                 .replace(/\/rsi/g, 'https://robertsspaceindustries.com/rsi')
             }
-            searching.value = false
+            pending.value = false
         }
     })
 }
 </script>
 
 <style>
-    .search-main {
+    .org-search {
         position: relative;
         width: 100%;
         padding-top: 14px;
-    }
-
-    .no-results {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    .no-results>.text {
-        position: relative;
-        width: fit-content;
-        padding-left: 20px;
-        padding-right: 20px;
-        margin: 20px;
-    }
-
-    .no-results>.text.big {
-        font-family: 'Michroma';
-        font-size: 25px;
     }
 
     .search-box .search-input {

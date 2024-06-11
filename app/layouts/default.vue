@@ -5,7 +5,7 @@
     <div class="main">
       <layout-dock name="left-dock" />
       <div class="content">
-        <slot />
+        <slot></slot>
       </div>
       <layout-dock name="right-dock" />
       <layout-footer-default />
@@ -22,13 +22,13 @@
   font-family: larabie;
 }
 
-.main::-webkit-scrollbar {
+/*.main::-webkit-scrollbar {
   background: rgba(84, 111, 132, 0.5);
 }
 
 .main::-webkit-scrollbar-thumb {
   background: rgba(13, 46, 66, 0.8);
-}
+}*/
 
 .main {
   display: flex;

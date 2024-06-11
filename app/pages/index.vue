@@ -22,7 +22,7 @@
                 </teleport>
             </client-only>
 
-            <widgets-site-news v-if="!isMobile" style="margin-bottom: 30px"/>
+            <widgets-site-news v-if="!isMobile" style="margin: 20px 0;"/>
             <news-feed />
         </div>
 </template>

@@ -11,6 +11,7 @@
           <!--<nuxt-link class="nav-button" to="/tools">Tools</nuxt-link>
           <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>-->
           <nuxt-link v-if="user && user.handle == 'Capn_Flint'" class="nav-button" to="/admin">Admin</nuxt-link>
+          <nuxt-link v-if="user && user.handle" class="nav-button" :to="profileLink">Profile</nuxt-link>
           <a v-if="user && user.handle" class="nav-button" @click="useLogout()">Sign Off</a>
           <a v-else class="nav-button" href="/auth/login">Sign In</a>
         </div>
@@ -24,6 +25,12 @@
 <script setup>
 
 const user = useUser()
+
+const profileLink = computed({
+  get() {
+    return `/citizens/${user.value.handle}`
+  }
+})
 
 </script>
 

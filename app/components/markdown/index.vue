@@ -36,4 +36,5 @@ loadMarkdown()
     strong {
         color: #dbf3ff;
     }
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class='citizen-results'>
+    <div class='citizen-search'>
         <client-only>
             <teleport to="#left-dock">
                 <panel-dock title="find citizen" class="search-box">
@@ -7,22 +7,35 @@
                 </panel-dock>
             </teleport>
         </client-only>
-        <div v-if="result" class="results">
-            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result">
-
-            </citizen-card>
+        <div v-if="result && result.length" class="results">
+            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result" />
         </div>
-        <widgets-no-result v-else />
+        <widgets-no-result v-else :text="noResultText"/>
     </div>
 </template>
 
 <script setup>
 const result = ref(null)
 const input = ref("")
+const pending = ref(false)
+
+const noResultText = computed({
+    get() {
+        if (input.value.length >=3) {
+            if(pending.value) {
+                return "Searching..."
+            } else {
+                return "No Results"
+            }
+        } else {
+            return "Search Citizens"
+        }
+    }
+})
 
 async function autoGetResults() {
-    console.log('autogetresult: ' + input.value)
     if(input.value.length >= 3) {
+        pending.value = true
         getResults()
     } else {
         result.value = null
@@ -36,17 +49,16 @@ async function getResults() {
     console.log("data: ", data)
     result.value = await $fetch(`/api/search/citizen`, {
         method: 'POST',
-        body: data
+        body: data,
+        onResponse(_ctx) {
+            pending.value = false
+        }
     })
-}
-
-function citizenLink(handle) {
-    return `/citizens/${handle}`;
 }
 </script>
 
 <style scoped>
-    .citizen-results {
+    .citizen-search {
         position: relative;
         width: 100%;
         padding-top: 14px;

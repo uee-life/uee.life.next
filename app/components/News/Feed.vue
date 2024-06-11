@@ -1,34 +1,33 @@
 <template>
     <div class="news-feed" id="news-feed">
-        <client-only>
-            <teleport to="#news-filter">
-                <div class="sources">
-                    <div v-for="source in sources" @click.native="setSource(source)" :key="source.id" class="left-nav-button">
-                        <router-link to="/">{{ source.name }}</router-link>
+        <widgets-loading v-if="pending"/>
+        <template v-else>
+            <client-only>
+                <teleport to="#news-filter">
+                    <div class="sources">
+                        <div v-for="source in sources" @click.native="setSource(source)" :key="source.id" class="left-nav-button">
+                            <router-link to="/">{{ source.name }}</router-link>
+                        </div>
                     </div>
-                </div>
-            </teleport>
-        </client-only>
-        <panel-title :text="title" size="medium"/>
-        <div v-if="pending" class="loading">
-            <img src="@/assets/loading.gif" >
-        </div>
-        <div v-if="pending" class="loading"><img src="@/assets/loading.gif" ></div>
-        <transition-group v-else
-            name="staggered-fade"
-            tag="div"
-            :css="false"
-            v-on:before-enter="beforeEnter"
-            v-on:enter="enter"
-            v-on:leave="leave"
-            class="t-group">
-            <news-item v-for="(item, index) in articles" :key="item.id" :index="index" :item="item" />
-        </transition-group>
-        <div class="more" v-if="more" @click="loadMore()">
-            Load More
-            <div class="endcap left"></div>
-            <div class="endcap right"></div>
-        </div>
+                </teleport>
+            </client-only>
+            <panel-title :text="title" size="medium"/>
+            <transition-group
+                name="staggered-fade"
+                tag="div"
+                :css="false"
+                v-on:before-enter="beforeEnter"
+                v-on:enter="enter"
+                v-on:leave="leave"
+                class="t-group">
+                <news-item v-for="(item, index) in articles" :key="item.id" :index="index" :item="item" />
+            </transition-group>   
+            <div class="more" v-if="more" @click="loadMore()">
+                Load More
+                <div class="endcap left"></div>
+                <div class="endcap right"></div>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -127,7 +126,7 @@ async function refreshNews() {
 }
 
 onMounted(() => {
-    gsap.to('.news-feed', {delay: 0.5, duration: 1, opacity: 1})
+    gsap.to('.news-feed', {delay: 1, duration: 1, opacity: 1})
 })
 </script>
 

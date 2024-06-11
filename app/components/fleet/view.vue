@@ -2,9 +2,9 @@
     <div id="fleet-view" class="fleet-view">
         <fleet-summary v-if="showSummary" @filter="setFilter" :fleet="ships"/>
         <fleet-list :ships="filteredShips" @selected="selected" @remove="removeShip" :isAdmin="isOwner"/>
-        <panel-main v-if="isOwner" class="add-ship" @click="showModal = true">
+        <panel v-if="isOwner" class="add-ship" @click="showModal = true">
             ADD SHIP
-        </panel-main>
+        </panel>
         <layout-modal v-if="showModal" title="Add Ship" @close="showModal = false">
             <fleet-add @add="addShip" />
         </layout-modal>
@@ -40,8 +40,9 @@ const showModal = ref(false)
 const search = ref('')
 
 function selected(ship) {
-    this.$router.push(`/ships/${this.shipID(ship)}`)
+    //navigateTo(`/ships/${this.shipID(ship)}`)
     //this.$emit('selected', ship)
+    console.log(`selected: ${ship}`)
 }
 function addShip(ship) {
     showModal.value = false
@@ -71,12 +72,14 @@ const filteredShips = computed({
 
 <style scoped>
     .add-ship {
-        margin: 6px;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         font-family: 'Michroma';
         font-size: 12px;
         text-transform: uppercase;
+        max-width: 100vh;
     }
     .fleet-view {
         position: relative;

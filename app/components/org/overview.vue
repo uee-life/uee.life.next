@@ -1,6 +1,6 @@
 <template>
     <div class="info">
-        <panel-main title="roles" class="info-panel">
+        <panel title="roles" class="info-panel">
             <div class="info-items">
                 <div class="labels">
                     <span>Primary Role:</span>
@@ -11,8 +11,8 @@
                     <span>{{ org.roles.secondary }}</span>
                 </div>
             </div>
-        </panel-main>
-        <panel-main title="headquarters" class="info-panel">
+        </panel>
+        <panel title="headquarters" class="info-panel">
             <div class="info-items">
                 <div class="labels">
                     <span>System:</span>
@@ -25,12 +25,12 @@
                     <span>Unknown</span>
                 </div>
             </div>
-        </panel-main>
-        <panel-main title="founders" class="info-panel">
+        </panel>
+        <panel title="founders" class="info-panel">
             <div class="founders">
                 <citizen-portrait class="founder" v-for="f in founders" :key="f.handle" :citizen="f" size="small" :showName="true" />
             </div>
-        </panel-main>
+        </panel>
     </div>
 </template>
 
@@ -73,6 +73,7 @@ loadFounders()
     display: flex;
     flex-wrap: wrap;
     width: calc(100% + 20px);
+    padding-top: 10px;
     margin-left: -10px;
     margin-right: -10px;
     opacity: 1;
