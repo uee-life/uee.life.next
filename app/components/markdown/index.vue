@@ -33,8 +33,7 @@ loadMarkdown()
 </script>
   
 <style scoped>
-    strong {
-        color: #dbf3ff;
-    }
-
+strong {
+    color: #dbf3ff;
+}
 </style>

@@ -45,7 +45,7 @@ const props = defineProps({
 
 const founders = ref([])
 
-async function addFounder(handle) {
+async function getFounder(handle) {
     await $fetch(`/api/citizen/${handle}`, {
         key: 'getFounder',
         server: false,
@@ -59,7 +59,7 @@ async function addFounder(handle) {
 
 async function loadFounders() {
         for (let i in props.org.founders) {
-            await addFounder(props.org.founders[i].handle)
+            await getFounder(props.org.founders[i].handle)
         }
 }
 

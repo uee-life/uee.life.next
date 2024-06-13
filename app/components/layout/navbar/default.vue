@@ -8,17 +8,13 @@
           <nuxt-link class="nav-button" to="/explore">Explore</nuxt-link>
         </div>
         <div class="nav-right">
-          <!--<nuxt-link class="nav-button" to="/tools">Tools</nuxt-link>
-          <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>-->
-          <nuxt-link v-if="user && user.handle == 'Capn_Flint'" class="nav-button" to="/admin">Admin</nuxt-link>
-          <nuxt-link v-if="user && user.handle" class="nav-button" :to="profileLink">Profile</nuxt-link>
-          <a v-if="user && user.handle" class="nav-button" @click="useLogout()">Sign Off</a>
+          <template v-if="user && user.handle">
+            <nuxt-link v-if="user.handle == 'Capn_Flint'" class="nav-button" to="/admin">Admin</nuxt-link>
+            <nuxt-link class="nav-button" :to="profileLink">Profile</nuxt-link>
+            <a class="nav-button" @click="useLogout()">Sign Off</a>
+          </template>
           <a v-else class="nav-button" href="/auth/login">Sign In</a>
         </div>
-      <span class="corner top left"></span>
-      <span class="corner top right"></span>
-      <span class="corner bottom left"></span>
-      <span class="corner bottom right"></span>
     </div>
 </template>
 
@@ -91,7 +87,7 @@ const profileLink = computed({
     a:hover {
         color: #dbf3ff;
     }
-    a.nuxt-link-active {
+    a.router-link-active {
         color: #dbf3ff;
         border: none;
         font-weight: 600;

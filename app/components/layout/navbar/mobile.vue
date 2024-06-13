@@ -16,12 +16,12 @@
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/about">About</nuxt-link>
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/citizens">Citizen Registry</nuxt-link>
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/orgs">Organizations</nuxt-link>
-            <nuxt-link class="nav-button" to="/explore">Explore</nuxt-link>
-            <!--nuxt-link class="nav-button" to="/system/stanton">System Directory</nuxt-link-->
+            <nuxt-link class="burger-button" @click="toggleMenu()" to="/explore">Explore</nuxt-link>
             <br>
-            <nuxt-link v-if="user && user.handle" class="nav-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
-            <!--nuxt-link v-if="user && user.handle" class="nav-button" @click="toggleMenu()" to="/settings">settings</nuxt-link-->
-            <a v-if="user && user.handle" class="burger-button" @click="toggleMenu() && useLogout()">Sign Off</a>
+            <template v-if="user && user.handle">
+                <nuxt-link class="burger-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
+                <a class="burger-button" @click="toggleMenu() && useLogout()">Sign Off</a>
+            </template>
             <a v-else class="burger-button" @click="toggleMenu()" href="/auth/login">Sign In</a>
         </div>
       </client-only>
@@ -131,29 +131,7 @@ const citizenLink = computed({
         align-self: center;
     }
 
-    .nav-right {
-    display: flex;
-    align-self: center;
-    }
 
-    .nav-button {
-        font-family: 'Michroma';
-        font-size: 11px;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-    .nav-button a {
-    text-decoration: none;
-    color: #39ced8;
-    }
-    .nav-button a:hover {
-    color: #dbf3ff;
-    }
-
-    .header {
-        display: flex;
-        margin-bottom: 20px;
-    }
     a {
         margin-right: 20px;
         font-size: 14px;

@@ -5,9 +5,7 @@
                 <div class="modal-container">
                     <panel class="modal-body" :title="title" titleSize="small">
                         <input type="button" class="modal-close" @click="$emit('close')" value="X" />
-                        <slot>
-                            default body
-                        </slot>
+                        <slot></slot>
                     </panel>
                 </div>
             </div>

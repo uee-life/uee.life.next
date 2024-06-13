@@ -37,7 +37,6 @@ const props = defineProps({
 
     .summary {
         display: flex;
-        flex-basis: 250px;
         flex-grow: 1;
         margin: 5px;
         text-decoration: none;

@@ -46,7 +46,6 @@ async function getResults() {
     const data = {
         text: input.value
     }
-    console.log("data: ", data)
     result.value = await $fetch(`/api/search/citizen`, {
         method: 'POST',
         body: data,
@@ -93,48 +92,4 @@ async function getResults() {
         border: 1px solid #546f84;
         flex-grow: 1;
     }
-
-    .result>a>.thumb {
-        display: inline-block;
-        width: 70px;
-        height: 70px;
-        position: relative;
-    }
-
-    .result>a>.thumb>img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        align-self: center;
-    }
-
-    .result>a>.identity {
-        display: flex;
-        line-height: 16px;
-        flex-direction: column;
-        justify-content: center;
-        margin-left: 20px;
-    }
-
-    .result>a>.identity>.org {
-        font-size: 0.9rem;
-        color: #739cb0;
-        margin-top: 2px;
-    }
-
-    .result>a>.identity>.symbol {
-        font-size: 0.9rem;
-        color: #739cb0;
-        margin-top: 2px;
-    }
-
-    .result>a>.right {
-        display: none;
-    }
-
-    .no-decor {
-        text-decoration: none;
-    }
-
 </style>

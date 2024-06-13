@@ -1,27 +1,27 @@
 <template>
     <div class="ship-list">
-        <div class="view-controls">
-            <div class="display-style" v-if="showControls">
-                <template v-if="!isMobile">Display: <a @click="show('large')">Large</a> | <a @click="show('small')">Small</a> | <a @click="show('table')">Table</a></template>
+        <template v-if="ships.length > 0">
+            <div class="view-controls">
+                <div class="display-style" v-if="showControls">
+                    <template v-if="!isMobile">Display: <a @click="show('large')">Large</a> | <a @click="show('small')">Small</a> | <a @click="show('table')">Table</a></template>
+                </div>
+                <div class="filter">
+                    <input class="filter-box" type="text" v-model="search" placeholder="Filter list..." />
+                </div>
             </div>
-            <div class="filter">
-                <input class="filter-box" type="text" v-model="search" placeholder="Filter list..." />
+            <div class="ships">
+                <template v-if="isMobile || display == 'small'">
+                    <ship-summary-small @selected="selected" v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove" />
+                </template>
+                <template v-else-if="display == 'table'">
+                    <ship-table @selected="selected" :ships="filteredShips" />
+                </template>
+                <template v-else>
+                    <ship-summary v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove"/>
+                </template>
             </div>
-        </div>
-        <div v-if="ships.length > 0" class="ships">
-            <template v-if="isMobile || display == 'small'">
-                <ship-summary-small @selected="selected" v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove" />
-            </template>
-            <template v-else-if="display == 'table'">
-                <layout-table-ship @selected="selected" :ships="filteredShips" />
-            </template>
-            <template v-else>
-                <ship-summary @selected="selected" v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove"/>
-            </template>
-        </div>
-        <div v-else class="no-ships">
-                No ships currently listed!
-        </div>
+        </template>
+        <widgets-no-result v-else text="No Ships Found"/>
     </div>
 </template>
 
@@ -61,7 +61,7 @@ const props = defineProps({
         }
 })
 
-const emit = defineEmits(['remove', 'selected'])
+const emit = defineEmits(['remove'])
 
 const search = ref('')
 const display = ref('large')
@@ -87,7 +87,7 @@ function show(display) {
 }
 
 function selected(ship) {
-    emit('selected', ship)
+    console.log('selected emitted')
 }
 function remove(ship) {
     console.log('remove clicked! ', ship)
@@ -118,5 +118,6 @@ onMounted(() => {
         display: flex;
         flex-wrap: wrap;
         opacity: 1;
+        margin: 0 -5px;
     }
 </style>

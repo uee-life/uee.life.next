@@ -15,7 +15,7 @@ const {data: shipModels} = await useFetch('/api/ship/models', {
 })
 </script>
 
-<style>
+<style scoped>
 
 .main {
   display: flex;

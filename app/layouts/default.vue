@@ -7,8 +7,9 @@
       <div class="content">
         <slot></slot>
       </div>
-      <layout-dock name="right-dock" />
-      <layout-footer-default />
+      <!-- the margin-right is to account for the scrollbar gutter -->
+      <layout-dock name="right-dock" style="margin-right: -5px"/>
+      <layout-footer />
     </div>
   </div>
 </template>
@@ -18,17 +19,11 @@
   position: relative;
   min-height: 100vh;
   max-width: 100vw;
-  /*padding-bottom: 175px;*/
+  padding-bottom: 90px;
   font-family: larabie;
+  max-width: 1920px;
+  margin: auto;
 }
-
-/*.main::-webkit-scrollbar {
-  background: rgba(84, 111, 132, 0.5);
-}
-
-.main::-webkit-scrollbar-thumb {
-  background: rgba(13, 46, 66, 0.8);
-}*/
 
 .main {
   display: flex;
@@ -36,8 +31,10 @@
   max-width: 1920px;
   margin: auto;
   overflow-y: auto;
-  overflow-x: hidden;
-  height: calc(100vh - 148px)
+  overflow-x: visible;
+  height: calc(100vh - 148px);
+  /* set the gutter to stable so the layout doesn't get messed up turning on scrollbar */
+  scrollbar-gutter: stable;
 }
 
 .app::before {
@@ -69,17 +66,4 @@
   flex-grow: 1;
   flex-basis: 300px;
 }
-
-.dock {
-  max-width: 260px;
-  margin: 0 auto;
-}
-
-/*.leftDock {
-   min-width: 240px;
- }*/
-.vue-portal-target {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}</style>
+</style>

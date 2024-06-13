@@ -12,10 +12,6 @@
           </div>
         </div>
       </div>
-      <span class="corner top left"></span>
-      <span class="corner top right"></span>
-      <span class="corner bottom left"></span>
-      <span class="corner bottom right"></span>
     </div>
 </template>
 
@@ -52,12 +48,12 @@ const bannerImage = computed({
 })
 
 onMounted(() => {
-    gsap.to(".banner", {duration: 0.5, opacity: 1})
-    gsap.to(".banner h1", {duration: 1, opacity: 1})  
+    const tl = gsap.timeline()
+    tl.to(".banner", {duration: 0.5, opacity: 1})  
     if(props.logo) {
-        gsap.to(".banner-logo", {duration: 1, opacity: 1})
-        gsap.to(".banner-logo img", {duration: 1, opacity: 1})
+        tl.to(".banner-logo", {duration: 1, opacity: 1})
     }
+    tl.to(".banner-summary", {delay: -0.5, duration: 1, opacity: 1})
 })
 </script>
 
@@ -116,7 +112,6 @@ onMounted(() => {
 
     .banner h1 {
       height: fit-content;
-      opacity: 0;
       font-family: 'Michroma';
       letter-spacing: 1px;
       color: #dbf3ff;
@@ -131,12 +126,12 @@ onMounted(() => {
     .banner-logo img {
         width: 136px;
         height: 136px;
-        opacity: 0;
         margin-left: 5px;
     }
 
     .banner-summary {
       padding-top: 73px;
+      opacity: 0;
     }
 
     .banner-summary .banner-type {

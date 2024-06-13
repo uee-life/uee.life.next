@@ -8,7 +8,7 @@
       </div>
       <layout-dock name="right-dock" />
     </div>
-    <layout-footer-mobile />
+    <layout-footer />
   </div>
 </template>
 
@@ -22,19 +22,14 @@
   padding-top: 55px;
 }
 
-.main::-webkit-scrollbar {
-  background: #dbf3ff;
-}
-
-.main::-webkit-scrollbar-thumb {
-  background: #546f84;
-}
 .main {
   display: flex;
   flex-wrap: wrap;
-  overflow-y: scroll;
+  max-width: 1920px;
+  margin: auto;
+  overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 55px)
+  max-height: calc(100vh - 130px)
 }
 .app::before {
   position: fixed;
@@ -64,16 +59,4 @@
   flex-grow: 1;
   flex-basis: 300px;
 }
-
- .dock {
-   width: 100%;
- }
-</style>
-
-<style>
-.vue-portal-target {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
- }
 </style>

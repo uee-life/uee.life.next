@@ -1,6 +1,6 @@
 <template>
     <button :disabled="disabled" class="button button-scifi">
-        <slot />
+        <slot></slot>
     </button>
 </template>
 
@@ -27,6 +27,7 @@ export default {
         padding: 0;
         margin: 0;
         color: #dbf3ff;
+        cursor: pointer;
     }
 
     .button:disabled {

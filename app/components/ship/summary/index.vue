@@ -39,7 +39,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['remove', 'selected'])
+const emit = defineEmits(['remove'])
 
 const shipImage = computed({
     get() {
@@ -86,6 +86,7 @@ async function remove() {
         max-width: 100vh;
         border-left: 1px solid #546f84;
         border-right: 1px solid #546f84;
+        margin: 10px 5px;
     }
 
     .ship-summary .mask {

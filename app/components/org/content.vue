@@ -1,6 +1,6 @@
 <template>
     <panel :title="title">
-        <panel-markdown :markdown="content" :class="contentClass"/>
+        <markdown :markdown="content" :class="contentClass"/>
     </panel>
 </template>
 

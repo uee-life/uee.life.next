@@ -17,13 +17,9 @@
         justify-content: center; 
         text-align: center;
     }
-    .page-foot .footer-text {
-        font-size: 10px;
+    .footer-text {
+        font-size: 8px;
         font-family: 'Michroma';
         margin-bottom: 5px;
-    }
-    .foot-logo {
-        height: 75px;
-        align-self: center;
     }
 </style>

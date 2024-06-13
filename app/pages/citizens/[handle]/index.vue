@@ -44,7 +44,7 @@
                 </layout-tabs>
             </div>
         </template>
-        <widgets-no-result v-else />
+        <widgets-no-result text="Citizen Not Found" v-else />
     </div>
 </template>
 
@@ -177,25 +177,4 @@ const { refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}
 .citizen-tabs {
     margin-top: 20px;
 }
-
-.no-results {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    .no-results>.text {
-        position: relative;
-        width: fit-content;
-        padding-left: 20px;
-        padding-right: 20px;
-        margin: 20px;
-    }
-
-    .no-results>.text.big {
-        font-family: 'Michroma';
-        font-size: 25px;
-    }
 </style>

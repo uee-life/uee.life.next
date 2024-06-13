@@ -51,29 +51,27 @@ function switchTab(tabName) {
 </script>
 
 <style>
+.tab-titles {
+    margin-bottom: 10px;
+}
 
-    .tab-titles {
-        margin-bottom: 10px;
-    }
+.tab-title {
+    display: inline-block;
+    margin: 0 5px;
+    font-size: calc(12px + 4 * ((100vw - 300px) / 4000));
+    font-family: 'Michroma';
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.25s;
+}
 
-    .tab-title {
-        display: inline-block;
-        margin: 0 5px;
-        font-size: calc(12px + 4 * ((100vw - 300px) / 4000));
-        font-family: 'Michroma';
-        letter-spacing: 0.8px;
-        text-decoration: none;
-        border-bottom: 2px solid transparent;
-        cursor: pointer;
-        transition: all 0.25s;
-    }
+.tab-title:hover {
+    border-bottom: 2px solid #39ced8;
+}
 
-    .tab-title:hover {
-        border-bottom: 2px solid #39ced8;
-    }
-
-    .tab-title-active {
-        border-bottom: 2px solid #39ced8;
-    }
-
+.tab-title-active {
+    border-bottom: 2px solid #39ced8;
+}
 </style>
