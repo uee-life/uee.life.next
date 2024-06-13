@@ -12,7 +12,8 @@ const props = defineProps({
   
 <style scoped>
 .dock {
-    width: fit-content;
     position: relative;
+    width: fit-content;
+    padding-top: 10px;
 }
 </style>

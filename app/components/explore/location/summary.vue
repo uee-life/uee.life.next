@@ -1,16 +1,13 @@
 <template>
-    <router-link class="summary" :to="link">
-        <panel-title v-if="loc.type" :text="loc.type"/>
-        <div v-if="loc.thumbnail" class="thumbnail"><img :src="loc.thumbnail" /></div>
-        <div class="summary-info">
-            <div><h3 class="summary-name">{{ loc.name }}</h3></div>
-            <slot></slot>
-        </div>
-        <span class="corner top left"></span>
-          <span class="corner top right"></span>
-          <span class="corner bottom left"></span>
-          <span class="corner bottom right"></span>
-  </router-link>
+    <panel class="summary" :title="loc.type ? loc.type : ''" titleSize="small">
+        <router-link class="summary" :to="link">
+            <div v-if="loc.thumbnail" class="thumbnail"><img :src="loc.thumbnail" /></div>
+            <div class="summary-info">
+                <div><h3 class="summary-name">{{ loc.name }}</h3></div>
+                <slot></slot>
+            </div>
+        </router-link>
+    </panel>
 </template>
 
 <script setup>
@@ -23,19 +20,6 @@ const props = defineProps({
         default: ""
     }
 })
-/*export default {
-    name: 'location-summary',
-    props: ["loc", "link"],
-    computed: {
-        isHabitable() {
-            if(this.loc.habitable) {
-                return "Yes"
-            } else {
-                return "No"
-            }
-        }
-    }
-}*/
 </script>
 
 <style scoped>
@@ -53,13 +37,8 @@ const props = defineProps({
 
     .summary {
         display: flex;
-        flex-basis: 250px;
         flex-grow: 1;
-        margin: 10px;
-        padding: 9px;
-        position: relative;
-        background: url('@/assets/fading-bars.png') repeat;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        margin: 5px;
         text-decoration: none;
         color: inherit;
     }

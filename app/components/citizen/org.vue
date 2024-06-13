@@ -1,20 +1,18 @@
 <template>
     <panel-dock :title="affiliate ? 'Affiliation' : org.model" class="citizen-org">
-        <div class="content">
-          <nuxt-link :to="orgLink" class="org-link"><img class="logo" :src="org.logo" /></nuxt-link>
-          <div class="org-name">
-            {{ org.name }}
-          </div>
-          <div class="org-title">
-            Title: {{ org.rank.title }}
-          </div>
+        <nuxt-link :to="orgLink" class="org-link">
+          <img class="logo" :src="orgLogo" />
+        </nuxt-link>
+        <div class="org-name">
+          {{ org.name }}
+        </div>
+        <div class="org-title">
+          Title: {{ org.rank.title }}
         </div>
     </panel-dock>
 </template>
   
 <script setup>
-import { gsap } from "gsap"
-
 const props = defineProps({
 org: {
     type: Object,
@@ -27,7 +25,15 @@ affiliate: {
 })
 
 //todo: make this a generic logo
-const logo = ref("https://robertsspaceindustries.com/media/2weountodg09pr/heap_infobox/MCBANE-Logo.png")
+const orgLogo = computed({
+  get() {
+    if(props.org.logo) {
+      return props.org.logo
+    } else {
+      return "/images/default/org.jpg"
+    }
+  }
+})
 
 const orgLink = computed({
     get() {
@@ -42,12 +48,6 @@ const orgLink = computed({
   height: 'auto';
   display: block;
   margin-bottom: 20px;
-}
-.citizen-org .content{
-  display: flex;
-  flex-direction: Column;
-  justify-content: center;
-  opacity: 1;
 }
 .citizen-org .logo {
   width: 165px;

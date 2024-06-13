@@ -1,5 +1,5 @@
 <template>
-    <div ref="newsitem" class="news-item" id="news-item">
+    <panel ref="newsitem" class="news-item" id="news-item">
         <a :href="item.link" style="text-decoration: none" target="blank">
             <div class="news-content">
                 <div class="background" :style="style"></div>
@@ -13,12 +13,8 @@
                 </div>
             </div>
             <img class="source-img" :src="item.source_img" :title="item.source"/>
-            <span class="corner top left"></span>
-            <span class="corner top right"></span>
-            <span class="corner bottom left"></span>
-            <span class="corner bottom right"></span>
         </a>
-    </div>
+    </panel>
 </template>
 
 <script setup>

@@ -1,6 +1,6 @@
 <template>
     <div class="fleet-summary">
-        <panel-main title="Summary">
+        <panel title="Summary">
             <div class="view-controls">
                 <div class="display-style">
                     <template v-if="!isMobile">
@@ -17,7 +17,7 @@
                 <div class="summary" @click="setFilter(key)" v-for="(val, key) in summary" :key="key"><span class="key">{{key}}: </span> <span class="value">{{val}}</span></div>
                 <div class="summary" @click="setFilter('')"><span class="key">Total: </span><span class="value">{{fleet.length}}</span></div>
             </div>
-        </panel-main>
+        </panel>
     </div>
 </template>
 
@@ -50,43 +50,6 @@ function summarize(type) {
 function setFilter(value) {
     emit('filter', value)
 }
-/*export default {
-    name: "FleetSummary",
-    props: {
-        fleet: {
-            type: Array,
-            default: function () {
-                return []
-            }
-        }
-    },
-    data() {
-        return {
-            summary_type: 'type',
-            summary: {}
-        }
-    },
-    methods: {
-        summarize(type) { 
-            this.summary_type = type
-            this.summary = {}
-            for(var i in this.fleet) {
-                const ship = this.fleet[i]
-                if(!Object.keys(this.summary).includes(ship[type])) {
-                    this.summary[ship[type]] = 1
-                } else {
-                    this.summary[ship[type]] += 1
-                }
-            }
-        },
-        setFilter(value) {
-            this.$emit('filter', value)
-        }
-    },
-    mounted() {
-        this.summarize('type')
-    }
-}*/
 </script>
 
 <style scoped>

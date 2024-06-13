@@ -1,5 +1,5 @@
 <template>
-        <div class="content">
+        <div class="about">
             <client-only>
                 <teleport to="#left-dock">
                     <panel-dock class="nav" title="nav">
@@ -12,24 +12,24 @@
                 </teleport>
             </client-only>
             <section id="about">
-                <panel-main class="content" title="About UEE.life">
-                    <panel-markdown file="about.md"/>
-                </panel-main>
+                <panel class="about-content" title="About UEE.life">
+                    <markdown file="about.md"/>
+                </panel>
             </section>
             <section id="social">
-                <panel-main class="content" title="Social Media">
-                    <panel-markdown file="social.md"/>
-                </panel-main>
+                <panel title="Social Media">
+                    <markdown file="social.md"/>
+                </panel>
             </section>
             <section id="support">
-                <panel-main class="content" title="Support Us">
-                    <panel-markdown file="support.md"/>
-                </panel-main>
+                <panel title="Support Us">
+                    <markdown file="support.md"/>
+                </panel>
             </section>
             <section id="releases">
-                <panel-main class="content" title="Releases">
-                    <panel-markdown file="releases.md"/>
-                </panel-main>
+                <panel title="Releases">
+                    <markdown file="releases.md"/>
+                </panel>
             </section>
         </div>
 </template>
@@ -45,6 +45,7 @@
         flex-direction: column;
         width: 100%;
         box-sizing: border-box;
+        padding-top: 20px;
     }
 
     .nav {

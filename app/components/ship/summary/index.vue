@@ -1,10 +1,9 @@
 <template>
-    <div class="ship-summary" :title="ship.model">
-        <panel-title v-if="ship.name" :text="ship.name"/>
-        <img  @click="selected" :src="shipImage" />
+    <panel class="ship-summary" :title="ship.name" titleSize="small">
+        <img :src="shipImage" />
         <img class="manufacturer" :src="manufacturerImage" />
         <div class="ship-info">
-            <h5 @click="selected"></h5>
+            <h5></h5>
             <div class="labels">
                 <span>Ship Type:</span>
                 <span>Ship ID:</span>
@@ -14,19 +13,15 @@
             </div>
             <div class="data">
                 <span>{{ ship.model }}</span>
-                <span>{{ shipID(ship.id) }}</span>
+                <span>{{ shipID(ship.id)}}</span>
                 <span>{{ ship.career }} - {{ ship.role }}</span>
                 <span v-if="ship.owner"><nuxt-link :to="citizenLink">ship.owner.name</nuxt-link></span>
                 <span v-if="ship.crew">{{ ship.crew }} / {{ ship.max_crew }}</span>
             </div>
         </div>
-        <div class="mask" @click="$emit('selected', ship.id)"></div>
-        <span class="corner top left"></span>
-        <span class="corner top right"></span>
-        <span class="corner bottom left"></span>
-        <span class="corner bottom right"></span>
+        <div class="mask" @click="navigateTo(`/ships/${ship.id}`)"></div>
         <img v-if="isAdmin" title="Remove Ship" class="delete" @click="remove" src="@/assets/delete.png">
-    </div>
+    </panel>
 </template>
 
 <script setup>
@@ -70,6 +65,12 @@ async function remove() {
 }
 </script>
 
+<style>
+    .ship-summary .panel-content {
+        display: flex;
+    }
+</style>
+
 <style scoped>
     .ship-summary img {
         max-width: 170px;
@@ -82,13 +83,10 @@ async function remove() {
         display: flex;
         flex-basis: 400px;
         flex-grow: 1;
-        margin: 5px;
-        padding: 9px;
-        position: relative;
-        background: url('@/assets/fading-bars.png') repeat;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        max-width: 100vh;
         border-left: 1px solid #546f84;
         border-right: 1px solid #546f84;
+        margin: 10px 5px;
     }
 
     .ship-summary .mask {
@@ -103,11 +101,6 @@ async function remove() {
     .ship-info {
         display: flex;
         margin-left: 10px;
-        /*flex-direction: column;
-        margin-left: 10px;
-        margin-top: -10px;
-        z-index: 2;
-        flex-grow: 1;*/
     }
 
     .ship-info .labels {
@@ -126,32 +119,6 @@ async function remove() {
         margin-left: 10px;
         color: #dbf3ff;
     }
-
-    /*.ship-info .info {
-        display: flex;
-        flex-direction: column;
-        font-size: 12px;
-    }
-
-    .ship-info .info .line-item {
-        display: flex;
-    }
-
-    .ship-info .info .line-item .label {
-        width: 80px;
-        text-transform: uppercase;
-        font-family: 'Michroma';
-        flex-shrink: 0;
-    }
-
-    .ship-info .info .line-item .data {
-        margin-left: 5px;
-        font-size: 14px;
-        line-height: 19.5px;
-        min-width: 100px;
-        margin-right: 85px;
-        color: #dbf3ff;
-    }*/
 
     .ship-info>h5 {
         font-size: 14px;

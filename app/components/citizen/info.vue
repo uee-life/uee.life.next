@@ -1,16 +1,8 @@
 <template>
     <div id="citizen-info" class="citizen-info">
-        <div class="citizen-portrait" id="portrait">
-            <div class="portrait-content">
+        <panel id="portrait">
             <citizen-portrait :citizen="citizen" />
-            </div>
-            <!--img class="portrait-img" :src="citizen.info.portrait" />
-            <span class="verified"><img v-if="citizen.info.verified" src="@/assets/verified.png" /></span-->
-            <span class="corner top left"></span>
-            <span class="corner top right"></span>
-            <span class="corner bottom left"></span>
-            <span class="corner bottom right"></span>
-        </div>
+        </panel>
         <div class="info">
             <div class="citizen-data">
                 <div class="labels">
@@ -26,14 +18,14 @@
                     <span>{{ citizen.enlisted }}</span>
                 </div>
             </div>
-            <br>
-        <!--citizen-location :isOwner="isOwner" :home="citizen.home" @refresh="refresh" /-->
         </div>
   </div>
 </template>
 
 <script setup>
 import { gsap } from "gsap"
+
+const user = useUser()
 
 const props = defineProps({
     citizen: {
@@ -54,19 +46,10 @@ computed({
     }
 })
 
-function refresh() {
-    // this.$emit('refresh')
-}
-
 onMounted(() => {
     nextTick(() => {
-            let size = "180px"
-            const tl = gsap.timeline()
-            tl.to(".citizen-portrait", {duration: 0.5, opacity: 1})
-            tl.to(".citizen-portrait", {duration: 0.5, width: size, height: size})
-            tl.to(".citizen-portrait .portrait-content", {duration: 0.5, opacity: 1})
-            tl.to(".citizen-info .info", {duration: 0.5, opacity: 1})
-        })
+        gsap.to(".citizen-info .info", {delay: 2, duration: 0.5, opacity: 1})
+    })
 })
 </script>
 
@@ -81,27 +64,6 @@ onMounted(() => {
 
     .citizen-info.mobile {
         justify-content: center;
-    }
-
-    .citizen-portrait{
-        display: flex;
-        box-sizing: border-box;
-        width: 50px;
-        height: 50px;
-        padding: 7px;
-        margin: 0;
-        margin-bottom: 10px;
-        background: url('@/assets/fading-bars.png') repeat;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        position: relative;
-        align-self: auto;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-    }
-
-    .portrait-content {
-        opacity: 0;
     }
 
     .info {

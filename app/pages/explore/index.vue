@@ -63,6 +63,7 @@ function systemType(sys) {
     flex-basis: fit-content;
     margin-left: -5px;
     margin-right: -5px;
+    margin-top: 15px;
 }
 
 .data {

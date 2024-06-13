@@ -1,43 +1,39 @@
 <template>
     <div class="news-feed" id="news-feed">
-        <client-only>
-            <teleport to="#news-filter">
-                <div class="sources">
-                    <div v-for="source in sources" @click.native="setSource(source)" :key="source.id" class="left-nav-button">
-                        <router-link to="/">{{ source.name }}</router-link>
+        <widgets-loading v-if="pending && articles.length == 0"/>
+        <template v-else>
+            <client-only>
+                <teleport to="#news-filter">
+                    <div class="sources">
+                        <div v-for="source in sources" @click.native="setSource(source)" :key="source.id" class="left-nav-button">
+                            <router-link to="/">{{ source.name }}</router-link>
+                        </div>
                     </div>
-                </div>
-            </teleport>
-        </client-only>
-        <panel-title :text="title" size="medium"/>
-        <div v-if="pending" class="loading">
-            <img src="@/assets/loading.gif" >
-        </div>
-        <div v-if="pending" class="loading"><img src="@/assets/loading.gif" ></div>
-        <transition-group v-else
-            name="staggered-fade"
-            tag="div"
-            :css="false"
-            v-on:before-enter="beforeEnter"
-            v-on:enter="enter"
-            v-on:leave="leave"
-            class="t-group">
-            <news-item v-for="(item, index) in articles" :key="item.id" :index="index" :item="item" />
-        </transition-group>
-        <div class="more" v-if="more" @click="loadMore()">
-            Load More
-            <div class="endcap left"></div>
-            <div class="endcap right"></div>
-        </div>
+                </teleport>
+            </client-only>
+            <panel-title :text="title" size="medium"/>
+            <transition-group
+                name="staggered-fade"
+                tag="div"
+                :css="false"
+                v-on:before-enter="beforeEnter"
+                v-on:enter="enter"
+                v-on:leave="leave"
+                class="t-group">
+                <news-item v-for="(item, index) in articles" :key="item.id" :index="index" :item="item" />
+            </transition-group>   
+            <panel-button class="more" text="Load More" v-if="more" @click="loadMore()" />
+        </template>
     </div>
 </template>
 
 <script setup>
 import { gsap } from 'gsap'
 
-let article_ids = []
-let pages = 1
-let more = true
+const articles = ref([])
+const article_ids = ref([])
+const pages = ref(1)
+const more = ref(true)
 const search = ref({channel: "spectrum-dispatch", series: "news-update"})
 const title = ref("Verse Watch")
 
@@ -73,25 +69,33 @@ const sources = [
     ]
 
 // client only, because hydration issues
-const { data: articles, pending, refresh } = await useFetch(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages}`, {
+const { pending, refresh } = await useFetch(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages.value}`, {
     key: 'getNews',
     server: false,
-    lazy: true
+    lazy: true,
+    onResponse(_ctx) {
+        console.log("Got articles!!")
+        //console.log(checkIDs(_ctx.response._data))
+        articles.value = articles.value.concat(checkIDs(_ctx.response._data))
+    }
 })
 
 async function setSource(source) {
     search.value = source.search
     title.value = source.name
-    await refreshNews()
+    pages.value = 1
+    articles.value = []
+    article_ids.value = []
+    await refresh()
 }
 
 function checkIDs(arts) {
     const filtered = arts.filter((item) => {
-        return !article_ids.includes(item.id)
+        return !article_ids.value.includes(item.id)
     })
-    for (let i in filtered) {
-        article_ids.push(filtered[i].id)
-    }
+    filtered.forEach(element => {
+        article_ids.value.push(element.id)
+    })
     return filtered
 }
 
@@ -111,23 +115,14 @@ function leave(el) {
 
 // load more articles
 async function loadMore() {
-    if(!pending.value && more) {
-        pages += 1
-        const url = '/api/news?channel=' + search.value.channel + '&series=' + search.value.series + '&page=' + pages
-        const news = await $fetch(url)
-        articles.value = articles.value.concat(checkIDs(news.value))
+    if(!pending.value && more.value) {
+        pages.value += 1
+        await refresh()
     }
 }
 
-async function refreshNews() {
-    pages = 1
-    articles.value = []
-    article_ids = []
-    await refresh()
-}
-
 onMounted(() => {
-    gsap.to('.news-feed', {delay: 0.5, duration: 1, opacity: 1})
+    gsap.to('.news-feed', {delay: 1, duration: 1, opacity: 1})
 })
 </script>
 

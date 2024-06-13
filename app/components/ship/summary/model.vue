@@ -54,45 +54,6 @@ const shipSize = computed({
         return ['Micro','Small','Medium','Large','Extra-Large','Capital'][props.ship.size - 1]
     }
 })
-/*
-export default {
-    name: 'ship-summary',
-    props: {
-        ship: {
-            type: Object,
-            default: function() {
-                return {}
-            }
-        },
-        isAdmin: {
-            type: Boolean,
-            default: false
-        }
-    },
-    computed: {
-        ...mapGetters({
-            citizen: 'loggedCitizen'
-        }),
-        shipImage: function() {
-            return `/images/ships/${this.ship.short_name}.jpg`
-        },
-        manufacturerImage: function () {
-            return `/images/manufacturers/${this.ship.make_abbr}.png`
-        },
-        citizenLink: function () {
-            return `/citizens/${this.ship.owner.handle}`
-        }
-    },
-    methods: {
-        selected() {
-            this.$emit('selected', this.ship.id)
-        },
-        remove() {
-            console.log('remove clicked')
-            this.$emit('remove', this.ship.id)
-        }
-    }
-}*/
 </script>
 
 <style scoped>

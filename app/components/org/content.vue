@@ -1,7 +1,7 @@
 <template>
-    <panel-main :title="title">
-        <panel-markdown :markdown="content" :class="contentClass"/>
-    </panel-main>
+    <panel :title="title">
+        <markdown :markdown="content" :class="contentClass"/>
+    </panel>
 </template>
 
 <script setup>

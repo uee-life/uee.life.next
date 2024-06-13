@@ -3,7 +3,7 @@
         <div class="page-head-left">
             <nuxt-link to="/"><img class="logo" alt="logo" src="@/assets/logo.png"></nuxt-link>
             <div class="title">
-                Explore. Manage. Connect.
+                Connect. Manage. Explore.
             </div>
         </div>
         <div class="page-head-right">
@@ -15,18 +15,11 @@
                     Welcome! Please Log In Below
                 </div>
             </div>
-            <div class="search">
-                <!--input type="search" class="search-box" value="Search"-->
-            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-/*import { useAuthStore } from '~/stores/auth';
-
-const store = useAuthStore()*/
-
 const user = useUser()
 
 const citizenLink = computed({
@@ -100,14 +93,5 @@ const citizenLink = computed({
 
     .page-head-right .user .welcome>a:hover {
         color: #dbf3ff;
-    }
-
-    .page-head-right .search {
-        margin-top: 35px;
-    }
-
-    .page-head-right .search .search-box {
-        background: white;
-        height: 25px;
     }
 </style>

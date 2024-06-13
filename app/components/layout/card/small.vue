@@ -2,10 +2,10 @@
     <div class="card-small">
         <router-link class="no-decor" :to="computedLink">
             <span class="thumb">
-                <img :src="computedImage" />
+                <img :src="image" />
             </span>
             <span class="card-data">
-                <slot />
+                <slot></slot>
             </span>
         </router-link>
     </div>
@@ -30,16 +30,6 @@ const computedLink = computed({
             return `/${route.name}`
         } else {
             return props.link
-        }
-    }
-})
-
-const computedImage = computed({
-    get() {
-        if(props.image) {
-            return props.image
-        } else {
-            return "/images/systems/default.jpg"
         }
     }
 })
