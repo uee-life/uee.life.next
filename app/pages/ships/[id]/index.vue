@@ -1,15 +1,14 @@
 <template>
-    <ship :id="ship_id" />
+    <widgets-loading v-if="pending" />
+    <ship v-else :ship="data" />
 </template>
 
 <script setup>
 const route = useRoute()
 
-const ship_id = ref(parseID(route.params.id))
-
-function parseID (ship_id) {
-    return parseInt(ship_id.split('-')[1], 16)
-}
+const {pending, data} = await useFetch(`/api/ship/${route.params.id}`, {
+    key: 'getShip'
+})
 
 </script>
 

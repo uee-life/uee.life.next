@@ -52,10 +52,10 @@ const filteredShips = computed({
     get () {
         return props.ships.filter(ship => {
             return ship.identifier.toLowerCase().includes(search.value.toLowerCase()) ||
-                ship.manufacturer.toLowerCase().includes(this.search.toLowerCase()) ||
-                ship.model.toLowerCase().includes(this.search.toLowerCase()) ||
-                ship.career.toLowerCase().includes(this.search.toLowerCase()) ||
-                ship.role.toLowerCase().includes(this.search.toLowerCase()) /*||
+                ship.manufacturer.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.model.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.career.toLowerCase().includes(search.value.toLowerCase()) ||
+                ship.role.toLowerCase().includes(search.value.toLowerCase()) /*||
                 ship.size_text.toLowerCase().includes(this.search.toLowerCase())*/
         })
     }

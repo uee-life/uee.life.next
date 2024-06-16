@@ -49,7 +49,8 @@ async function createCitizen(citizen) {
             record: $record,
             name: $name,
             enlisted: $enlisted,
-            verified: $verified
+            verified: $verified,
+            portrait: $portrait
         })`
 
     const params = {
@@ -57,7 +58,8 @@ async function createCitizen(citizen) {
         record: citizen.record,
         name: citizen.name,
         enlisted: citizen.enlisted,
-        verified: citizen.verified
+        verified: citizen.verified,
+        portrait: citizen.portrait
     }
     await writeQuery(query, params)
 

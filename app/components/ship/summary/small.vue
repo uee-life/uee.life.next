@@ -6,8 +6,9 @@
         <div class="ship-info">
             <h5>{{ ship.model }}</h5>
             <div>{{ ship.type_text }} - {{ ship.focus_text }}</div>
-            <div v-if="ship.owner">Owner: <nuxt-link :to="citizenLink">{{ship.owner.name}}</nuxt-link></div>
+            <div v-if="ship.owner">Owner: <nuxt-link :to="citizenLink">{{ship.owner}}</nuxt-link></div>
         </div>
+        {{ ship }}
         <div class="mask" @click="$emit('selected', ship.id)"></div>
         <span class="corner top left"></span>
         <span class="corner top right"></span>

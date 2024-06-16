@@ -43,7 +43,8 @@ export const addShip = async (ship, handle) => {
          MATCH (m:ShipModel {identifier: $id})
          MERGE (m)<-[:INSTANCE_OF]-(s:Ship {
             id: left(randomUUID(), 8),
-            name: $name
+            name: $name,
+            registered: datetime()
         })<-[:OWNER_OF]-(c)`
 
     const params = {
@@ -64,12 +65,18 @@ export const removeShip = async (ship, handle) => {
 export const getShip = async (identifier) => {
     // get ship instance
     const query =
-        `MATCH (c:Citizen)--(s:Ship {identifier: $id})-[:INSTANCE_IF]->(m:ShipModel)
-         RETURN c.handle as handle,
-                s.name as name,
-                s.id as id,
+        `MATCH (c:Citizen)--(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
+         RETURN c as owner,
+                s as ship,
                 m as info`
-    const result = await readQuery(query, {id: identifier})
+    const { result } = await readQuery(query, {id: identifier})
+    console.log(result[0]._fields[0].properties)
+    const ship = {
+        owner: result[0]._fields[0].properties,
+        ...result[0]._fields[1].properties,
+        ...result[0]._fields[2].properties
+    }
+    return ship
 }
 
 export const getShipList = async (handle) => {
@@ -83,6 +90,30 @@ export const getShipList = async (handle) => {
     const ships = []
     for (const res of result.result) {
         const ship = {
+            ...res._fields[0].properties,
+            ...res._fields[1].properties
+        }
+        //ship.data = res._fields[0].properties
+        //ship.model = res._fields[1].properties
+        ships.push(ship)
+    }
+    return ships
+}
+
+export const getOrgShipList = async (tag) => {
+    console.log("Getting ships for org", tag)
+    const query =
+        `MATCH (o:Organization)--(c:Citizen)--(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
+         WHERE o.tag =~ $tag
+         RETURN s as ship,
+                m as shipData,
+                c as owner`
+    const result = await readQuery(query, {tag: "(?i)"+tag})
+    const ships = []
+    for (const res of result.result) {
+        console.log(res._fields[2])
+        const ship = {
+            owner: res._fields[2].properties,
             ...res._fields[0].properties,
             ...res._fields[1].properties
         }
