@@ -43,7 +43,8 @@ export const addShip = async (ship, handle) => {
          MATCH (m:ShipModel {identifier: $id})
          MERGE (m)<-[:INSTANCE_OF]-(s:Ship {
             id: left(randomUUID(), 8),
-            name: $name
+            name: $name,
+            registered: datetime()
         })<-[:OWNER_OF]-(c)`
 
     const params = {
