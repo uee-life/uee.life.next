@@ -63,6 +63,7 @@ const {pending} = await useFetch(`/api/org/${route.params.tag}`, {
     lazy: true,
     async onResponse(_ctx) {
         org.value = _ctx.response._data
+        await getOrgShips()
     },
     async onResponseError(_ctx) {
         console.log(_ctx.response.statusText)
@@ -89,7 +90,7 @@ const isOwner = computed({
 })
 
 async function getOrgShips() {
-
+    fleet.value = await $fetch(`/api/org/${route.params.tag}/ships`)
 }
 
 </script>

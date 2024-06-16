@@ -5,17 +5,17 @@
         <div class="ship-info">
             <h5></h5>
             <div class="labels">
+                <span v-if="ship.owner">Owner:</span>
                 <span>Ship Type:</span>
                 <span>Ship ID:</span>
                 <span>Type:</span>
-                <span v-if="ship.owner">Owner:</span>
                 <span v-if="ship.crew">Crew:</span>
             </div>
             <div class="data">
+                <span v-if="ship.owner"><nuxt-link :to="citizenLink">{{ship.owner.name}}</nuxt-link></span>
                 <span>{{ ship.model }}</span>
                 <span>{{ shipID(ship.id)}}</span>
                 <span>{{ ship.career }} - {{ ship.role }}</span>
-                <span v-if="ship.owner"><nuxt-link :to="citizenLink">ship.owner.name</nuxt-link></span>
                 <span v-if="ship.crew">{{ ship.crew }} / {{ ship.max_crew }}</span>
             </div>
         </div>

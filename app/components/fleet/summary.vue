@@ -5,8 +5,8 @@
                 <div class="display-style">
                     <template v-if="!isMobile">
                         Summarize by: 
-                            <a class="select" @click="summarize('type')">type</a> | 
-                            <a class="select" @click="summarize('focus')">focus</a> | 
+                            <a class="select" @click="summarize('career')">Career</a> | 
+                            <a class="select" @click="summarize('role')">Role</a> | 
                             <a class="select" @click="summarize('make')">make</a> | 
                             <a class="select" @click="summarize('model')">model</a> | 
                             <a class="select" @click="summarize('size')">size</a>
