@@ -91,6 +91,23 @@ const regDate = computed({
     margin: 0 10px;
     padding-left: 15px;
 }
+
+.info-items {
+    display: flex;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.info-items .labels {
+    display: flex;
+    flex-direction: column;
+}
+.info-items .data {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    color: #dbf3ff;
+}
 .owner {
     display: flex;
     justify-content: center;
