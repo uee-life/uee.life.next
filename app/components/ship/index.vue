@@ -23,9 +23,14 @@
                         <span>Name:</span>
                     </div>
                     <div class="data">
-                        <span>{{shipID(ship.id)}}</span>
+                        <span>{{ shipID(ship.id) }}</span>
                         <span>{{ ueeDate(regDate) }}</span>
-                        <span>{{ ship.name ? ship.name : 'Not Provided' }}</span>
+                        <span v-if="edit.name">
+                            <input type="text" v-model="name" maxlength="30" />
+                            <img class="button" title="submit" src="@/assets/tick.png" @click="updateName()"/>
+                            <img class="button" title="cancel" src="@/assets/delete.png" @click="edit.name = false"/>
+                        </span>
+                        <span v-else>{{ ship.name ? ship.name : 'Not Provided' }}<img v-if="isOwner" class="button" @click="edit.name = true" src="@/assets/edit.png"/></span>
                     </div>
                 </div>
             </panel>
@@ -45,7 +50,7 @@
                     </div>
                 </div>
             </panel>
-            <panel title="Metrics" class="info-panel">
+            <panel title="Metrics" titleSize="small" class="info-panel">
                 <div class="info-items">
                     <div class="labels">
                         <span>Max Crew:</span>
@@ -68,6 +73,30 @@ const props = defineProps({
     ship: {
         type: Object,
         required: true
+    },
+    fleet: {
+        type: Number,
+        default: 0
+    },
+    cmdrs: {
+        type: Array,
+        default: function () {
+            return []
+        }
+    }
+})
+
+const edit = ref({
+    name: false
+})
+
+const name = ref('')
+
+const user = useUser()
+
+const isOwner = computed({
+    get() {
+        return user.value && user.value.verified && user.value.handle.toLowerCase().trim() == props.ship.owner.handle.toLowerCase().trim()
     }
 })
 
@@ -76,6 +105,11 @@ const regDate = computed({
         return neo4jToStandardDatetime(props.ship.registered)
     }
 })
+
+function updateName() {
+    console.log("updating ship name to: ", name.value)
+    edit.value.name = false
+}
 </script>
 
 <style scoped>
@@ -90,6 +124,7 @@ const regDate = computed({
     flex-grow: 1;
     margin: 0 10px;
     padding-left: 15px;
+    margin-bottom: 20px;
 }
 
 .info-items {
@@ -102,11 +137,29 @@ const regDate = computed({
     display: flex;
     flex-direction: column;
 }
+
+.info-items .labels span {
+    display: flex;
+    width: fit-content;
+}
+
 .info-items .data {
     display: flex;
     flex-direction: column;
     margin-left: 10px;
     color: #dbf3ff;
+}
+
+.info-items .data span {
+    display: flex;
+}
+
+.info-items .data .button {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+    cursor: pointer;
 }
 .owner {
     display: flex;
