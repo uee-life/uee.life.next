@@ -1,21 +1,15 @@
 <template>
-    <div class="ship-summary" @click="selected" :title="ship.model">
-        <panel-title v-if="ship.name" :text="ship.name"/>
+    <panel class="ship-summary" @click="selected" :title="ship.name" titleSize="small">
         <img :src="shipImage" />
         <img class="manufacturer" :src="manufacturerImage" />
         <div class="ship-info">
             <h5>{{ ship.model }}</h5>
-            <div>{{ ship.type_text }} - {{ ship.focus_text }}</div>
+            <div>{{ ship.career }} - {{ ship.role }}</div>
             <div v-if="ship.owner">Owner: <nuxt-link :to="citizenLink">{{ship.owner}}</nuxt-link></div>
         </div>
-        {{ ship }}
-        <div class="mask" @click="$emit('selected', ship.id)"></div>
-        <span class="corner top left"></span>
-        <span class="corner top right"></span>
-        <span class="corner bottom left"></span>
-        <span class="corner bottom right"></span>
+        <div class="mask" @click="navigateTo(`/ships/${ship.id}`)"></div>
         <img v-if="isAdmin" title="Remove Ship" class="delete" @click="$emit('remove', ship.id)" src="@/assets/delete.png">
-    </div>
+    </panel>
 </template>
 
 <script setup>

@@ -82,8 +82,8 @@ const filteredShips = computed({
     }
 })
 
-function show(display) {
-    display = display
+function show(selected) {
+    display.value = selected
 }
 
 function selected(ship) {

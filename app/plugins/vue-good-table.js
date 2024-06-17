@@ -1,6 +1,6 @@
-import VueGoodTablePlugin from 'vue-good-table'
+import VueGoodTablePlugin from 'vue-good-table-next'
 
-import 'vue-good-table/dist/vue-good-table.css'
+import 'vue-good-table-next/dist/vue-good-table-next.css'
 
 export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.use(VueGoodTablePlugin)

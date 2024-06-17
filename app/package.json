@@ -37,7 +37,7 @@
     "sass": "^1.69.7",
     "sqlite3": "^5.1.7",
     "sweetalert2": "^11.10.8",
-    "vue-good-table": "^2.21.11",
+    "vue-good-table-next": "^0.2.1",
     "vue-gtag-next": "^1.14.0"
   }
 }
