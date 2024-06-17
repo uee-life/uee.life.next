@@ -12,7 +12,7 @@
                 <span v-if="ship.crew">Crew:</span>
             </div>
             <div class="data">
-                <span v-if="ship.owner"><nuxt-link :to="citizenLink">{{ship.owner.name}}</nuxt-link></span>
+                <span v-if="ship.owner">{{ship.owner.name}}</span>
                 <span>{{ ship.model }}</span>
                 <span>{{ shipID(ship.id)}}</span>
                 <span>{{ ship.career }} - {{ ship.role }}</span>

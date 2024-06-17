@@ -82,8 +82,8 @@ const filteredShips = computed({
     }
 })
 
-function show(display) {
-    display = display
+function show(selected) {
+    display.value = selected
 }
 
 function selected(ship) {
@@ -119,5 +119,8 @@ onMounted(() => {
         flex-wrap: wrap;
         opacity: 1;
         margin: 0 -5px;
+    }
+    .display-style {
+        cursor: pointer;
     }
 </style>
