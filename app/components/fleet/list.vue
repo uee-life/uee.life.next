@@ -120,4 +120,7 @@ onMounted(() => {
         opacity: 1;
         margin: 0 -5px;
     }
+    .display-style {
+        cursor: pointer;
+    }
 </style>
