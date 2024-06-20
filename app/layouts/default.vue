@@ -2,10 +2,8 @@
   <div class="app">
     <layout-header-default />
 
-    <client-only>
-    <panel class="warning-panel" v-if="config.test_env">!!Warning!! Test Version. Content May Not Persist. !!Warning!!</panel>
-  </client-only>
-  
+    <panel class="warning-panel" v-if="config.public.test_env">!!Warning!! Test Version. Content May Not Persist. !!Warning!!</panel>
+
     <layout-navbar-default />
     <div class="main">
       <layout-dock name="left-dock" />
@@ -23,7 +21,6 @@
 import { TRUE } from 'sass';
 
 const config = useRuntimeConfig();
-console.log("Is test_env:", config.test_env);
 </script>
 
 <style scoped>
