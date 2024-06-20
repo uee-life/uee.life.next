@@ -21,6 +21,7 @@
 
 <script setup>
 const user = useUser()
+const config = useRuntimeConfig()
 
 const citizenLink = computed({
     get() {

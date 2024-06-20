@@ -64,7 +64,11 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    base_uri: config.BASE_URI,
+    public: {
+      base_uri: config.BASE_URI,
+      test_env: config.TEST_ENV,
+    },
+    
     auth0: {
       domain: config.AUTH0_DOMAIN,
       client_id: config.AUTH0_CLIENT_ID,
