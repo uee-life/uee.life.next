@@ -1,6 +1,9 @@
 <template>
   <div class="app">
     <layout-header-default />
+
+    <panel class="warning-panel" v-if="config.public.test_env">!!Warning!! Test Version. Content May Not Persist. !!Warning!!</panel>
+
     <layout-navbar-default />
     <div class="main">
       <layout-dock name="left-dock" />
@@ -14,7 +17,22 @@
   </div>
 </template>
 
+<script setup>
+import { TRUE } from 'sass';
+
+const config = useRuntimeConfig();
+</script>
+
 <style scoped>
+
+.warning-panel {
+  margin: 10px;
+  background: rgba(255,0,0,0.1);
+  color: #dbf3ff;
+  text-align: center;
+  min-height: 30px;
+}
+
 .app {
   position: relative;
   min-height: 100vh;
