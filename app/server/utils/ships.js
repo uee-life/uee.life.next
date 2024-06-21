@@ -1,3 +1,4 @@
+import { apiError, apiSuccess } from "./api"
 import { readQuery, writeQuery } from "./neo4j"
 
 export const getShipModel = async (identifier) => {
@@ -62,23 +63,6 @@ export const removeShip = async (ship, handle) => {
     const error = await writeQuery(query, {id: ship.id, handle: handle})
 }
 
-export const getShip = async (identifier) => {
-    // get ship instance
-    const query =
-        `MATCH (c:Citizen)--(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
-         RETURN c as owner,
-                s as ship,
-                m as info`
-    const { result } = await readQuery(query, {id: identifier})
-    console.log(result[0]._fields[0].properties)
-    const ship = {
-        owner: result[0]._fields[0].properties,
-        ...result[0]._fields[1].properties,
-        ...result[0]._fields[2].properties
-    }
-    return ship
-}
-
 export const getShipList = async (handle) => {
     console.log("Getting ships for ", handle)
     const query =
@@ -122,4 +106,47 @@ export const getOrgShipList = async (tag) => {
         ships.push(ship)
     }
     return ships
+}
+
+export const getShip = async (identifier) => {
+    // get ship instance
+    const query =
+        `MATCH (c:Citizen)--(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
+         RETURN c as owner,
+                s as ship,
+                m as info`
+    const { result } = await readQuery(query, {id: identifier})
+    // TODO: Check this actually returns a ship, else return an empty result.
+    if (result[0]) {
+        const ship = {
+            owner: result[0]._fields[0].properties,
+            ...result[0]._fields[1].properties,
+            ...result[0]._fields[2].properties
+        }
+        return ship
+    } else {
+        return apiError("Ship not found")
+    }
+}
+
+export const getCrew = async (identifier) => {
+    const query = 
+        `MATCH (c:Citizen)-[:CREW_OF]->(s:Ship {id: $id})
+         RETURN c`
+    
+    const { result } = await readQuery(query, {id: identifier})
+    return result     
+}
+
+export const addCrew = async (ship, citizen) => {
+    const query = 
+        `MATCH (c:Citizen {handle: $handle})
+         MATCH (s:Ship {id: $id})
+         MERGE (c)-[:CREW_OF]->(s)`
+
+    const params = {
+        handle: citizen,
+        id: ship
+    }
+    return apiSuccess(null, "Crewmember Added")
 }

@@ -63,7 +63,7 @@
                 </div>
             </panel>
         </div>
-        <ship-crew />
+        <ship-crew :ship="ship" :edit="isOwner"/>
     </div>
 </template>
 

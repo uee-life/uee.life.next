@@ -1,9 +1,9 @@
 <template>
   <div class="app">
     <layout-header-default />
-
-    <panel class="warning-panel" v-if="config.public.test_env">!!Warning!! Test Version. Content May Not Persist. !!Warning!!</panel>
-
+    <panel class="warning-panel" v-if="config.public.test_env">
+      Test Version. Content May Not Persist.
+    </panel>
     <layout-navbar-default />
     <div class="main">
       <layout-dock name="left-dock" />
@@ -18,8 +18,6 @@
 </template>
 
 <script setup>
-import { TRUE } from 'sass';
-
 const config = useRuntimeConfig();
 </script>
 

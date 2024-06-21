@@ -2,9 +2,9 @@ const config = useRuntimeConfig()
 
 const getToken = async () => {
     const body = {
-        'client_id': "6LP38EJnsEheWA4gM9R9bvV9fviITucH",
-        'client_secret': "fd_A01Cb0SrupNTkntsFS60LO0rDoD0ae6iMEvFXmbvGVFpE7cvuNFFuue0-8MF5",
-        'audience': "https://ueelife.auth0.com/api/v2/",
+        'client_id': config.auth0.client_id,
+        'client_secret': config.auth0.client_secret,
+        'audience': config.auth0.audience,
         'grant_type': "client_credentials",
     }
 
