@@ -50,8 +50,13 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/google-fonts',
     '@nuxtjs/device',
-    'nuxt-viewport'
+    'nuxt-viewport',
+    '@nuxt-alt/google-analytics'
   ],
+
+  gAnalytics: {
+    measurementId: "G-6WSP4X8Q6M"
+  },
 
   plugins: [
     //'~/plugins/db.js',
