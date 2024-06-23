@@ -12,10 +12,10 @@ export default defineEventHandler(async (event) => {
         pois: []
     }
     orbitals.forEach(record => {
-        locations.orbitals.push(record._fields[0].properties)
+        locations.orbitals.push(record.loc)
     })
     pois.forEach(record => {
-        locations.pois.push(record._fields[0].properties)
+        locations.pois.push(record.loc)
     })
     return locations
 })

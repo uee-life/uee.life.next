@@ -48,8 +48,9 @@ const props = defineProps({
 }
 
 .modal-body {
-    background: rgba(13, 46, 66, 0.7);
+    background: rgba(13, 46, 66, 0.7) !important;
     padding: 10px;
+    max-height: 90vh;
 }
 
 .modal-close {

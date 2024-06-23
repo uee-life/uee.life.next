@@ -8,7 +8,7 @@
             </teleport>
         </client-only>
         <div v-if="result && result.length" class="results">
-            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result" />
+            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result" @selected="selected"/>
         </div>
         <widgets-no-result v-else :text="noResultText"/>
     </div>
@@ -53,6 +53,10 @@ async function getResults() {
             pending.value = false
         }
     })
+}
+
+function selected(citizen) {
+    navigateTo(`/citizens/${citizen.handle}`)
 }
 </script>
 

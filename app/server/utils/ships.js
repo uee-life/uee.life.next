@@ -1,5 +1,5 @@
 import { apiError, apiSuccess } from "./api"
-import { readQuery, writeQuery } from "./neo4j"
+import { readQuery, writeQuery, parseRecords } from "./neo4j"
 
 export const getShipModel = async (identifier) => {
     // get ship static details
@@ -9,12 +9,12 @@ export const getAllShipModels = async () => {
     console.log('Calling getAllShipModels')
     const data = {}
     let query = "MATCH (s:ShipModel) return s"
-    const ships = await readQuery(query)
-    data.ships = ships.result.map((x) => x._fields[0].properties)
+    const {result: ships } = await readQuery(query)
+    data.ships = ships.s
 
     query = "MATCH (m:Organization {type: 'Manufacturer'}) return m"
-    const manufacturers =  await readQuery(query)
-    data.manufacturers = manufacturers.result.map((x) => x._fields[0].properties)
+    const {result: manufacturers} =  await readQuery(query)
+    data.manufacturers = manufacturers.m
     return data
 }
 
@@ -66,16 +66,16 @@ export const removeShip = async (ship, handle) => {
 export const getShipList = async (handle) => {
     console.log("Getting ships for ", handle)
     const query =
-        `MATCH (c:Citizen)--(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
+        `MATCH (c:Citizen)-[:OWNER_OF]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
          WHERE c.handle =~ $handle
          RETURN s as ship,
                 m as shipData`
-    const result = await readQuery(query, {handle: "(?i)"+handle})
+    const { result } = await readQuery(query, {handle: "(?i)"+handle})
     const ships = []
-    for (const res of result.result) {
+    for (const res of result) {
         const ship = {
-            ...res._fields[0].properties,
-            ...res._fields[1].properties
+            ...res.ship,
+            ...res.shipData
         }
         //ship.data = res._fields[0].properties
         //ship.model = res._fields[1].properties
@@ -87,7 +87,7 @@ export const getShipList = async (handle) => {
 export const getOrgShipList = async (tag) => {
     console.log("Getting ships for org", tag)
     const query =
-        `MATCH (o:Organization)--(c:Citizen)--(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
+        `MATCH (o:Organization)--(c:Citizen)-[:OWNER_OF]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
          WHERE o.tag =~ $tag
          RETURN s as ship,
                 m as shipData,
@@ -95,11 +95,10 @@ export const getOrgShipList = async (tag) => {
     const result = await readQuery(query, {tag: "(?i)"+tag})
     const ships = []
     for (const res of result.result) {
-        console.log(res._fields[2])
         const ship = {
-            owner: res._fields[2].properties,
-            ...res._fields[0].properties,
-            ...res._fields[1].properties
+            owner: res.owner,
+            ...res.ship,
+            ...res.shipData
         }
         //ship.data = res._fields[0].properties
         //ship.model = res._fields[1].properties
@@ -111,7 +110,7 @@ export const getOrgShipList = async (tag) => {
 export const getShip = async (identifier) => {
     // get ship instance
     const query =
-        `MATCH (c:Citizen)--(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
+        `MATCH (c:Citizen)-[:OWNER_OF]-(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
          RETURN c as owner,
                 s as ship,
                 m as info`
@@ -119,9 +118,9 @@ export const getShip = async (identifier) => {
     // TODO: Check this actually returns a ship, else return an empty result.
     if (result[0]) {
         const ship = {
-            owner: result[0]._fields[0].properties,
-            ...result[0]._fields[1].properties,
-            ...result[0]._fields[2].properties
+            owner: result[0].owner,
+            ...result[0].ship,
+            ...result[0].info
         }
         return ship
     } else {
@@ -131,22 +130,51 @@ export const getShip = async (identifier) => {
 
 export const getCrew = async (identifier) => {
     const query = 
-        `MATCH (c:Citizen)-[:CREW_OF]->(s:Ship {id: $id})
-         RETURN c`
+        `MATCH (c:Citizen)-[r:CREW_OF]->(s:Ship {id: $id})
+         RETURN c as citizen,r as relationship`
     
-    const { result } = await readQuery(query, {id: identifier})
-    return result     
+    const { result, error } = await readQuery(query, {id: identifier})
+    
+    const crew = []
+    for (const res of result) {
+        //console.log(res)
+        crew.push({
+            citizen: res.citizen,
+            role: res.relationship.role
+        })
+    }
+    return crew    
 }
 
-export const addCrew = async (ship, citizen) => {
+export const addCrew = async (ship, crew) => {
     const query = 
         `MATCH (c:Citizen {handle: $handle})
          MATCH (s:Ship {id: $id})
-         MERGE (c)-[:CREW_OF]->(s)`
+         MERGE (c)-[:CREW_OF {role: $role}]->(s)`
 
     const params = {
-        handle: citizen,
-        id: ship
+        id: ship,
+        handle: crew.handle,
+        role: crew.role
     }
-    return apiSuccess(null, "Crewmember Added")
+    console.log(query, params)
+    const { error } = await writeQuery(query, params)
+    return apiSuccess(error, "Crewmember Added")
+}
+
+export const removeCrew = async (ship, handle) => {
+    const query = 
+        `MATCH (Citizen {handle: $handle})-[r:CREW_OF]-(Ship {id: $id})
+         DELETE r`
+    
+    const params = {
+        id: ship,
+        handle: handle
+    }
+    const { error } = await writeQuery(query, params)
+    if (error) {
+        return apiError(error)
+    } else {
+        return apiSuccess(null, "Crewmember Removed")
+    }
 }

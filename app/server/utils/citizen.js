@@ -2,22 +2,28 @@ import { readQuery, writeQuery } from "./neo4j"
 import { getOrganization, orgAddMember, orgAddFounder } from "./organization"
 import * as rsi from "./rsi"
 
-export const getCitizen = async (user, create = false) => {
+export const getCitizen = async (handle, create = false, user = null) => {
 
     // try to load citizen from neo4j
-    let citizen = await loadCitizen(user.handle)
+    let citizen = await loadCitizen(handle)
 
     // if citizen isn't created yet, fetch the data from rsi and create it
     if(Object.keys(citizen).length === 0) {
-        citizen = await rsi.fetchCitizen(user.handle)
+        citizen = await rsi.fetchCitizen(handle)
 
-        if (citizen) {
-            citizen.verified = user.verified == 1
-
-            // if verified, store citizen information in neo4j
-            if (create && user.verified) {
-                await createCitizen(citizen)
+        if (citizen && create) {
+            if(user && user.verified == 1) {
+                citizen.verified = true
+            } else {
+                citizen.verified = false
             }
+            await createCitizen(citizen)
+        }
+    } else {
+        // check and update verification
+        if (user && user.verified == 1 && citizen.verified == false) {
+            citizen.verified = true
+            updateCitizen(citizen)
         }
     }
 
@@ -34,7 +40,7 @@ async function loadCitizen(handle) {
 
     let citizen = {}
     if(result.length > 0) {
-        citizen = result[0]._fields[0].properties
+        citizen = result[0].citizen
     }
 
     return citizen
@@ -50,7 +56,8 @@ async function createCitizen(citizen) {
             name: $name,
             enlisted: $enlisted,
             verified: $verified,
-            portrait: $portrait
+            portrait: $portrait,
+            bio: $bio
         })`
 
     const params = {
@@ -59,7 +66,8 @@ async function createCitizen(citizen) {
         name: citizen.name,
         enlisted: citizen.enlisted,
         verified: citizen.verified,
-        portrait: citizen.portrait
+        portrait: citizen.portrait,
+        bio: citizen.bio
     }
     await writeQuery(query, params)
 
@@ -74,7 +82,7 @@ async function createCitizen(citizen) {
         //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
         await orgAddMember(citizen.handle, mainOrg.tag, mainOrg.rank.level, mainOrg.rank.title)
 
-        if (org.founders.find(item => item.handle === citizen.handle)) {
+        if (org.founders && org.founders.find(item => item.handle === citizen.handle)) {
             await orgAddFounder(citizen.handle, mainOrg.tag)
         }
     }
@@ -86,14 +94,16 @@ export const updateCitizen = async (citizen) => {
         `MATCH (c:Citizen {handle: $handle})
          SET c += {
             name: $name,
-            verified: $verified
+            verified: $verified,
+            bio: $bio
          }
          return c`
     
     const params = {
         handle: citizen.handle,
         name: citizen.name,
-        verified: citizen.verified
+        verified: citizen.verified,
+        bio: citizen.bio
     }
 
     await writeQuery(query, params)

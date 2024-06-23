@@ -1,15 +1,13 @@
 <template>
-    <div :class="redacted">
-        <router-link class="no-decor" :to="citizenLink">
-            <span class="thumb">
-                <img :src="citizen.portrait" />
-            </span>
-            <span class="identity">
-                <h2 class="name">{{citizen.name}}</h2>
-                <span class="symbol">{{citizen.handle}}</span>
-                <span v-if="citizen.org" class="org">[{{citizen.org}}]</span>
-            </span>
-        </router-link>
+    <div :class="redacted" @click="$emit('selected', citizen)">
+        <span class="thumb">
+            <img :src="citizen.portrait" />
+        </span>
+        <span class="identity">
+            <h2 class="name">{{citizen.name}}</h2>
+            <span class="symbol">{{citizen.handle}}</span>
+            <span v-if="citizen.org" class="org">[{{citizen.org}}]</span>
+        </span>
     </div>
 </template>
 
@@ -24,9 +22,9 @@ const props = defineProps({
 const redacted = computed({
     get() {
         if (props.citizen.handle == "Redacted") {
-            return "result redacted"
+            return "card redacted"
         } else {
-            return "result"
+            return "card"
         }
     }
 })
@@ -39,22 +37,21 @@ const citizenLink = computed({
 </script>
 
 <style scoped>
-.result {
+.card {
     display: flex;
     flex-grow: 1;
-    margin: 5px;
     position: relative;
 }
 
-.result.redacted {
+.card.redacted {
     background-color: rgba(255,34,34,0.2);
 }
 
-.result.redacted>a {
+.card.redacted>a {
     border: 1px solid #ff2222;
 }
 
-.result>a {
+.card {
     display: flex;
     box-sizing: border-box;
     height: 100%;
@@ -65,16 +62,17 @@ const citizenLink = computed({
     height: fit-content;
     border: 1px solid #546f84;
     flex-grow: 1;
+    cursor: pointer;
 }
 
-.result>a>.thumb {
+.card>.thumb {
     display: inline-block;
     width: 70px;
     height: 70px;
     position: relative;
 }
 
-.result>a>.thumb>img {
+.card>.thumb>img {
     position: absolute;
     top: 0;
     left: 0;
@@ -82,7 +80,7 @@ const citizenLink = computed({
     align-self: center;
 }
 
-.result>a>.identity {
+.card>.identity {
     display: flex;
     line-height: 18px;
     font-size: 0.9rem;

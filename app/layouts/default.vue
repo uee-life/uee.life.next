@@ -24,10 +24,11 @@ const config = useRuntimeConfig();
 <style scoped>
 
 .warning-panel {
+  display: flex;
   margin: 10px;
   background: rgba(255,0,0,0.1);
   color: #dbf3ff;
-  text-align: center;
+  justify-content: center;
   min-height: 30px;
 }
 

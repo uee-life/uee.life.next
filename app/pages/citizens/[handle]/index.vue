@@ -104,7 +104,6 @@ async function sync() {
 }
 
 async function addShip(ship) {
-    console.log("adding ship: ", ship)
     await $fetch('/api/ship/add', {
         key: 'addShip',
         method: 'POST',
@@ -158,7 +157,7 @@ const { refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}
         server: false,
         lazy: true,
         async onResponse(_ctx) {
-            citizen.value.info = _ctx.response._data
+            citizen.value.info = _ctx.response._data.data
             if(citizen.value.info.website) {
                 citizen.value.links.push({text: 'Website', url: citizen.value.info.website})
             }
