@@ -13,8 +13,6 @@ const route = useRoute()
 
 const returnPath = useCookie('auth0_return_path')
 
-console.log('found return cookie: ', returnPath)
-
 onMounted(async () => {
   nextTick(async () => {
     if (route.query.error) {

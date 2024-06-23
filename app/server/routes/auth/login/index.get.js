@@ -6,15 +6,12 @@ export default defineEventHandler(async (event) => {
         scopes: ["profile", "email"]
     })
 
-    console.log(getHeader(event, 'referer'))
-
     const returnPath = new URL(getHeader(event, 'referer')).pathname
-    console.log('returning to: ', returnPath)
 
     setCookie(event, "auth0_return_path", returnPath, {
         path: "/",
         secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
+        httpOnly: false,
         maxAge: 60 * 10,
         sameSite: "lax"
     })

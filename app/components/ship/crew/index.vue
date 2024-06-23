@@ -124,7 +124,31 @@ const removeCrew = async (member) => {
 const updateCrew = async (member, role) => {
     console.log("updating crew:", member.handle, role)
     // do me next
-
+    await $fetch(`/api/ship/${props.ship.id}/crew/update`, {
+        key: 'updateCrew',
+        method: 'POST',
+        body: { 
+            handle: member.handle, 
+            role: role 
+        },
+        onResponse(_ctx) {
+            console.log(_ctx.response.statusText)
+            if(_ctx.response.status == 200) {
+                $swal.fire({
+                    title: "Updated",
+                    text: "Crewmember successfully updated",
+                    icon: 'success',
+                    confirmButtonText: 'OK!'
+                })
+            } else {
+                modal.value.show = false
+                parseResponseCode(_ctx.response)
+            }
+        }
+    }).catch((error) => {
+        // probably a disconnect between client and server state. Refresh to fix.
+        //reloadNuxtApp()
+    })
     modal.value.show = false
     await refresh()
 }

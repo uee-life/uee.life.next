@@ -178,3 +178,21 @@ export const removeCrew = async (ship, handle) => {
         return apiSuccess(null, "Crewmember Removed")
     }
 }
+
+export const updateCrew = async (ship, crew) => {
+    const query = 
+        `MATCH (Citizen {handle: $handle})-[r:CREW_OF]-(Ship {id: $id})
+         SET r.role = $role`
+
+    const params = {
+        handle: crew.handle,
+        id: ship,
+        role: crew.role
+    }
+    const { error } = await writeQuery(query, params)
+    if (error) {
+        return apiError(error)
+    } else {
+        return apiSuccess(null, "Crewmember Updated")
+    }
+}
