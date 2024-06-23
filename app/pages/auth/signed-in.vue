@@ -11,6 +11,8 @@
 const {$swal} = useNuxtApp()
 const route = useRoute()
 
+const returnPath = useCookie('auth0_return_path')
+
 onMounted(async () => {
   nextTick(async () => {
     if (route.query.error) {
@@ -32,7 +34,7 @@ onMounted(async () => {
                 const result = _ctx.response._data
                 console.log("onResponse: ", result)
                 if(result.status == "success") {
-                    navigateTo('/')
+                    navigateTo(returnPath.value)
                 } else {
                     $swal.fire({
                         title: "Error",

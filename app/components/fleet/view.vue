@@ -41,7 +41,6 @@ function addShip(ship) {
     emit('add', ship)
 }
 function removeShip(ship) {
-    console.log('(view) removing ship: ', ship)
     emit('remove', ship)
 }
 function setFilter(value) {

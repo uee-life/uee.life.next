@@ -71,6 +71,7 @@ const {pending} = await useFetch(`/api/explore/locations/${route.params.code}`, 
     lazy: true,
     async onResponse(_ctx) {
         location.value = _ctx.response._data
+        console.log(location.value)
         await getChildren()
     }
 })

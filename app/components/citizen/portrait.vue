@@ -89,6 +89,7 @@ function citizenLink() {
         right: 3px;
         top: 118px;
         width: 45px;
+        filter: drop-shadow(2px 2px 2px black);
     }
 
     .portrait.small .verified {
@@ -96,6 +97,7 @@ function citizenLink() {
         top: 68px;
         right: 0px;
         width: 30px;
+        filter: drop-shadow(1px 1px 2px black);
     }
 
     .portrait.tiny .verified {

@@ -5,11 +5,14 @@ const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
 
 async function writeQuery(query, params) {
     const session = driver.session({ database: 'neo4j' });
+    let records = []
     let error = null
     try {
         const result = await session.executeWrite(tx => 
             tx.run(query, params)
         );
+
+        records = result.records
 
         //TODO: put in a check here to make sure the write was successful
     } catch (err) {
@@ -20,7 +23,10 @@ async function writeQuery(query, params) {
     } finally {
         await session.close();
     }
-    return error
+    return {
+        error: error,
+        result: records
+    }
 }
 
 // return the full record set?
@@ -42,12 +48,25 @@ async function readQuery(query, params={}) {
         await session.close()
     }
     return {
-        result: records,
+        result: parseRecords(records),
         error: error
     }
 }
 
+function parseRecords(records) {
+    const result = []
+    for (const res of records) {
+        const rec = {}
+        for (const key of res.keys) {
+            rec[key] = res._fields[res._fieldLookup[key]].properties
+        }
+        result.push(rec)
+    }
+    return result
+}
+
 module.exports = {
     writeQuery,
-    readQuery
+    readQuery,
+    parseRecords
 }

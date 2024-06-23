@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const { result, error } =  await readQuery('MATCH (system:System) RETURN system ORDER BY system.name')
     const systems = []
     result.forEach(record => {
-        systems.push(record._fields[0].properties)
+        systems.push(record.system)
     })
     return systems
 })

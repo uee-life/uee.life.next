@@ -1,8 +1,6 @@
 
 export const neo4jToStandardDatetime = (dt) => {
     const {year, month, day, hour, minute, second, nanosecond } = dt
-    console.log("datetime: ", dt)
-    console.log("year: ", year)
 
     const date = new Date(
         parseInt(year.low),

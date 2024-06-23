@@ -46,7 +46,8 @@ const orgLink = computed({
 .citizen-org {
   position: relative;
   height: 'auto';
-  display: block;
+  display: flex;
+  justify-content: center;
   margin-bottom: 20px;
 }
 .citizen-org .logo {

@@ -74,8 +74,6 @@ const { pending, refresh } = await useFetch(() => `/api/news?channel=${search.va
     server: false,
     lazy: true,
     onResponse(_ctx) {
-        console.log("Got articles!!")
-        //console.log(checkIDs(_ctx.response._data))
         articles.value = articles.value.concat(checkIDs(_ctx.response._data))
     }
 })

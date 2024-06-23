@@ -1,4 +1,4 @@
-import { readQuery, writeQuery } from "~/server/utils/neo4j"
+import { writeQuery } from "~/server/utils/neo4j"
 
 export default defineEventHandler(async (event) => {
     return bootstrap()

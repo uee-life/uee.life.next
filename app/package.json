@@ -23,6 +23,7 @@
     "@lucia-auth/adapter-sqlite": "^3.0.1",
     "@nuxt-alt/google-analytics": "^0.0.3",
     "@nuxt/content": "^2.10.0",
+    "@nuxt/image": "^1.7.0",
     "@pinia/nuxt": "^0.5.1",
     "@sweetalert2/theme-borderless": "^5.0.16",
     "arctic": "^1.7.0",

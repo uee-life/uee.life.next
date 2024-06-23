@@ -64,6 +64,7 @@ onMounted(() => {
 
     .panel-content {
         opacity: 0;
+        display: flex;
     }
 
     strong {

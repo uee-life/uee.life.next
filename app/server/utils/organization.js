@@ -26,7 +26,7 @@ export const orgExists = async (tag) => {
 }
 
 async function loadOrganization(tag) {
-    const query = "MATCH (o:Organization {tag: $tag}) return o"
+    const query = "MATCH (o:Organization {tag: $tag}) return o as org"
     const {result, error} = await readQuery(query, {tag: tag})
 
     if (error) {
@@ -35,7 +35,7 @@ async function loadOrganization(tag) {
 
     let org = null
     if(result.length > 0) {
-        org = result[0]._fields[0].properties
+        org = result[0].org
     }
 
     return org
@@ -78,6 +78,8 @@ export const orgAddMember = async (handle, tag, rank, title) => {
 }
 
 export const orgAddFounder = async (handle, tag) => {
+    // need to make sure the citizen is created first
+    await getCitizen(handle, true)
     const query =
         `MATCH (c:Citizen)
          WHERE c.handle =~ $handle
