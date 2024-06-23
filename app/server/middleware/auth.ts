@@ -16,9 +16,6 @@ export default defineEventHandler(async (event) => {
     if (!sessionId) {
         event.context.session = null;
         event.context.user = null;
-        if (event.method !== "GET") {
-            return event.node.res.writeHead(401).end();
-        }
         return;
     }
 
@@ -35,9 +32,6 @@ export default defineEventHandler(async (event) => {
     }
     event.context.session = session;
     event.context.user = user;
-    if (event.method !== "GET" && !user) {
-        return event.node.res.writeHead(401).end();
-    }
 
     console.log('USER: ', user)
 })

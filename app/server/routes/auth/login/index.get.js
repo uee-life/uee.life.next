@@ -1,13 +1,17 @@
 import { generateState } from "arctic"
 
 export default defineEventHandler(async (event) => {
-    const referer = getHeader(event, 'referer')
     const state = generateState()
     const url = await auth0.createAuthorizationURL(state, {
         scopes: ["profile", "email"]
     })
 
-    setCookie(event, "auth0_return_page", referer, {
+    console.log(getHeader(event, 'referer'))
+
+    const returnPath = new URL(getHeader(event, 'referer')).pathname
+    console.log('returning to: ', returnPath)
+
+    setCookie(event, "auth0_return_path", returnPath, {
         path: "/",
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
@@ -22,6 +26,6 @@ export default defineEventHandler(async (event) => {
         maxAge: 60 * 10,
         sameSite: "lax"
     })
-    
+
     return sendRedirect(event, url.toString())
 })
