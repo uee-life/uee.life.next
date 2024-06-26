@@ -1,7 +1,7 @@
 <template>
     <widgets-loading v-if="pending" />
     <ship v-else-if="response.status == 'success'" :ship="response.data" />
-    <widgets-no-result text="Ship not found" />
+    <widgets-no-result v-else text="Ship not found" />
 </template>
 
 <script setup>
