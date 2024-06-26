@@ -122,7 +122,7 @@ export const getShip = async (identifier) => {
             ...result[0].ship,
             ...result[0].info
         }
-        return ship
+        return apiSuccess(ship)
     } else {
         return apiError("Ship not found")
     }
