@@ -51,6 +51,32 @@ const getLogs = async () => {
     return logs
 }
 
+export const randomUser() {
+    const token - await getToken()
+    const user = await $fetch(`https://ueelife.auth0.com/api/v2/users`, {
+        method: 'get',
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        query: {
+            q: 'app_metadata.handle_verified: true',
+            per_page: 100
+        }
+    }).then((res) => {
+        const i = Math.round(Math.random() * res.length)
+        const user = {
+            handle: res[i].app_metadata.handle,
+            verified: res[i].app_metadata.handle_verified,
+            email: res[i].email,
+            visits: res[i].logins_count,
+            last_visit: res[i].last_login
+        }
+        return user
+    })
+    return user
+}
+
 export const manager = async () => {
     const logs = await getLogs()
     console.log("LOGS: ", logs)
