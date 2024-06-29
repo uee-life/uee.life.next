@@ -1,38 +1,38 @@
 <template>
     <div class='citizen'>
-        <client-only>
-            <teleport to="#left-dock">
-                <panel-dock title="Navigation" class="left-nav">
-                    <div class="left-nav-button"><router-link to="/citizens">Search Citizens</router-link></div>
-                    <div class="left-nav-button"><a :href="dossierLink" target="_blank">Official Dossier</a></div>
-                </panel-dock>
-                <panel-dock v-if="citizen && citizen.links.length > 0" title="Citizen links">
-                    <div v-for="link in citizen.links" :key="link.url" class="link">
-                        <div class="left-nav-button"><a :href="link.url" target="_blank">{{linkDomain(link.url)}}</a></div>
-                    </div>
-                </panel-dock>
-                <panel-dock v-if="isOwner" title="Tools">
-                    <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
-                </panel-dock>
-            </teleport>
-            <teleport to="#right-dock">
-                <citizen-org v-if="citizen.info.orgs" :org="citizen.info.orgs.main"/>
-                <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
-            </teleport>
-        </client-only>
         <div v-if="pending" class="loading">
             <img src="@/assets/loading.gif" >
         </div>
-        <template v-else-if="citizen.info.handle">
-            <citizen-info :isOwner="isOwner" :citizen="citizen.info" @refresh="refresh" />
-            <citizen-bio :bio="citizen.info.bio"/>
+        <template v-else-if="citizen.handle">
+            <client-only>
+                <teleport to="#left-dock">
+                    <panel-dock title="Navigation" class="left-nav">
+                        <div class="left-nav-button"><router-link to="/citizens">Search Citizens</router-link></div>
+                        <div class="left-nav-button"><a :href="dossierLink" target="_blank">Official Dossier</a></div>
+                    </panel-dock>
+                    <panel-dock v-if="citizen && links.length > 0" title="Citizen links">
+                        <div v-for="link in links" :key="link.url" class="link">
+                            <div class="left-nav-button"><a :href="link.url" target="_blank">{{linkDomain(link.url)}}</a></div>
+                        </div>
+                    </panel-dock>
+                    <panel-dock v-if="isOwner" title="Tools">
+                        <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
+                    </panel-dock>
+                </teleport>
+                <teleport to="#right-dock">
+                    <citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/>
+                    <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
+                </teleport>
+            </client-only>
+            <citizen-info :isOwner="isOwner" :citizen="citizen" @refresh="refresh" />
+            <citizen-bio :bio="citizen.bio"/>
             <div class="citizen-tabs">
                 <layout-tabs :tabs="tabs" :initialTab="initialTab">
                     <template #tab-title-ships>
-                        SHIPS ({{ citizen.ships.length }})
+                        SHIPS ({{ ships.length }})
                     </template>
                     <template #tab-content-ships>
-                        <fleet-view v-if="citizen.ships" :isOwner="isOwner" :ships="citizen.ships" @add="addShip" @remove="removeShip"/>
+                        <fleet-view v-if="ships" :isOwner="isOwner" :ships="ships" @add="addShip" @remove="removeShip"/>
                     </template>
 
                     <template v-if="isOwner" #tab-title-location>
@@ -50,24 +50,20 @@
 
 <script setup>
 const {$swal} = useNuxtApp()
+
 const route = useRoute()
 const tabs = ref(['ships', 'location'])
 const initialTab = ref('ships')
-const citizen = ref({
-    info: {
-        handle: '',
-        bio: ''
-    },
-    home: {},
-    ships: [],
-    orgs: null,
-    links: []
-})
+
+const ships = ref([])
+const links = ref([])
 
 const isOwner = computed({
     get() {
         const user = useUser()
-        return user.value != undefined && citizen.value.info.handle == user.value.handle
+        return user.value != undefined 
+            && citizen.value.handle == user.value.handle 
+            && user.value.verified == 1
     }
 })
 
@@ -147,23 +143,26 @@ async function getShips() {
     await $fetch(`/api/citizen/${route.params.handle}/ships`, {
         key: 'getShips',
         async onResponse(_ctx) {
-            citizen.value.ships = _ctx.response._data
+            ships.value = _ctx.response._data
         }
     })
 }
 
-const { refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}`, {
+const { data: citizen, refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
-        async onResponse(_ctx) {
-            citizen.value.info = _ctx.response._data.data
-            if(citizen.value.info.website) {
-                citizen.value.links.push({text: 'Website', url: citizen.value.info.website})
+        async onResponse({ response }) {
+            const data = response._data
+            console.log("getCitizen: ", data)
+            //citizen.value.info = data
+            if(data.website) {
+                links.value.push({text: 'Website', url: data.website})
             }
-            getShips()
+            await getShips()
         },
         onResponseError(_ctx) {
+            parseResponseCode(_ctx.response)
         }
 })
 </script>

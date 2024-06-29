@@ -11,7 +11,10 @@ export const getCitizen = async (handle, create = false, user = null) => {
     if(Object.keys(citizen).length === 0) {
         citizen = await rsi.fetchCitizen(handle)
 
-        if (citizen && create) {
+        console.log("record: [", citizen.record.startsWith("#"), "]")
+
+        // added a check for random citizens without a record number. Not sure why they exist.
+        if (citizen && citizen.record.startsWith("#") && create) {
             if(user && user.verified == 1) {
                 citizen.verified = true
             } else {
@@ -31,8 +34,11 @@ export const getCitizen = async (handle, create = false, user = null) => {
 }
 
 async function loadCitizen(handle) {
-    const query = "MATCH (citizen {handle: $handle}) return citizen"
-    const {result, error} = await readQuery(query, {handle: handle})
+    const query = 
+        `MATCH (c:citizen {handle: $handle}) 
+         WHERE c.handle =~ $handle
+         return c as citizen`
+    const {result, error} = await readQuery(query, {handle: '(?i)' + handle})
 
     if (error) {
         return null
@@ -42,7 +48,6 @@ async function loadCitizen(handle) {
     if(result.length > 0) {
         citizen = result[0].citizen
     }
-
     return citizen
 }
 
@@ -107,4 +112,10 @@ export const updateCitizen = async (citizen) => {
     }
 
     await writeQuery(query, params)
+}
+
+export const removeCitizen = async (citizen) => {
+    console.log("Removing Citizen: ", citizen.handle)
+
+    // remove citizen plus child nodes, if they exist.
 }

@@ -1,11 +1,7 @@
 
-export default defineEventHandler(async (event) => {
-    if(await loggedIn(event)) {
-        console.log('* logged in')
-        const shipId = getRouterParam(event, 'id')
-        const crew = await readBody(event)
-        return removeCrew(shipId, crew.handle)
-    } else {
-        return apiError("Need to be logged in to manage ships")
-    }
+export default defineAuthenticatedEventHandler(async (event) => {
+    const shipId = getRouterParam(event, 'id')
+    const crew = await readBody(event)
+    //TODO: Add a check here to make sure you either own the ship, or you are the crewmember being removed.
+    return removeCrew(shipId, crew.handle)
 })

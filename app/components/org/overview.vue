@@ -67,7 +67,7 @@ loadFounders()
 
 </script>
 
-<style>
+<style scoped>
 
 .info {
     display: flex;

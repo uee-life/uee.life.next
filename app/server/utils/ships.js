@@ -7,14 +7,21 @@ export const getShipModel = async (identifier) => {
 
 export const getAllShipModels = async () => {
     console.log('Calling getAllShipModels')
-    const data = {}
-    let query = "MATCH (s:ShipModel) return s"
-    const {result: ships } = await readQuery(query)
-    data.ships = ships.s
+    const data = {
+        makes: [],
+        models: []
+    }
+    let query = "MATCH (s:ShipModel) return s as model"
+    const {result: models } = await readQuery(query)
+    for (const m of models) {
+        data.models.push(m.model)
+    }
 
-    query = "MATCH (m:Organization {type: 'Manufacturer'}) return m"
-    const {result: manufacturers} =  await readQuery(query)
-    data.manufacturers = manufacturers.m
+    query = "MATCH (m:Organization {type: 'Manufacturer'}) return m as make"
+    const {result: makes} =  await readQuery(query)
+    for (const m of makes) {
+        data.makes.push(m.make)
+    }
     return data
 }
 
@@ -46,7 +53,7 @@ export const addShip = async (ship, handle) => {
             id: left(randomUUID(), 8),
             name: $name,
             registered: datetime()
-        })<-[:OWNER_OF]-(c)`
+        })-[:OWNED_BY]->(c)`
 
     const params = {
         handle: handle,
@@ -58,7 +65,7 @@ export const addShip = async (ship, handle) => {
 
 export const removeShip = async (ship, handle) => {
     const query = 
-        `MATCH (s:Ship {id: $id})<-[:OWNER_OF]-(c:Citizen {handle: $handle}) DETACH DELETE s`
+        `MATCH (s:Ship {id: $id})-[:OWNED_BY]->(c:Citizen {handle: $handle}) DETACH DELETE s`
     
     const error = await writeQuery(query, {id: ship.id, handle: handle})
 }
@@ -66,7 +73,7 @@ export const removeShip = async (ship, handle) => {
 export const getShipList = async (handle) => {
     console.log("Getting ships for ", handle)
     const query =
-        `MATCH (c:Citizen)-[:OWNER_OF]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
+        `MATCH (c:Citizen)<-[:OWNED_BY]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
          WHERE c.handle =~ $handle
          RETURN s as ship,
                 m as shipData`

@@ -73,6 +73,7 @@ onMounted(() => {
         flex-grow: 1;
         max-width: 350px;
         margin-left: 20px;
+        margin-bottom: 20px;
         opacity: 0;
     }
 

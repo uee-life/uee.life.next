@@ -1,11 +1,13 @@
 import { writeQuery } from "~/server/utils/neo4j"
 import { createOrganization, orgExists } from "~/server/utils/organization"
 import { addShipModel } from "~/server/utils/ships"
-import * as config from "~/config.json"
+//import * as config from "~/config.json"
+
+const config = useRuntimeConfig()
 
 const manufacturers = []
 
-export default defineEventHandler(async (event) => {
+export default defineAuthenticatedEventHandler(async (event) => {
     return bootstrap()
 })
 
@@ -40,7 +42,7 @@ async function create_ship(ship) {
 
 async function bootstrap() {
     const url = "https://api.erkul.games/live/ships"
-    const token = config.ERKUL_TOKEN
+    const token = config.external.erkul
 
     const resp = await $fetch(url, {
         method: 'get',

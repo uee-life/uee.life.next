@@ -1,20 +1,20 @@
 <template>
     <div class="settings">
         <widgets-loading v-if="status == 'pending'" />
-        <template v-if="user">
-            <settings-verify class="settings-panel" v-if="!user.verified || debug" :errors="errors.verification" @verify="verifyAccount" />
-            <settings-info class="settings-panel" @refresh="refresh" />
+        <template v-else>
+            <settings-verify class="settings-panel" v-if="!account.verified || debug" :errors="errors.verification" @verify="verifyAccount" />
+            <settings-info :account="account" class="settings-panel" @refresh="refresh" />
             <panel class="settings-panel" title="Settings">More coming soon...</panel>
         </template>
         <div v-if="debug" class="debug">
-            <pre>{{ JSON.stringify(user, null, 2) }}</pre>
+            <pre>{{ JSON.stringify(account, null, 2) }}</pre>
         </div>
     </div>
 </template>
 
 <script setup>
 definePageMeta({
-    middleware: ['user']
+    middleware: ['authenticated']
 })
 
 const debug = ref(true)
@@ -22,15 +22,14 @@ const user = useUser()
 const errors = ref({
     verification: ""
 })
-const status = ref("test")
 
 const verifyAccount = () => {
     console.log('Verifying account')
 }
 
-const refresh = () => {
-    console.log('placeholder')
-}
+const { data: account, status, refresh } = await useFetch(`/api/user/account`, {
+    key: 'getAccount'
+})
 
 </script>
 

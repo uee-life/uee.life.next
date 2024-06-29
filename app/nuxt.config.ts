@@ -69,17 +69,12 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    public: {
-      base_uri: config.BASE_URI,
-      test_env: config.TEST_ENV,
-    },
+    public: config.public,
     
-    auth0: {
-      domain: config.AUTH0_DOMAIN,
-      client_id: config.AUTH0_CLIENT_ID,
-      client_secret: config.AUTH0_CLIENT_SECRET,
-      audience: config.AUTH0_AUDIENCE,
-      redirect_uri: `${config.BASE_URI}/auth/signed-in`,
-    }
+    auth0: config.auth0,
+
+    auth0_m2m: config.auth0_m2m,
+
+    external: config.external
   }
 })

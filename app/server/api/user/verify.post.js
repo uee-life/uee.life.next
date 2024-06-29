@@ -1,6 +1,6 @@
 import { fetchCitizen } from "~/server/utils/rsi"
 
-export default defineEventHandler(async (event) => {
+export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const ver_code = await getCitizen(user.handle, false, user).then((citizen) => {
         return citizen.verification_code ?? ""

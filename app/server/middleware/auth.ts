@@ -32,8 +32,6 @@ export default defineEventHandler(async (event) => {
     }
     event.context.session = session;
     event.context.user = user;
-
-    console.log('USER: ', user)
 })
 
 declare module "h3" {
