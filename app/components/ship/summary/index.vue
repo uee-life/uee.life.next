@@ -6,9 +6,9 @@
             <h5></h5>
             <div class="labels">
                 <span v-if="ship.owner">Owner:</span>
-                <span>Ship Type:</span>
-                <span>Ship ID:</span>
                 <span>Type:</span>
+                <span>ID:</span>
+                <span>Role:</span>
                 <span v-if="ship.crew">Crew:</span>
             </div>
             <div class="data">
@@ -109,6 +109,7 @@ async function remove() {
         font-family: 'Michroma';
         font-size: 12px;
         text-transform: uppercase;
+        width: 50px;
     }
 
     .ship-info .data {
@@ -129,6 +130,7 @@ async function remove() {
         right: 0;
         width: 100px;
         opacity: 0.8;
+        z-index: -1;
     }
 
     .ship-summary .delete {

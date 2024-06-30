@@ -45,6 +45,7 @@
             </div>
         </template>
         <widgets-no-result v-else />
+        {{ org }}
     </div>
 </template>
 

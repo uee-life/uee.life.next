@@ -1,6 +1,6 @@
 
 
-export default defineEventHandler(async (event) => {
+export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const ship = await readBody(event)
 

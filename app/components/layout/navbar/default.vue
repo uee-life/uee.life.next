@@ -11,6 +11,7 @@
           <template v-if="user && user.handle">
             <nuxt-link v-if="user.handle == 'Capn_Flint'" class="nav-button" to="/admin">Admin</nuxt-link>
             <nuxt-link class="nav-button" :to="profileLink">Profile</nuxt-link>
+            <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>
             <a class="nav-button" @click="useLogout()">Sign Off</a>
           </template>
           <a v-else class="nav-button" href="/auth/login">Sign In</a>

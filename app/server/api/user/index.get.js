@@ -1,15 +1,10 @@
-import { getCitizen } from "~/server/utils/citizen"
-import { loadUser } from "~/server/utils/user"
-
-export default defineEventHandler(async (event) => {
-    let user = null
-    if (event.context.user) {
-        user = await loadUser(event.context.user)
-    }
+export default defineAuthenticatedEventHandler(async (event) => {
+    let user = await loadUser(event.context.user)
 
     if(user) {
         console.log('user found, getting citizen')
-        user.info = await getCitizen(user.handle, true, user)
+        user.info = await getCitizen(user.handle, true, user) ?? {}
+        console.log(user.info)
     }
     return user
 })

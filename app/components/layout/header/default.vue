@@ -8,7 +8,7 @@
         </div>
         <div class="page-head-right">
             <div class="user">
-                <div v-if="user" class="welcome">
+                <div v-if="user.info" class="welcome">
                     Welcome, <nuxt-link :to="citizenLink">{{ user.info.name ? user.info.name : user.handle }}</nuxt-link>!
                 </div>
                 <div v-else>

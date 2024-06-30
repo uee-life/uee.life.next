@@ -1,6 +1,6 @@
 import { writeQuery } from "~/server/utils/neo4j"
 
-export default defineEventHandler(async (event) => {
+export default defineAuthenticatedEventHandler(async (event) => {
     return bootstrap()
 })
 
