@@ -2,7 +2,7 @@
     <div class="settings">
         <widgets-loading v-if="status == 'pending'" />
         <template v-else>
-            <settings-verify class="settings-panel" v-if="!account.verified || debug" :errors="errors.verification" @verify="verifyAccount" />
+            <settings-verify :account="account" class="settings-panel" v-if="!account.verified || debug" :errors="errors.verification" @verify="verifyAccount" />
             <settings-info :account="account" class="settings-panel" @refresh="refresh" />
             <panel class="settings-panel" title="Settings">More coming soon...</panel>
         </template>
@@ -17,14 +17,19 @@ definePageMeta({
     middleware: ['authenticated']
 })
 
-const debug = ref(true)
+const debug = ref(false)
 const user = useUser()
 const errors = ref({
     verification: ""
 })
 
-const verifyAccount = () => {
+const verifyAccount = async () => {
     console.log('Verifying account')
+    const result = await $fetch(`/api/user/verify`, {
+        key: 'verifyAccount',
+        method: 'POST'
+    })
+    await refresh()
 }
 
 const { data: account, status, refresh } = await useFetch(`/api/user/account`, {

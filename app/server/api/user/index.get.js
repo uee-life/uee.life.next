@@ -3,7 +3,8 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
     if(user) {
         console.log('user found, getting citizen')
-        user.info = await getCitizen(user.handle, true, user)
+        user.info = await getCitizen(user.handle, true, user) ?? {}
+        console.log(user.info)
     }
     return user
 })

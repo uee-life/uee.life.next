@@ -21,34 +21,39 @@ async function fetchCitizen(handle) {
         headers: {
             'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
         }
+    }).catch(() => {
+        return null
     })
-    
-    try {
-        const $ = cheerio.load(response)
-        let info = {}
-        info.handle = handle
-        if($('p:contains("authenticated")').text()) {
-            console.error($('p:contains("authenticated")').text())
-        }
-        info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
-        info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
-        info.bio = $('span:contains("Bio")', '#public-profile').next().text()
-        info.enlisted = $("span:contains('Enlisted')", '#public-profile').next().text()
-        info.portrait = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
-        let image = $('div.thumb', '#public-profile').children()[0]
-        if (image && image.attribs.src) {
-            if(image.attribs.src.startsWith('https')) {
-                info.portrait = image.attribs.src
-            } else {
-                info.portrait = `${baseURI}${image.attribs.src}`
+
+    if (response) {
+        try {
+            const $ = cheerio.load(response)
+            let info = {}
+            info.handle = handle
+            if($('p:contains("authenticated")').text()) {
+                console.error($('p:contains("authenticated")').text())
             }
+            info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
+            info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
+            info.bio = $('span:contains("Bio")', '#public-profile').next().text()
+            info.enlisted = $("span:contains('Enlisted')", '#public-profile').next().text()
+            info.portrait = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
+            let image = $('div.thumb', '#public-profile').children()[0]
+            if (image && image.attribs.src) {
+                if(image.attribs.src.startsWith('https')) {
+                    info.portrait = image.attribs.src
+                } else {
+                    info.portrait = `${baseURI}${image.attribs.src}`
+                }
+            }
+            info.orgs = await fetchOrgList(handle)
+            info.website = $('span:contains("Website")', '#public-profile').next().attr('href') || ''
+            info.verified = 0
+            return info
+        } catch (error) {
+            return null
         }
-        info.orgs = await fetchOrgList(handle)
-        info.website = $('span:contains("Website")', '#public-profile').next().attr('href') || ''
-        info.verified = 0
-        return info
-    } catch (error) {
-        console.error(error)
+    } else {
         return null
     }
 }

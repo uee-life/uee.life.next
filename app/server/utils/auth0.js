@@ -81,11 +81,30 @@ export const randomUser = async () => {
     return user
 }
 
+const addVerificationCode = async (userId) => {
+    const code = crypto.randomUUID()
+    console.log('generated uuid: ', code)
+    updateAppMetadata(userId, {
+        verificationCode: code
+    })
+    return code
+}
+
 export const verifyUser = async (userId) => {
-    return await updateUserMetadata(userId, {
-        app_metadata: {
-            handle_verified: true
-        }
+    return await updateAppMetadata(userId, {
+        handle_verified: true
+    })
+}
+
+export const updateHandle = async (userId, handle) => {
+    const account = await getAccount(userId)
+    // delete old citizen record, plus anything directly linked to it.
+    removeCitizen(account.app_metadata.handle)
+
+    // update metadata with new handle
+    return await updateAppMetadata(userId, {
+        handle: handle,
+        handle_verified: false
     })
 }
 
@@ -96,28 +115,36 @@ export const getAccount = async (userId) => {
         headers: {
             'Accept': 'application/json',
             'Authorization': `Bearer ${token}`
-        },
-        onResponse(_ctx) {
-            console.log(_ctx.response)
-            console.log(_ctx.request)
         }
     })
-    return account
+    if(account.app_metadata.verificationCode) {
+        return account
+    } else {
+        account.app_metadata.verificationCode = await addVerificationCode(account.user_id)
+        console.log("account: ", account)
+        return account
+    }
 }
 
 
 
-export const updateUserMetadata = async (userID, metadata) => {
+export const updateAppMetadata = async (userID, metadata) => {
+    console.log("updating metadata:")
+    console.log(metadata)
     const token = await getToken()
-    await $fetch(`https://ueelife.auth0.com/api/v2/users/${userID}`, {
+    const body = {
+        app_metadata: metadata
+    }
+    const result = await $fetch(`https://ueelife.auth0.com/api/v2/users/${userID}`, {
         method: 'patch',
         headers: {
             'content-type': 'application/json',
             'accept': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        data: metadata
+        body: body
     })
+    return result
 }
 
 export class ManagementClient {

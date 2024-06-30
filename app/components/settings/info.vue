@@ -28,7 +28,6 @@
                     <img class="verified" src="@/assets/delete.png" v-else />
                 </span>
             </div>
-            <div class="line-item"><div class="label">Verified: </div> <div> {{ account.app_metadata.handle_verified }}</div></div>
             <div class="line-item"><div class="label">Change Handle: </div> <div><input type="text" v-model="handle"> <input type="button" value="change" @click="ifSure(changeHandle)" /></div></div>
             <em style="color: red; opacity:0.8">Warning: Changing handle revokes verification status, and deletes all ships and discoveries! Proceed with caution!</em>
         </div>
@@ -37,6 +36,7 @@
 
 <script setup>
 const {$swal} = useNuxtApp()
+const emit = defineEmits(['refresh'])
 
 const props = defineProps({
     account: {
@@ -65,8 +65,16 @@ const ifSure = (cb) => {
     })
 }
 
-const changeHandle = () => {
+const changeHandle = async () => {
     console.log(`updating handle to ${handle.value}`)
+    const result = await $fetch(`/api/user/handle`, {
+        method: 'POST',
+        body: {
+            handle: handle.value
+        }
+    })
+    emit('refresh')
+    console.log(result)
 }
 
 </script>

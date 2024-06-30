@@ -17,6 +17,10 @@
 <script setup>
 
 const props = defineProps({
+    account: {
+        type: Object,
+        required: true
+    },
     errors: {
         type: String,
         default: ""
@@ -30,7 +34,7 @@ const vCode = "foobar"
 
 const verificationCode = computed({
     get() {
-        return `[ueelife:${vCode}]`
+        return `[ueelife:${props.account.app_metadata.verificationCode}]`
     }
 })
 
