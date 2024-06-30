@@ -3,9 +3,11 @@ import { getOrganization, orgAddMember, orgAddFounder } from "./organization"
 import * as rsi from "./rsi"
 
 export const getCitizen = async (handle, create = false, user = null) => {
-
+    console.log("getCitizen()")
     // try to load citizen from neo4j
     let citizen = await loadCitizen(handle)
+
+    console.log(citizen)
 
     // if citizen isn't created yet, fetch the data from rsi and create it
     if(Object.keys(citizen).length === 0) {
@@ -21,6 +23,8 @@ export const getCitizen = async (handle, create = false, user = null) => {
             await createCitizen(citizen)
         }
     } else {
+        //TODO: Transition this to using the graph, rather than polling RSI every time.
+        citizen.orgs = await rsi.fetchOrgList(handle)
         // check and update verification
         if (user && user.verified == 1 && citizen.verified == false) {
             citizen.verified = true
@@ -33,10 +37,17 @@ export const getCitizen = async (handle, create = false, user = null) => {
 
 async function loadCitizen(handle) {
     const query = 
-        `MATCH (c:citizen {handle: $handle}) 
+        `MATCH (c:Citizen) 
          WHERE c.handle =~ $handle
          return c as citizen`
-    const {result, error} = await readQuery(query, {handle: '(?i)' + handle})
+    const params = {
+        handle: '(?i)' + handle
+    }
+
+    console.log(query, params)
+    const {result, error} = await readQuery(query, params)
+
+    console.log(result)
 
     if (error) {
         return null
@@ -74,14 +85,11 @@ async function createCitizen(citizen) {
     }
     await writeQuery(query, params)
 
-    console.log(citizen)
-
     // then, if they are part of an org, see if the ORG already exists, if not, add that too
     if(citizen.orgs.main) {
         console.log("Found org, adding as member")
         const mainOrg = citizen.orgs.main
         const org = await getOrganization(mainOrg.tag, true)
-        console.log(org)
         //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
         await orgAddMember(citizen.handle, mainOrg.tag, mainOrg.rank.level, mainOrg.rank.title)
 

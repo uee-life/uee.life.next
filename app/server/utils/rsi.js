@@ -66,8 +66,10 @@ async function fetchOrg(org) {
         const $ = cheerio.load(resp)
         let info = {}
         info.name = $('h1', '#organization').text().split("/")[0].trim()
-        info.banner = baseURI + $('div.banner', '#organization').find('img').attr('src')
-        info.logo = baseURI + $('div.logo', '#organization').find('img').attr('src')
+        const bannerImg = $('div.banner', '#organization').find('img').attr('src')
+        info.banner = bannerImg.startsWith('https://') ? bannerImg : baseURI + bannerImg
+        const logoImg = $('div.logo', '#organization').find('img').attr('src')
+        info.logo = logoImg.startsWith('https://') ? logoImg : baseURI + logoImg
         info.count = $('div.logo', '#organization').find('span').text().split(" ")[0]
         info.model = $('ul.tags', '#organization').find('li.model').text()
         info.roles = {}
@@ -108,10 +110,11 @@ async function fetchOrgList(handle) {
         
         const main = $('.main .info')[0]
         if (main) {
+            const logoImg = $('.main').find('.thumb').find('img').prop('src')
             orgs.main = {
                 tag: $(main).find('a').prop('href').split('/')[2],
                 name: $(main).find('a').text(),
-                logo: baseURI + $('.main').find('.thumb').find('img').prop('src'),
+                logo: logoImg.startsWith('https://') ? logoImg : baseURI + logoImg,
                 model: $('.main').find('.right-col').find('span:contains("Archetype")').next().text(),
                 rank: {
                     title: $(main).find('.ranking').prev().find('strong').text(),
@@ -119,10 +122,11 @@ async function fetchOrgList(handle) {
                 }
             }
             const links = $('.affiliation').each( function (i, el) {
+                const logo = $(el).find('.thumb').find('img').prop('src')
                 orgs.affiliated.push({
                     tag: $(el).find('.info').find('a').prop('href').split('/')[2],
                     name: $(el).find('.info').find('a').text(),
-                    logo: baseURI + $(el).find('.thumb').find('img').prop('src'),
+                    logo: logo.startsWith('https://') ? logo : baseURI + logo,
                     rank: {
                         title: $(el).find('.ranking').prev().find('strong').text(),
                         level: $(el).find('.ranking').find('.active').length,
