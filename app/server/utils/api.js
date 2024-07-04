@@ -1,15 +1,12 @@
 
-export const apiError = (message) => {
-    return {
-        status: "error",
-        message: message
-    }
+export const apiError = (event, errorCode, message="") => {
+    setResponseStatus(event, errorCode)
+    return errorCode
 }
 
-export const apiSuccess = (data, message="") => {
+export const apiSuccess = (event, data) => {
     return {
-        status: "success",
-        message: message,
+        status: 'success',
         data: data
     }
 }

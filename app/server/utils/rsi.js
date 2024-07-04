@@ -5,7 +5,6 @@ const config = require('~/config.json')
 
 async function validCitizen(handle) {
     const res = await fetchCitizen(handle)
-    console.log(res)
     if (res) {
         return true
     } else {
@@ -14,7 +13,6 @@ async function validCitizen(handle) {
 }
 
 async function fetchCitizen(handle) {
-    console.log('[srv] fetching citizen...', handle)
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle, {
@@ -91,9 +89,6 @@ async function fetchOrg(org) {
 }
 
 async function fetchOrgList(handle) {
-    //TODO: Get logos here too
-    console.log('[srv] fetching citizen...', handle)
-
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle + '/organizations', {
         headers: {
@@ -212,8 +207,6 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
     const main = isMain ? "1" : "0"
     const orgRank = rank ? `, "rank": "${rank}"` : ""
     const data = `{"symbol": "${org}", "search":"", "pagesize": 32, "main_org": "${main}", "page": ${page}${orgRank}}`
-
-    console.log(data)
 
     const resp = await $fetch(url, {
         method: 'POST',

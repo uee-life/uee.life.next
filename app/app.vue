@@ -13,4 +13,6 @@
 <script setup>
 import { useNuxtApp } from '#app';
 const { $viewport } = useNuxtApp()
+const auth = useAuthStore()
+auth.initApp()
 </script>

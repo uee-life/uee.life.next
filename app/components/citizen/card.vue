@@ -1,16 +1,3 @@
-<template>
-    <div :class="redacted" @click="$emit('selected', citizen)">
-        <span class="thumb">
-            <img :src="citizen.portrait" />
-        </span>
-        <span class="identity">
-            <h2 class="name">{{citizen.name}}</h2>
-            <span class="symbol">{{citizen.handle}}</span>
-            <span v-if="citizen.org" class="org">[{{citizen.org}}]</span>
-        </span>
-    </div>
-</template>
-
 <script setup>
 const props = defineProps({
     citizen: {
@@ -35,6 +22,19 @@ const citizenLink = computed({
     }
 })
 </script>
+
+<template>
+    <div :class="redacted" @click="$emit('selected', citizen)">
+        <span class="thumb">
+            <img :src="citizen.portrait" />
+        </span>
+        <span class="identity">
+            <h2 class="name">{{citizen.name}}</h2>
+            <span class="symbol">{{citizen.handle}}</span>
+            <span v-if="citizen.org" class="org">[{{citizen.org}}]</span>
+        </span>
+    </div>
+</template>
 
 <style scoped>
 .card {

@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     } else {
         return news
     }*/
-    return news
+    return apiSuccess(event, news)
 })
 
 async function fetchNews(data) {

@@ -3,11 +3,8 @@ import { getOrganization, orgAddMember, orgAddFounder } from "./organization"
 import * as rsi from "./rsi"
 
 export const getCitizen = async (handle, create = false, user = null) => {
-    console.log("getCitizen()")
     // try to load citizen from neo4j
     let citizen = await loadCitizen(handle)
-
-    console.log(citizen)
 
     // if citizen isn't created yet, fetch the data from rsi and create it
     if(Object.keys(citizen).length === 0) {
@@ -44,10 +41,7 @@ async function loadCitizen(handle) {
         handle: '(?i)' + handle
     }
 
-    console.log(query, params)
     const {result, error} = await readQuery(query, params)
-
-    console.log(result)
 
     if (error) {
         return null

@@ -9,10 +9,20 @@ export const searchCitizen = async (search) => {
     return result
 }
 
-export const parseResponseCode = (response) => {
+export const getResponseData = (response) => {
+    const data = handleResponse(response)
+    return data.data
+}
+
+export const handleResponse = (response) => {
     const { $swal } = useNuxtApp()
     const alert = {}
     switch (response.status) {
+        case 200:
+            const apiResponse = response._data
+            // add additional response processing here
+            return apiResponse
+            break
         case 401:
             // unauthorized
             alert.title = "Unauthorized"
@@ -28,14 +38,16 @@ export const parseResponseCode = (response) => {
             break
     }
 
-    $swal.fire({
-        title: alert.title,
-        text: alert.text,
-        icon: alert.icon,
-        confirmButtonText: 'OK!'
-    }).then((result) => {
-        if(result.isConfirmed) {
-            alert.next()
-        }
-    })
+    if (alert.title) {
+        $swal.fire({
+            title: alert.title,
+            text: alert.text,
+            icon: alert.icon,
+            confirmButtonText: 'OK!'
+        }).then((result) => {
+            if(result.isConfirmed) {
+                alert.next()
+            }
+        })
+    }
 }

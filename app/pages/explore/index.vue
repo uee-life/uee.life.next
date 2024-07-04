@@ -23,7 +23,6 @@ key: 'getSystems',
 server: false,
 lazy: true,
 async onResponse(_ctx) {
-    console.log(_ctx.response._data)
     systems.value = _ctx.response._data
 }
 })

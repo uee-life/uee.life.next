@@ -69,6 +69,8 @@
 
 <script setup>
 
+const auth = useAuthStore()
+
 const props = defineProps({
     ship: {
         type: Object,
@@ -92,11 +94,9 @@ const edit = ref({
 
 const name = ref('')
 
-const user = useUser()
-
 const isOwner = computed({
     get() {
-        return user.value && user.value.verified && user.value.handle.toLowerCase().trim() == props.ship.owner.handle.toLowerCase().trim()
+        return auth.isAuthenticated && auth.user.verified == 1 && auth.citizen.handle.toLowerCase().trim() == props.ship.owner.handle.toLowerCase().trim()
     }
 })
 

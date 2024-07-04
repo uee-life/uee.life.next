@@ -36,7 +36,6 @@ const role = ref("")
 const handle = ref("")
 
 const resultClass = (res) => {
-    console.log(res)
     if (res.handle === handle.value) {
         return "result selected"
     } else {
@@ -64,7 +63,6 @@ const addCrew = () => {
             handle: handle.value,
             role: role.value || "Crewmember"
         }
-        console.log("emitting: ", crew)
         emit('add', crew) 
     }        
 }
@@ -73,7 +71,6 @@ async function autoGetResults() {
     if(search.value.length >= 3) {
         pending.value = true
         result.value = await searchCitizen(search.value)
-        console.log(result)
         pending.value = false
     } else {
         result.value = null

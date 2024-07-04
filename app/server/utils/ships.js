@@ -1,4 +1,3 @@
-import { apiError, apiSuccess } from "./api"
 import { readQuery, writeQuery, parseRecords } from "./neo4j"
 
 export const getShipModel = async (identifier) => {
@@ -94,7 +93,7 @@ export const getShipList = async (handle) => {
 export const getOrgShipList = async (tag) => {
     console.log("Getting ships for org", tag)
     const query =
-        `MATCH (o:Organization)--(c:Citizen)-[:OWNER_OF]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
+        `MATCH (o:Organization)--(c:Citizen)<-[:OWNED_BY]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
          WHERE o.tag =~ $tag
          RETURN s as ship,
                 m as shipData,
@@ -117,21 +116,22 @@ export const getOrgShipList = async (tag) => {
 export const getShip = async (identifier) => {
     // get ship instance
     const query =
-        `MATCH (c:Citizen)-[:OWNER_OF]-(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
+        `MATCH (c:Citizen)<-[:OWNED_BY]-(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
          RETURN c as owner,
                 s as ship,
                 m as info`
     const { result } = await readQuery(query, {id: identifier})
     // TODO: Check this actually returns a ship, else return an empty result.
+    console.log(result)
     if (result[0]) {
         const ship = {
             owner: result[0].owner,
             ...result[0].ship,
             ...result[0].info
         }
-        return apiSuccess(ship)
+        return ship
     } else {
-        return apiError("Ship not found")
+        return null
     }
 }
 
@@ -166,7 +166,9 @@ export const addCrew = async (ship, crew) => {
     }
     console.log(query, params)
     const { error } = await writeQuery(query, params)
-    return apiSuccess(error, "Crewmember Added")
+    if (error) {
+        return error
+    }
 }
 
 export const removeCrew = async (ship, handle) => {
@@ -180,10 +182,8 @@ export const removeCrew = async (ship, handle) => {
     }
     const { error } = await writeQuery(query, params)
     if (error) {
-        return apiError(error)
-    } else {
-        return apiSuccess(null, "Crewmember Removed")
-    }
+        return error
+    } 
 }
 
 export const updateCrew = async (ship, crew) => {
@@ -198,8 +198,6 @@ export const updateCrew = async (ship, crew) => {
     }
     const { error } = await writeQuery(query, params)
     if (error) {
-        return apiError(error)
-    } else {
-        return apiSuccess(null, "Crewmember Updated")
+        return error
     }
 }

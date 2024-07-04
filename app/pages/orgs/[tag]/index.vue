@@ -1,9 +1,56 @@
+<script setup>
+const auth = useAuthStore()
+const route = useRoute()
+
+const tabs = ["about", "ships", "members", "affiliates"]
+const initialTab = "about"
+const fleet = ref([])
+
+const spectrumLink = computed({
+    get() {
+        return `https://robertsspaceindustries.com/spectrum/community/${org.tag}`
+    }
+})
+
+const isOwner = computed({
+    get() {
+        /*
+        const owners = []
+        for (let f in this.org.founders) {
+            owners.push(this.org.founders[f].handle)
+        }
+        return !!this.$auth.user && owners.includes(this.$auth.user.app_metadata.handle)
+        */
+        if (status != 'pending') {
+            return auth.isAuthenticated && !!org.value.founders.find(item => item.handle === auth.citizen.handle)
+        } else {
+            return false
+        }
+    }
+})
+
+async function getOrgShips() {
+    fleet.value = await $fetch(`/api/orgs/${route.params.tag}/ships`)
+}
+
+const {status, data: org} = await useFetch(`/api/orgs/${route.params.tag}`, {
+    key: 'getOrg',
+    async onResponse(_ctx) {
+        await getOrgShips()
+    },
+    async onResponseError(_ctx) {
+        console.error(_ctx.response.statusText)
+    }
+})
+
+</script>
+
 <template>
     <div class="org-main" id="org-main">
-        <div class="loading" v-if="pending">
+        <div class="loading" v-if="status == 'pending'">
             <img src="@/assets/loading.gif" >
         </div>
-        <template v-else-if="org.tag">
+        <template v-else-if="org">
             <layout-banner 
                 :name="org.name"
                 :tag="org.tag"
@@ -45,56 +92,9 @@
             </div>
         </template>
         <widgets-no-result v-else />
-        {{ org }}
+        {{ isOwner }}
     </div>
 </template>
-
-<script setup>
-const route = useRoute()
-
-const tabs = ["about", "ships", "members", "affiliates"]
-const initialTab = "about"
-const org = ref({})
-const fleet = ref([])
-
-
-const {pending} = await useFetch(`/api/org/${route.params.tag}`, {
-    key: 'getOrg',
-    server: false,
-    lazy: true,
-    async onResponse(_ctx) {
-        org.value = _ctx.response._data
-        await getOrgShips()
-    },
-    async onResponseError(_ctx) {
-        console.log(_ctx.response.statusText)
-    }
-})
-
-const spectrumLink = computed({
-    get() {
-        return `https://robertsspaceindustries.com/spectrum/community/${org.tag}`
-    }
-})
-
-const isOwner = computed({
-    get() {
-        /*
-        const owners = []
-        for (let f in this.org.founders) {
-            owners.push(this.org.founders[f].handle)
-        }
-        return !!this.$auth.user && owners.includes(this.$auth.user.app_metadata.handle)
-        */
-       return true
-    }
-})
-
-async function getOrgShips() {
-    fleet.value = await $fetch(`/api/org/${route.params.tag}/ships`)
-}
-
-</script>
 
 <style scoped>
 </style>

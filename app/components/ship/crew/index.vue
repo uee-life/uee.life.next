@@ -29,6 +29,8 @@
 <script setup>
 const {$swal} = useNuxtApp()
 
+const auth = useAuthStore()
+
 const props = defineProps({
     ship: {
         type: Object,
@@ -46,7 +48,6 @@ const props = defineProps({
     }
 })
 
-const user = useUser()
 const selected = ref(null)
 
 const modal = ref({
@@ -60,31 +61,41 @@ const showCrewmember = (c) => {
 }
 
 const isSelf = (c) => {
-    if (props.ship.value && user.handle_verified && user.handle.toLowerCase().trim() === c.toLowerCase().trim()) {
+    if (props.ship.value && auth.user.verified && auth.citizen.handle.toLowerCase().trim() === c.toLowerCase().trim()) {
         return true
     }
     return false
 }
 
 const addCrew = async (crew) => {
-    console.log("adding crewmember: ", crew)
     modal.value.add = false
     const data = {
         handle: crew.handle,
         role: crew.role
     }
 
-    await $fetch(`/api/ship/${props.ship.id}/crew/add`, {
+    await $fetch(`/api/ships/${props.ship.id}/crew/add`, {
         key: 'addCrewmate',
         method: 'POST',
         body: data,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Added",
-                text: "Crewmember successfully added",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
+        onResponse({ response }) {
+            const resp = handleResponse(response)
+            if(resp.status == 'success') {
+                $swal.fire({
+                    title: "Added",
+                    text: "Crewmember successfully added",
+                    icon: 'success',
+                    confirmButtonText: 'OK!'
+                })
+            } else {
+                $swal.fire({
+                    title: "Error",
+                    text: resp._data.data,
+                    icon: 'error',
+                    confirmButtonText: 'OK!'
+                })
+            }
+            
         },
         onResponseError(_ctx) {
             console.error('Add Error: ', _ctx.response._data)
@@ -94,14 +105,12 @@ const addCrew = async (crew) => {
 }
 
 const removeCrew = async (member) => {
-    console.log("removing crewmate: ", member.handle)
-    await $fetch(`/api/ship/${props.ship.id}/crew/remove`, {
+    await $fetch(`/api/ships/${props.ship.id}/crew/remove`, {
         key: 'removeCrewmate',
         method: 'POST',
         body: { handle: member.handle },
-        onResponse(_ctx) {
-            console.log(_ctx.response.statusText)
-            if(_ctx.response.status == 200) {
+        onResponse({ response }) {
+            if(response.status == 200) {
                 $swal.fire({
                     title: "Removed",
                     text: "Crewmember successfully removed",
@@ -110,7 +119,7 @@ const removeCrew = async (member) => {
                 })
             } else {
                 modal.value.show = false
-                parseResponseCode(_ctx.response)
+                handleResponse(_ctx.response)
             }
         }
     }).catch((error) => {
@@ -122,18 +131,16 @@ const removeCrew = async (member) => {
 }
 
 const updateCrew = async (member, role) => {
-    console.log("updating crew:", member.handle, role)
     // do me next
-    await $fetch(`/api/ship/${props.ship.id}/crew/update`, {
+    await $fetch(`/api/ships/${props.ship.id}/crew/update`, {
         key: 'updateCrew',
         method: 'POST',
         body: { 
             handle: member.handle, 
             role: role 
         },
-        onResponse(_ctx) {
-            console.log(_ctx.response.statusText)
-            if(_ctx.response.status == 200) {
+        onResponse({ response }) {
+            if(response.status == 200) {
                 $swal.fire({
                     title: "Updated",
                     text: "Crewmember successfully updated",
@@ -142,7 +149,7 @@ const updateCrew = async (member, role) => {
                 })
             } else {
                 modal.value.show = false
-                parseResponseCode(_ctx.response)
+                handleResponse(response)
             }
         }
     }).catch((error) => {
@@ -153,35 +160,14 @@ const updateCrew = async (member, role) => {
     await refresh()
 }
 
-/*
-async function addShip(ship) {
-    console.log("adding ship: ", ship)
-    await $fetch('/api/ship/add', {
-        key: 'addShip',
-        method: 'POST',
-        body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Added",
-                text: "Ship successfully added",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Add Error: ', _ctx.response._data)
-        }
-    })
-    await refresh()
-}
-    */
-
 //if(props.fleet) {
     // load the fleet view of the ship. Re-add this later.
 //} else {
-const {data: crew, pending, refresh} = await useFetch(`/api/ship/${props.ship.id}/crew`, {
-    onResponse(_ctx) {
-        _ctx.response._data.length = props.ship.max_crew
+const {data: crew, pending, refresh} = await useFetch(`/api/ships/${props.ship.id}/crew`, {
+    onResponse({ response }) {
+        const data = getResponseData(response)
+        data.length = props.ship.max_crew
+        response._data = data
     }
 })
 //}

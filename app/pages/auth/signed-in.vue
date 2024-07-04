@@ -7,6 +7,7 @@
 </template>
 
 <script setup>
+const auth = useAuthStore()
 
 const {$swal} = useNuxtApp()
 const route = useRoute()
@@ -32,8 +33,9 @@ onMounted(async () => {
             query: route.query,
             async onResponse(_ctx) {
                 const result = _ctx.response._data
-                console.log("onResponse: ", result)
+
                 if(result.status == "success") {
+                    auth.loadUser()
                     navigateTo(returnPath.value)
                 } else {
                     $swal.fire({

@@ -46,7 +46,7 @@ const addShip = () => {
     }          
 }
 
-const {data, pending, refresh} = await useFetch('/api/ship/models', {
+const {data, pending, refresh} = await useFetch('/api/ships/models', {
     key: 'getShips',
     onResponse(_ctx) {
         ships.value = _ctx.response._data.models

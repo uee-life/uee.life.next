@@ -1,3 +1,121 @@
+<script setup>
+const {$swal} = useNuxtApp()
+
+const auth = useAuthStore()
+
+const route = useRoute()
+const tabs = ref(['ships', 'location'])
+const initialTab = ref('ships')
+
+const ships = ref([])
+const links = ref([])
+
+const isOwner = computed({
+    get() {
+        return auth.isAuthenticated
+            && citizen.value.handle == auth.citizen.handle 
+            && auth.user.verified == 1
+    }
+})
+
+function linkDomain(link) {
+    const url = new URL(link)
+    return url.hostname
+}
+
+const dossierLink = computed({
+    get() {
+        return `https://robertsspaceindustries.com/citizens/${route.params.handle}`
+    }
+})
+
+async function sync() {
+    console.log('Syncing...')
+    await $fetch('/api/user/sync', {
+        key: 'syncCitizen',
+        onResponse(_ctx) {
+            console.log('Sync done!')
+            const result = _ctx.response._data
+            $swal.fire({
+                title: result.status,
+                text: result.message,
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Sync Error', _ctx.response._data)
+        }
+    })
+}
+
+async function addShip(ship) {
+    await $fetch('/api/ships/add', {
+        key: 'addShip',
+        method: 'POST',
+        body: ship,
+        onResponse(_ctx) {
+            $swal.fire({
+                title: "Added",
+                text: "Ship successfully added",
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Add Error: ', _ctx.response._data)
+        }
+    })
+    await refresh()
+}
+
+async function removeShip(ship) {
+    await $fetch('/api/ships/remove', {
+        key: 'removeShip',
+        method: 'POST',
+        body: ship,
+        onResponse(_ctx) {
+            $swal.fire({
+                title: "Removed",
+                text: "Ship successfully removed",
+                icon: 'success',
+                confirmButtonText: 'OK!'
+            })
+        },
+        onResponseError(_ctx) {
+            console.error('Remove error: ', _ctx.response._data)
+        }
+    })
+    await refresh()
+}
+
+async function getShips() {
+    await $fetch(`/api/citizens/${route.params.handle}/ships`, {
+        key: 'getShips',
+        async onResponse(_ctx) {
+            ships.value = _ctx.response._data
+        }
+    })
+}
+
+const { data: citizen, refresh, pending } = await useFetch(`/api/citizens/${route.params.handle}`, {
+        key: 'getCitizen',
+        server: false,
+        lazy: true,
+        async onResponse({ response }) {
+            const data = handleResponse(response)
+            response._data = data
+            if(data.website) {
+                links.value.push({text: 'Website', url: data.website})
+            }
+            await getShips()
+        },
+        onResponseError({ response }) {
+            handleResponse(response)
+        }
+})
+</script>
+
 <template>
     <div class='citizen'>
         <div v-if="pending" class="loading">
@@ -6,6 +124,7 @@
         <template v-else-if="citizen.handle">
             <client-only>
                 <teleport to="#left-dock">
+                    <citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/>
                     <panel-dock title="Navigation" class="left-nav">
                         <div class="left-nav-button"><router-link to="/citizens">Search Citizens</router-link></div>
                         <div class="left-nav-button"><a :href="dossierLink" target="_blank">Official Dossier</a></div>
@@ -20,7 +139,7 @@
                     </panel-dock>
                 </teleport>
                 <teleport to="#right-dock">
-                    <citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/>
+                    <!--citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/-->
                     <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
                 </teleport>
             </client-only>
@@ -47,125 +166,6 @@
         <widgets-no-result text="Citizen Not Found" v-else />
     </div>
 </template>
-
-<script setup>
-const {$swal} = useNuxtApp()
-
-const route = useRoute()
-const tabs = ref(['ships', 'location'])
-const initialTab = ref('ships')
-
-const ships = ref([])
-const links = ref([])
-
-const isOwner = computed({
-    get() {
-        const user = useUser()
-        return user.value != undefined 
-            && citizen.value.handle == user.value.handle 
-            && user.value.verified == 1
-    }
-})
-
-function linkDomain(link) {
-    const url = new URL(link)
-    return url.hostname
-}
-
-const dossierLink = computed({
-    get() {
-        return `https://robertsspaceindustries.com/citizens/${route.params.handle}`
-    }
-})
-
-async function sync() {
-    console.log('Syncing...')
-    await $fetch('/api/user/sync', {
-        key: 'syncCitizen',
-        onResponse(_ctx) {
-            console.log('Sync done!')
-            const result = _ctx.response._data
-            console.log(result)
-            $swal.fire({
-                title: result.status,
-                text: result.message,
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Sync Error', _ctx.response._data)
-        }
-    })
-}
-
-async function addShip(ship) {
-    await $fetch('/api/ship/add', {
-        key: 'addShip',
-        method: 'POST',
-        body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Added",
-                text: "Ship successfully added",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Add Error: ', _ctx.response._data)
-        }
-    })
-    await refresh()
-}
-
-async function removeShip(ship) {
-    await $fetch('/api/ship/remove', {
-        key: 'removeShip',
-        method: 'POST',
-        body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Removed",
-                text: "Ship successfully removed",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Remove error: ', _ctx.response._data)
-        }
-    })
-    await refresh()
-}
-
-async function getShips() {
-    await $fetch(`/api/citizen/${route.params.handle}/ships`, {
-        key: 'getShips',
-        async onResponse(_ctx) {
-            ships.value = _ctx.response._data
-        }
-    })
-}
-
-const { data: citizen, refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}`, {
-        key: 'getCitizen',
-        server: false,
-        lazy: true,
-        async onResponse({ response }) {
-            const data = response._data
-            console.log("getCitizen: ", data)
-            //citizen.value.info = data
-            if(data.website) {
-                links.value.push({text: 'Website', url: data.website})
-            }
-            await getShips()
-        },
-        onResponseError(_ctx) {
-            parseResponseCode(_ctx.response)
-        }
-})
-</script>
 
 <style>
 .citizen.content {

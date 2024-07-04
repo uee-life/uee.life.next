@@ -2,7 +2,7 @@
     <div class="settings">
         <widgets-loading v-if="status == 'pending'" />
         <template v-else>
-            <settings-verify :account="account" class="settings-panel" v-if="!account.verified || debug" :errors="errors.verification" @verify="verifyAccount" />
+            <settings-verify :account="account" class="settings-panel" v-if="!account.app_metadata.handle_verified || debug" :errors="errors.verification" @verify="verifyAccount" />
             <settings-info :account="account" class="settings-panel" @refresh="refresh" />
             <panel class="settings-panel" title="Settings">More coming soon...</panel>
         </template>
@@ -18,7 +18,6 @@ definePageMeta({
 })
 
 const debug = ref(false)
-const user = useUser()
 const errors = ref({
     verification: ""
 })
@@ -33,7 +32,10 @@ const verifyAccount = async () => {
 }
 
 const { data: account, status, refresh } = await useFetch(`/api/user/account`, {
-    key: 'getAccount'
+    key: 'getAccount',
+    onResponse({ response }) {
+        response._data = getResponseData(response)
+    }
 })
 
 </script>

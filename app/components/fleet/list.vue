@@ -90,7 +90,6 @@ function selected(ship) {
     console.log('selected emitted')
 }
 function remove(ship) {
-    console.log('remove clicked! ', ship)
     emit('remove', ship)
 }
 

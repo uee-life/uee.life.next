@@ -71,7 +71,6 @@ const {pending} = await useFetch(`/api/explore/locations/${route.params.code}`, 
     lazy: true,
     async onResponse(_ctx) {
         location.value = _ctx.response._data
-        console.log(location.value)
         await getChildren()
     }
 })
@@ -81,7 +80,6 @@ async function getChildren() {
     await $fetch(`/api/explore/locations/${route.params.code}/locations`, {
         key: 'getChildren',
         onResponse(_ctx) {
-            console.log('got children: ', _ctx.response._data)
             children.value = _ctx.response._data
             if (children.value.orbitals.length) {
                 tabs.value.push('locations')

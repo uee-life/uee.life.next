@@ -1,6 +1,6 @@
 <template>
-    <panel title="Verify Account">
-        <div class="settings-verify">
+    <panel title="Verify Account" class="settings-verify">
+        <div>
             <h3>Welcome to UEE.life!</h3>
             <p>To verify your account, copy the unique code from below, then paste it into your <a href="https://robertsspaceindustries.com/account/profile">RSI account bio</a>!</p>
             <p>Once done, return here and click on the "verify" button to complete verification.</p>
@@ -27,11 +27,6 @@ const props = defineProps({
     }
 })
 
-const user = useUser()
-
-// temporary for testing
-const vCode = "foobar"
-
 const verificationCode = computed({
     get() {
         return `[ueelife:${props.account.app_metadata.verificationCode}]`
@@ -42,7 +37,7 @@ const verificationCode = computed({
 
 </script>
 
-<style>
+<style scoped>
 .settings-verify {
     position: relative;
     box-sizing: border-box;
@@ -51,7 +46,7 @@ const verificationCode = computed({
     width: 100%;
     height: fit-content;
     padding: 10px;
-    padding-top: 20px;
+    margin-top: 10px;
 }
 
 .settings-verify input {

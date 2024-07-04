@@ -9,7 +9,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
         if (error) {
             return apiError("Something went wrong: ", error)
         } else {
-            return apiSuccess("Ship Added!")
+            return apiSuccess(event, "Ship Added!")
         }
     } else {
         return apiError("You must be verified to add ships to this account.")

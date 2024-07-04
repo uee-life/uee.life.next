@@ -7,7 +7,7 @@
 <script setup>
 const route = useRoute()
 
-const {pending, data: response} = await useFetch(`/api/ship/${route.params.id}`, {
+const {pending, data: response} = await useFetch(`/api/ships/${route.params.id}`, {
     key: 'getShip'
 })
 

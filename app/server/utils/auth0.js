@@ -15,7 +15,7 @@ const getToken = async () => {
         headers: { 'content-type': 'application/json'},
         body: body,
         onResponse({ request, response, options}) {
-            //console.log('got token: ', response._data)
+            console.log('got token: ', response._data)
             token = response._data.access_token
         }
     })
