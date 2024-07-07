@@ -1,7 +1,16 @@
+import { accessDenied } from "~/server/utils/api"
+import { checkPermission } from "~/server/utils/auth0"
 import { writeQuery } from "~/server/utils/neo4j"
 
+
+// Authenticated
+// Authorized [admin:all]
 export default defineAuthenticatedEventHandler(async (event) => {
-    return bootstrap()
+    const user = await loadUser(event.context.user)
+    if (await checkPermission(user, ['admin:all'])) {
+        return apiSuccess(await bootstrap())
+    }
+    return accessDenied(event)
 })
 
 async function create_system(system) {

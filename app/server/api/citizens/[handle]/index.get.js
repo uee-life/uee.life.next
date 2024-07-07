@@ -1,11 +1,11 @@
 
 export default defineEventHandler(async (event) => {
     const handle = getRouterParam(event, 'handle')
-    if (handle) {
-        const citizen = await getCitizen(handle)
-        console.log("Sending Citizen: ", citizen)
-        return citizen
+    const citizen = await getCitizen(handle)
+
+    if (citizen) {
+        return apiSuccess(citizen)
     } else {
-        return apiError("Citizen not found")
+        return apiError(event, "Citizen not found")
     }
 })

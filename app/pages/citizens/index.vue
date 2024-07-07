@@ -7,14 +7,16 @@
                 </panel-dock>
             </teleport>
         </client-only>
-        <div v-if="result && result.length" class="results">
-            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result" @selected="selected"/>
+        <div v-if="result && result.status == 'success' && result.data.length" class="results">
+            <citizen-card v-for="res in result.data" :key="res.handle" :citizen="res" class="result" @selected="selected"/>
         </div>
         <widgets-no-result v-else :text="noResultText"/>
     </div>
 </template>
 
 <script setup>
+const { $api } = useNuxtApp()
+
 const result = ref(null)
 const input = ref("")
 const pending = ref(false)
@@ -46,7 +48,7 @@ async function getResults() {
     const data = {
         text: input.value
     }
-    result.value = await $fetch(`/api/search/citizen`, {
+    result.value = await $api(`/api/search/citizen`, {
         method: 'POST',
         body: data,
         onResponse(_ctx) {

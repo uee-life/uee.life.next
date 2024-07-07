@@ -5,5 +5,5 @@ export default defineEventHandler(async (event) => {
     const query = "MATCH (location {code: $code}) return location"
 
     const { result, error } =  await readQuery(query, { code: tag.toUpperCase() })
-    return result[0].location
+    return apiSuccess(result[0].location)
 })

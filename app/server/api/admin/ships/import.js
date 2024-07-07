@@ -7,42 +7,23 @@ const config = useRuntimeConfig()
 
 const manufacturers = []
 
+// Authenticated
+// Authorized [admin:all]
 export default defineAuthenticatedEventHandler(async (event) => {
-    return bootstrap()
+    const user = await loadUser(event.context.user)
+    if (await checkPermission(user, ['admin:all'])) {
+        return apiSuccess(await bootstrap())
+    }
+    return accessDenied(event)
 })
 
-async function create_ship(ship) {
-    /*
-    ship properties:
-    - name [Avenger Stalker]
-    - size [2]
-    - description [Initially designed as a ...]
-    - hull.totalHP 
-    - armor.data.health [1000]
-    - ifcs.scmSpeed [260]
-    - ifcs.maxSpeed [1425]
-    - cargo [0]
-    - manufacturerData.data.nameSmall [AEGS]
-    - manufacturerData.data.name [Aegis Dynamics]
-    - manufacturerData.data.description [Aegis grew to prominence as a...]
-    */
-    const query =
-        `MERGE (s:Ship {
-            ship_id: $id
-            })
-            RETURN s`
-    const params = { 
-        id: ship.id
-    }
-    const result = await writeQuery(query, params)
-    return result
-}
-
 // RSI functions
-
 async function bootstrap() {
+    console.log("Importing ships")
     const url = "https://api.erkul.games/live/ships"
-    const token = config.external.erkul
+    const token = config.external.ERKUL_TOKEN
+
+    console.log(token)
 
     const resp = await $fetch(url, {
         method: 'get',
@@ -50,16 +31,16 @@ async function bootstrap() {
             'Content-Type': 'application/json',
             'Origin': 'https://www.erkul.games',
             'Authorization': `Bearer ${token}`,
+        },
+        onResponse({ response }) {
+            // check why this isn't working...
         }
     })
 
-    //console.log(resp)
+    console.log(resp)
 
     const data = resp
 
-    //const {systems, bodies} = await loadSystems(rsi.systems.resultset)
-
-    //TODO: Get list of manufacturers we already have stored, so we don't have to check every time, and can add new ones as needed
     if (data.length > 0) {
         const ships = await loadShips(data)
         return {
@@ -67,7 +48,6 @@ async function bootstrap() {
             ships: ships,
         }
     } else {
-        console.log(resp)
         return {
             ships: resp
         }
@@ -110,9 +90,6 @@ async function loadShips(ships) {
 
         // add the ship to the graph
         await addShipModel(shipObject)
-
-        // link to the manufacturer
-
 
         shipList.push(shipObject)
     }

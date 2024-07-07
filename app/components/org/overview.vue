@@ -1,3 +1,37 @@
+<script setup>
+const { $api } = useNuxtApp()
+
+const props = defineProps({
+    org: {
+        type: Object,
+        required: true
+    }
+})
+
+const founders = ref([])
+
+async function getFounder(handle) {
+    await $api(`/api/citizens/${handle}`, {
+        key: 'getFounder',
+        server: false,
+        lazy: true,
+        async onResponse(_ctx) {
+            const citizen = _ctx.response._data
+            founders.value.push(citizen)
+        }
+    })
+}
+
+async function loadFounders() {
+        for (let i in props.org.founders) {
+            await getFounder(props.org.founders[i].handle)
+        }
+}
+
+loadFounders()
+
+</script>
+
 <template>
     <div class="info">
         <panel title="roles" class="info-panel">
@@ -33,39 +67,6 @@
         </panel>
     </div>
 </template>
-
-<script setup>
-
-const props = defineProps({
-    org: {
-        type: Object,
-        required: true
-    }
-})
-
-const founders = ref([])
-
-async function getFounder(handle) {
-    await $fetch(`/api/citizens/${handle}`, {
-        key: 'getFounder',
-        server: false,
-        lazy: true,
-        async onResponse(_ctx) {
-            const citizen = _ctx.response._data
-            founders.value.push(citizen)
-        }
-    })
-}
-
-async function loadFounders() {
-        for (let i in props.org.founders) {
-            await getFounder(props.org.founders[i].handle)
-        }
-}
-
-loadFounders()
-
-</script>
 
 <style scoped>
 

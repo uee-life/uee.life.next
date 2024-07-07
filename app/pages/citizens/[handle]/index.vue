@@ -1,5 +1,5 @@
 <script setup>
-const {$swal} = useNuxtApp()
+const {$swal, $api} = useNuxtApp()
 
 const auth = useAuthStore()
 
@@ -13,7 +13,7 @@ const links = ref([])
 const isOwner = computed({
     get() {
         return auth.isAuthenticated
-            && citizen.value.handle == auth.citizen.handle 
+            && citizen.value.data.handle == auth.citizen.handle 
             && auth.user.verified == 1
     }
 })
@@ -31,36 +31,43 @@ const dossierLink = computed({
 
 async function sync() {
     console.log('Syncing...')
-    await $fetch('/api/user/sync', {
+    await $api('/api/user/sync', {
         key: 'syncCitizen',
-        onResponse(_ctx) {
+        onResponse({ response }) {
             console.log('Sync done!')
-            const result = _ctx.response._data
+            const result = response._data
+            console.log(response)
             $swal.fire({
                 title: result.status,
                 text: result.message,
                 icon: 'success',
                 confirmButtonText: 'OK!'
             })
-        },
-        onResponseError(_ctx) {
-            console.error('Sync Error', _ctx.response._data)
         }
     })
 }
 
 async function addShip(ship) {
-    await $fetch('/api/ships/add', {
+    await $api('/api/ships/add', {
         key: 'addShip',
         method: 'POST',
         body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Added",
-                text: "Ship successfully added",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
+        onResponse({ response }) {
+            if (response._data.status == 'success') {
+                $swal.fire({
+                    title: "Added",
+                    text: "Ship successfully added",
+                    icon: 'success',
+                    confirmButtonText: 'OK!'
+                })
+            } else {
+                $swal.fire({
+                    title: "Error",
+                    text: "Unable to add ship",
+                    icon: 'error',
+                    confirmButtonText: 'OK!'
+                })
+            }
         },
         onResponseError(_ctx) {
             console.error('Add Error: ', _ctx.response._data)
@@ -70,61 +77,62 @@ async function addShip(ship) {
 }
 
 async function removeShip(ship) {
-    await $fetch('/api/ships/remove', {
+    await $api('/api/ships/remove', {
         key: 'removeShip',
         method: 'POST',
         body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Removed",
-                text: "Ship successfully removed",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Remove error: ', _ctx.response._data)
+        onResponse({ response }) {
+            if (response._data.status == 'success') {
+                $swal.fire({
+                    title: "Removed",
+                    text: "Ship successfully removed",
+                    icon: 'success',
+                    confirmButtonText: 'OK!'
+                })
+            } else {
+                $swal.fire({
+                    title: "Error",
+                    text: "Unable to remove ship",
+                    icon: 'error',
+                    confirmButtonText: 'OK!'
+                })
+            }
         }
     })
     await refresh()
 }
 
 async function getShips() {
-    await $fetch(`/api/citizens/${route.params.handle}/ships`, {
-        key: 'getShips',
-        async onResponse(_ctx) {
-            ships.value = _ctx.response._data
+    await $api(`/api/citizens/${route.params.handle}/ships`, {
+        onResponse({ response }) {
+            ships.value = response._data.data
         }
     })
 }
 
-const { data: citizen, refresh, pending } = await useFetch(`/api/citizens/${route.params.handle}`, {
+const { data: citizen, refresh, status } = await useAPI(`/api/citizens/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
         async onResponse({ response }) {
-            const data = handleResponse(response)
-            response._data = data
+            const data = response._data
             if(data.website) {
                 links.value.push({text: 'Website', url: data.website})
             }
             await getShips()
-        },
-        onResponseError({ response }) {
-            handleResponse(response)
         }
 })
 </script>
 
 <template>
     <div class='citizen'>
-        <div v-if="pending" class="loading">
+        <div v-if="status != 'success'" class="loading">
             <img src="@/assets/loading.gif" >
         </div>
-        <template v-else-if="citizen.handle">
+        <template v-else-if="citizen.status == 'success'">
             <client-only>
                 <teleport to="#left-dock">
-                    <citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/>
+                    <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
                     <panel-dock title="Navigation" class="left-nav">
                         <div class="left-nav-button"><router-link to="/citizens">Search Citizens</router-link></div>
                         <div class="left-nav-button"><a :href="dossierLink" target="_blank">Official Dossier</a></div>
@@ -143,8 +151,8 @@ const { data: citizen, refresh, pending } = await useFetch(`/api/citizens/${rout
                     <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
                 </teleport>
             </client-only>
-            <citizen-info :isOwner="isOwner" :citizen="citizen" @refresh="refresh" />
-            <citizen-bio :bio="citizen.bio"/>
+            <citizen-info :isOwner="isOwner" :citizen="citizen.data" @refresh="refresh" />
+            <citizen-bio :bio="citizen.data.bio"/>
             <div class="citizen-tabs">
                 <layout-tabs :tabs="tabs" :initialTab="initialTab">
                     <template #tab-title-ships>

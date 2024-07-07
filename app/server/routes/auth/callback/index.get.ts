@@ -2,7 +2,6 @@ import { OAuth2RequestError } from "arctic";
 import { DatabaseUser, generateId } from "lucia";
 
 export default defineEventHandler(async (event) => {
-    console.log('in auth/callback');
     const query = getQuery(event);
     const code = query.code?.toString() ?? null;
     const state = query.state?.toString() ?? null;

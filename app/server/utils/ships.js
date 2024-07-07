@@ -31,7 +31,7 @@ export const addShipModel = async (ship) => {
         `MATCH (m:Organization {tag: $manufacturer, official: true})
          MERGE (m)<-[:MADE_BY]-(s:ShipModel {
             identifier: $identifier,
-            model: $model,
+            name: $model,
             manufacturer: $manufacturer,
             size: $size,
             cargo: $cargo,
@@ -59,18 +59,25 @@ export const addShip = async (ship, handle) => {
         id: ship.id,
         name: ship.name
     }
-    const error = await writeQuery(query, params)
+    const { error } = await writeQuery(query, params)
+    if (error) {
+        return error
+    }
+    return null
 }
 
 export const removeShip = async (ship, handle) => {
     const query = 
         `MATCH (s:Ship {id: $id})-[:OWNED_BY]->(c:Citizen {handle: $handle}) DETACH DELETE s`
     
-    const error = await writeQuery(query, {id: ship.id, handle: handle})
+    const { error } = await writeQuery(query, {id: ship.id, handle: handle})
+    if (error) {
+        return error
+    }
+    return null
 }
 
 export const getShipList = async (handle) => {
-    console.log("Getting ships for ", handle)
     const query =
         `MATCH (c:Citizen)<-[:OWNED_BY]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
          WHERE c.handle =~ $handle
@@ -106,8 +113,7 @@ export const getOrgShipList = async (tag) => {
             ...res.ship,
             ...res.shipData
         }
-        //ship.data = res._fields[0].properties
-        //ship.model = res._fields[1].properties
+
         ships.push(ship)
     }
     return ships
@@ -122,7 +128,7 @@ export const getShip = async (identifier) => {
                 m as info`
     const { result } = await readQuery(query, {id: identifier})
     // TODO: Check this actually returns a ship, else return an empty result.
-    console.log(result)
+
     if (result[0]) {
         const ship = {
             owner: result[0].owner,

@@ -19,6 +19,7 @@
 </template>
 
 <script setup>
+const { $api } = useNuxtApp()
 const emit = defineEmits(['add'])
 
 const props = defineProps({
@@ -81,13 +82,23 @@ async function getResults() {
     const data = {
         text: input.value
     }
-    result.value = await $fetch(`/api/search/citizen`, {
+    result.value = await $api(`/api/search/citizen`, {
         method: 'POST',
         body: data,
         onResponse(_ctx) {
             pending.value = false
         }
     })
+}
+
+const searchCitizen = async (search) => {
+    const result = await $api(`/api/search/citizen`, {
+        method: 'POST',
+        body: {
+            text: search
+        }
+    })
+    return result
 }
 </script>
 

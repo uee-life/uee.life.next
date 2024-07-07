@@ -6,11 +6,10 @@ export const defineAuthenticatedEventHandler = <T extends EventHandlerRequest, D
     defineEventHandler<T>(async event => {
         try {
             // do something before
-            console.log('doing authentication stuff')
             if (event.context.user) {
                 return await handler(event)
             } else {
-                return apiError('You must be authenticated to use this API')
+                return apiError(event, 'You must be authenticated to use this API', 401)
             }
             // do something after
         } catch (err) {

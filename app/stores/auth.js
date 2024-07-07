@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 
 export const useAuthStore = defineStore('auth', () => {
+    const { $api } = useNuxtApp()
     // state
     const user = ref(null)
     const loading = ref(true)
@@ -21,7 +22,15 @@ export const useAuthStore = defineStore('auth', () => {
     })
 
     async function loadUser() {
-        user.value = await $fetch(`/api/user`)
+        const res = await $api(`/api/user`, {
+            onResponseError({ response }) {
+                // ignore this, we just aren't logged in.
+                return null
+            }
+        })
+        if (res.status == 'success') {
+            user.value = res.data
+        }
     }
 
     async function initApp() {

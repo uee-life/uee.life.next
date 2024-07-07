@@ -1,5 +1,6 @@
 
 
 export default defineEventHandler(async (event) => {
-    return await getAllShipModels()
+    const data = await getAllShipModels()
+    return apiSuccess(data)
 })

@@ -108,6 +108,12 @@ export const updateHandle = async (userId, handle) => {
     })
 }
 
+export const checkPermission = async (user, permissions) => {
+    console.log(`checking permissions for ${user.handle}, looking for ${permission}`)
+    const perms = await getPermissions(user.user_id)
+    return permissions.some(item => perms.includes(item))
+}
+
 export const getAccount = async (userId) => {
     const token = await getToken()
     const account = await $fetch(`https://ueelife.auth0.com/api/v2/users/${userId}`, {
@@ -117,6 +123,7 @@ export const getAccount = async (userId) => {
             'Authorization': `Bearer ${token}`
         }
     })
+
     if(account.app_metadata.verificationCode) {
         return account
     } else {
@@ -124,6 +131,18 @@ export const getAccount = async (userId) => {
         console.log("account: ", account)
         return account
     }
+}
+
+export const getPermissions = async (userId) => {
+    const token = await getToken()
+    const permissions = await $fetch(`https://ueelife.auth0.com/api/v2/users/${userId}/permissions`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    return permissions.map((item) => item.permission_name)
 }
 
 

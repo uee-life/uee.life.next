@@ -66,7 +66,7 @@ const ifSure = (cb) => {
 }
 
 const changeHandle = async () => {
-    const result = await $fetch(`/api/user/handle`, {
+    const result = await $api(`/api/user/handle`, {
         method: 'POST',
         body: {
             handle: handle.value
