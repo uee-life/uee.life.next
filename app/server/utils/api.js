@@ -1,6 +1,6 @@
 
 export const apiError = (event, message="", errorCode=200) => {
-    setResponseStatus(event, errorCode)
+    //setResponseStatus(event, errorCode)
     return {
         status: 'error',
         data: message

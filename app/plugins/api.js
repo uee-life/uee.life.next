@@ -9,7 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             const data = response._data
         },
         async onResponseError({ response }) {
-            console.log('response error: ', response.status)
             if (response.status === 401) {
                 await nuxtApp.runWithContext(() => {
                 const { $swal } = useNuxtApp()
@@ -42,20 +41,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                     })
                 })
             } else {
-                await nuxtApp.runWithContext(() => {
-                    const { $swal } = useNuxtApp()
-
-                    $swal.fire({
-                        title: "Unhandled Response",
-                        text: "Unhandled response: " + response.status,
-                        icon: "error",
-                        confirButtonText: 'OK!'
-                    }).then((result) => {
-                        if(result.isConfirmed) {
-                            reloadNuxtApp()
-                        }
-                    })
-                })
+                // 404 etc
             }
         }
     })

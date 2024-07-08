@@ -12,12 +12,15 @@ async function validCitizen(handle) {
     }
 }
 
-async function fetchCitizen(handle) {
+const fetchCitizen = /*defineCachedFunction(*/async (handle) => {
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle, {
         headers: {
             'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+        },
+        onRequest() {
+            console.log(`fetchCitizen: fetching ${handle}`)
         }
     }).catch(() => {
         return null
@@ -54,9 +57,14 @@ async function fetchCitizen(handle) {
     } else {
         return null
     }
-}
+}/*, {
+    maxAge: 10,
+    name: 'fetchCitizen',
+    getKey: (handle) => handle
+})*/
 
-async function fetchOrg(org) {
+// cache this.
+const fetchOrg = /*defineCachedFunction(*/async (org) => {
     const baseURI = "https://robertsspaceindustries.com"
     const resp = await $fetch(`${baseURI}/orgs/${org}`)
 
@@ -86,8 +94,13 @@ async function fetchOrg(org) {
         console.error(error)
         return null
     }
-}
+}/*, {
+    maxAge: 60 * 60,
+    name: 'fetchOrg',
+    getKey: (org) => org
+})*/
 
+// cache this
 async function fetchOrgList(handle) {
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle + '/organizations', {

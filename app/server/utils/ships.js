@@ -25,7 +25,6 @@ export const getAllShipModels = async () => {
 }
 
 export const addShipModel = async (ship) => {
-    console.log("Adding ship: ", ship.model)
     // add ship static details and link to manufacturer
     const query =
         `MATCH (m:Organization {tag: $manufacturer, official: true})

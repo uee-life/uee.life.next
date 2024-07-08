@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     return apiSuccess(news)
 })
 
-async function fetchNews(data) {
+const fetchNews = defineCachedFunction(async (data) => {
     try {
         const baseURI = "https://robertsspaceindustries.com"
         const response = await $fetch(baseURI + '/api/hub/getCommlinkItems', {
@@ -75,7 +75,12 @@ async function fetchNews(data) {
         console.error(error)
         return []
     }
-}
+}, {
+    maxAge: 60 * 10,
+    name: 'fetchNews',
+    getKey: () => { return 'rsiNews' },
+    swr: false
+})
 
 function computeDate(posted) {
     if(posted.startsWith('about')) {

@@ -9,10 +9,14 @@ export const defineAuthenticatedEventHandler = <T extends EventHandlerRequest, D
             if (event.context.user) {
                 return await handler(event)
             } else {
-                return apiError(event, 'You must be authenticated to use this API', 401)
+                throw createError({
+                    statusCode: 401,
+                    statusMessage: 'You are not authorized to use this API'
+                })
             }
             // do something after
         } catch (err) {
-            return apiError(err)
+            console.log(err)
+            return err
         }
     })

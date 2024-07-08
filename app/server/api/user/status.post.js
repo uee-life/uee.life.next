@@ -3,4 +3,5 @@ export default defineAuthenticatedEventHandler(async (event) => {
     const status = await readBody(event)
 
     // do something
+    return apiSuccess('OK!')
 })

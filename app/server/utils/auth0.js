@@ -1,6 +1,6 @@
 const config = useRuntimeConfig()
 
-const getToken = async () => {
+const getToken = defineCachedFunction(async () => {
     const body = {
         'client_id': config.auth0_m2m.client_id,
         'client_secret': config.auth0_m2m.client_secret,
@@ -14,6 +14,9 @@ const getToken = async () => {
         method: 'post',
         headers: { 'content-type': 'application/json'},
         body: body,
+        onRequest() {
+            console.log(`[CACHE][getToken] Cache updated`)
+        },
         onResponse({ request, response, options}) {
             console.log('got token: ', response._data)
             token = response._data.access_token
@@ -21,7 +24,10 @@ const getToken = async () => {
     })
 
     return token
-}
+}, {
+    maxAge: 60 * 60 * 23,
+    name: 'auth0Token'
+})
 
 export const latestUser = async () => {
     const token = await getToken()

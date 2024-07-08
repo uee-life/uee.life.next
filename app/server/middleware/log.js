@@ -1,7 +1,12 @@
-export default defineEventHandler((event) => {
-    let user = "Anonymous"
+export default defineEventHandler(async (event) => {
+    let user = {handle: "Anonymous"}
     if(event.context.user) {
-        user = event.context.user.id
+        user = await loadUser(event.context.user)
     }
-    console.log('[API REQUEST]' + `[${user}]` + getRequestURL(event))
+    const path = getRequestURL(event)
+    if (path.pathname.startsWith('/api/')) {
+        console.log('[API REQUEST]' + `[${user.handle}] ` + path)
+    } else {
+        console.log('[WEB REQUEST]' + `[${user.handle}] ` + path)
+    }
 })

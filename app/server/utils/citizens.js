@@ -1,5 +1,5 @@
 import { readQuery, writeQuery } from "./neo4j"
-import { getOrganization, orgAddMember, orgAddFounder } from "./organization"
+import { getOrganization, orgAddMember, orgAddFounder } from "./orgs"
 import * as rsi from "./rsi"
 
 export const getCitizen = async (handle, create = false, user = null) => {
