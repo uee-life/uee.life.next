@@ -26,7 +26,8 @@ const getToken = defineCachedFunction(async () => {
     return token
 }, {
     maxAge: 60 * 60 * 23,
-    name: 'auth0Token'
+    name: 'auth0Token',
+    getKey: () => { return 'token'}
 })
 
 export const latestUser = async () => {

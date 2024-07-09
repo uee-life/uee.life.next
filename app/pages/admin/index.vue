@@ -19,6 +19,7 @@
         <panel title="Site Data">
             Coming soon...
         </panel>
+        <admin-storage></admin-storage>
     </div>
 </template>
 

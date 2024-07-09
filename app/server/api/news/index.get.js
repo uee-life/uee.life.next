@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
         }
     }
     
-    let news = await fetchNews(data)
+    let news = await rsiNews(data)
     //const earliest = news[news.length - 1].posted_date
 
     /*const feeds = await getFeeds()
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     return apiSuccess(news)
 })
 
-const fetchNews = defineCachedFunction(async (data) => {
+const rsiNews = defineCachedFunction(async (data) => {
     try {
         const baseURI = "https://robertsspaceindustries.com"
         const response = await $fetch(baseURI + '/api/hub/getCommlinkItems', {
@@ -76,9 +76,9 @@ const fetchNews = defineCachedFunction(async (data) => {
         return []
     }
 }, {
-    maxAge: 60 * 10,
-    name: 'fetchNews',
-    getKey: () => { return 'rsiNews' },
+    maxAge: 60 * 5,
+    name: 'rsiNews',
+    getKey: (data) => { return `${data.channel}-${data.series}-${data.page}`},
     swr: false
 })
 
