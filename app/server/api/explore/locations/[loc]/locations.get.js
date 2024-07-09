@@ -17,5 +17,5 @@ export default defineEventHandler(async (event) => {
     pois.forEach(record => {
         locations.pois.push(record.loc)
     })
-    return locations
+    return apiSuccess(locations)
 })

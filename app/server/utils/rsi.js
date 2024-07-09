@@ -5,7 +5,6 @@ const config = require('~/config.json')
 
 async function validCitizen(handle) {
     const res = await fetchCitizen(handle)
-    console.log(res)
     if (res) {
         return true
     } else {
@@ -13,13 +12,15 @@ async function validCitizen(handle) {
     }
 }
 
-async function fetchCitizen(handle) {
-    console.log('[srv] fetching citizen...', handle)
+const fetchCitizen = /*defineCachedFunction(*/async (handle) => {
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle, {
         headers: {
             'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+        },
+        onRequest() {
+            console.log(`fetchCitizen: fetching ${handle}`)
         }
     }).catch(() => {
         return null
@@ -56,9 +57,14 @@ async function fetchCitizen(handle) {
     } else {
         return null
     }
-}
+}/*, {
+    maxAge: 10,
+    name: 'fetchCitizen',
+    getKey: (handle) => handle
+})*/
 
-async function fetchOrg(org) {
+// cache this.
+const fetchOrg = /*defineCachedFunction(*/async (org) => {
     const baseURI = "https://robertsspaceindustries.com"
     const resp = await $fetch(`${baseURI}/orgs/${org}`)
 
@@ -88,12 +94,14 @@ async function fetchOrg(org) {
         console.error(error)
         return null
     }
-}
+}/*, {
+    maxAge: 60 * 60,
+    name: 'fetchOrg',
+    getKey: (org) => org
+})*/
 
+// cache this
 async function fetchOrgList(handle) {
-    //TODO: Get logos here too
-    console.log('[srv] fetching citizen...', handle)
-
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle + '/organizations', {
         headers: {
@@ -212,8 +220,6 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
     const main = isMain ? "1" : "0"
     const orgRank = rank ? `, "rank": "${rank}"` : ""
     const data = `{"symbol": "${org}", "search":"", "pagesize": 32, "main_org": "${main}", "page": ${page}${orgRank}}`
-
-    console.log(data)
 
     const resp = await $fetch(url, {
         method: 'POST',

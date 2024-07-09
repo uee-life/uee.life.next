@@ -7,29 +7,24 @@
             </div>
         </div>
         <div class="page-head-right">
-            <div class="user">
-                <div v-if="user.info" class="welcome">
-                    Welcome, <nuxt-link :to="citizenLink">{{ user.info.name ? user.info.name : user.handle }}</nuxt-link>!
+            <transition name="fade">
+                <div v-if="auth.isAuthenticated" class="user">
+                    <nuxt-link :to="citizenLink">
+                        <span class="name">{{ auth.citizen.name ? auth.citizen.name : auth.citizen.handle }}</span>
+                        <citizen-portrait v-if="auth.isAuthenticated" size="x-small" :citizen="auth.citizen" />
+                    </nuxt-link>
                 </div>
-                <div v-else>
-                    Welcome! Please Log In Below
-                </div>
-            </div>
+            </transition>
         </div>
     </div>
 </template>
 
 <script setup>
-const user = useUser()
-const config = useRuntimeConfig()
+const auth = useAuthStore()
 
 const citizenLink = computed({
     get() {
-        if(user.value) {
-            return `/citizens/${user.value.handle}`
-        } else {
-            return `/citizens`
-        }
+        return `/citizens/${auth.citizen.handle}`
     }
 })
 </script>
@@ -83,16 +78,31 @@ const citizenLink = computed({
         align-items: flex-end;
     }
 
-    .page-head-right .user a {
+    .page-head-right>.user>a {
+        display: flex;
+        align-items: center;
+        color: #39ced8;
+        text-decoration: none;
         cursor: pointer;
     }
 
-    .page-head-right .user .welcome>a {
-        color: #39ced8;
-        text-decoration: none;
+    .page-head-right>.user>a:hover {
+        color: #dbf3ff;
     }
 
-    .page-head-right .user .welcome>a:hover {
-        color: #dbf3ff;
+    .page-head-right>.user .name {
+        margin: 10px;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+
+    .fade-enter-to, .fade-leave {
+        opacity: 1;
+    }
+
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 </style>

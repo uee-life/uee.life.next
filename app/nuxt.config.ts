@@ -18,17 +18,17 @@ export default defineNuxtConfig({
           { hid: 'description', name: 'description', content: 'The Portal to your life in the UEE' },
           { name: 'og:title', property: 'og:title', content: 'UEE.life' },
           { name: 'og:description', property: 'og:description', content: 'The Portal to your life in the UEE' },
-/*          { name: 'og:image', property: 'og:image', content: 'https://uee.life/images/uee.life.jpg' },
+          { name: 'og:image', property: 'og:image', content: 'https://uee.life/images/uee.life.jpg' },
           { name: 'og:url', property: 'og:url', content: 'https://uee.life' },
           { name: 'twitter:image', property: 'twitter:image', content: 'https://uee.life/images/uee.life.jpg' },
-          { name: 'twitter:card', property: 'twitter:card', content: 'summary_large_image' },*/
+          { name: 'twitter:card', property: 'twitter:card', content: 'https://uee.life/images/uee.life.jpg' },
         ],
-/*        link: [
-          { rel: 'icon', type: 'image/x-icon', href: 'https://uee.life/favicon.ico' },
+        link: [
+ /*         { rel: 'icon', type: 'image/x-icon', href: 'https://uee.life/favicon.ico' },
           { rel: 'stylesheet', type: 'text/css', href: '//fonts.googleapis.com/css?family=Electrolize|Orbitron:400,500,700|Share+Tech+Mono'},
           { rel: 'stylesheet', type: 'text/css', href: '//fonts.googleapis.com/css?family=Michroma&display=swap'},
-          { rel: 'stylesheet', type: 'text/scss', href: 'sweetalert2/src/sweetalert2.scss'}
-        ]*/
+          { rel: 'stylesheet', type: 'text/scss', href: 'sweetalert2/src/sweetalert2.scss'}*/
+        ]
       },
   },
 
@@ -47,6 +47,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
     '@nuxtjs/device',
@@ -66,6 +67,7 @@ export default defineNuxtConfig({
   routeRules: {
     // redirect, ssr, cors, headers, static/swr
     //'/myroute/**': {ssr: true},
+    '/api/**': { cors: true },
   },
 
   runtimeConfig: {

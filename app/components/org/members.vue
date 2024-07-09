@@ -1,21 +1,23 @@
 <template>
     <client-only>
-    <div class="org-members">
-        <div v-if="pending" class="loading">
-            <img src="@/assets/loading.gif">
+        <div class="org-members">
+            <div v-if="status != 'success'" class="loading">
+                <img src="@/assets/loading.gif">
+            </div>
+            <template v-else-if="members.data">
+                <div class="results">
+                    <citizen-card v-for="(member, index) in members.data.members" :key="member.handle + index" :citizen="member" class='org-cell' />
+                </div>
+                <layout-pagination v-if="members.data.members"
+                @nextPage="pageChangeHandler('next')"
+                @prevPage="pageChangeHandler('previous')"
+                @load-page="pageChangeHandler" 
+                :currentPage="currentPage" 
+                :pageCount="pageCount" />
+            </template>
+            <widgets-no-result v-else />
         </div>
-        <div v-else-if="members" class="results">
-            <citizen-card v-for="(member, index) in members" :key="member.handle + index" :citizen="member" class='org-cell' />
-        </div>
-        <widgets-no-result v-else />
-        <layout-pagination v-if="members"
-            @nextPage="pageChangeHandler('next')"
-            @prevPage="pageChangeHandler('previous')"
-            @load-page="pageChangeHandler" 
-            :currentPage="currentPage" 
-            :pageCount="pageCount" />
-    </div>
-</client-only>
+    </client-only>
 </template>
 
 <script setup>
@@ -27,13 +29,12 @@ const props = defineProps({
         default: false
     }
 })
-const members = ref([])
-const memberCount = ref(0)
+
 const currentPage = ref(1)
 
 const pageCount = computed({
     get() {
-        return Math.ceil(memberCount.value / 32)
+        return Math.ceil(members.value.data.count / 32)
     }
 })
 
@@ -51,15 +52,10 @@ function pageChangeHandler(value) {
     refresh()
 }
 
-const {pending, refresh} = await useFetch(() => `/api/org/${route.params.tag}/${props.affiliate ? "affiliates" : "members"}?page=${currentPage.value}`, {
+const {data: members, status, refresh} = await useAPI(() => `/api/orgs/${route.params.tag}/${props.affiliate ? "affiliates" : "members"}?page=${currentPage.value}`, {
     key: 'getMembers',
     server: false,
-    lazy: true,
-    onResponse(_ctx) {
-        const res = _ctx.response._data
-        members.value = res.members
-        memberCount.value = res.count
-    }
+    lazy: true
 })
 </script>
 

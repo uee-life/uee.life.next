@@ -1,6 +1,6 @@
 <template>
     <div class="news-feed" id="news-feed">
-        <widgets-loading v-if="pending && articles.length == 0"/>
+        <widgets-loading v-if="status != 'success' && articles.length == 0"/>
         <template v-else>
             <client-only>
                 <teleport to="#news-filter">
@@ -69,12 +69,12 @@ const sources = [
     ]
 
 // client only, because hydration issues
-const { pending, refresh } = await useFetch(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages.value}`, {
+const { status, refresh } = await useAPI(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages.value}`, {
     key: 'getNews',
     server: false,
     lazy: true,
-    onResponse(_ctx) {
-        articles.value = articles.value.concat(checkIDs(_ctx.response._data))
+    onResponse({ response }) {
+        articles.value = articles.value.concat(checkIDs(response._data.data))
     }
 })
 
@@ -113,7 +113,7 @@ function leave(el) {
 
 // load more articles
 async function loadMore() {
-    if(!pending.value && more.value) {
+    if(status.value == 'success' && more.value) {
         pages.value += 1
         await refresh()
     }

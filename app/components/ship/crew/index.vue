@@ -1,6 +1,6 @@
 <template>
     <panel title="Crew" class="crew">
-        <div v-for="(c, i) in crew" :key="i" class="crewman">
+        <div v-for="(c, i) in crew.data" :key="i" class="crewman">
             <div v-if="c" class="assigned">
                 <h5 class="role">{{ c.role }}</h5>
                 <citizen-portrait :citizen="c.citizen" size="small" :showName="true">
@@ -27,7 +27,9 @@
 </template>
 
 <script setup>
-const {$swal} = useNuxtApp()
+const {$swal, $api} = useNuxtApp()
+
+const auth = useAuthStore()
 
 const props = defineProps({
     ship: {
@@ -46,7 +48,6 @@ const props = defineProps({
     }
 })
 
-const user = useUser()
 const selected = ref(null)
 
 const modal = ref({
@@ -60,128 +61,91 @@ const showCrewmember = (c) => {
 }
 
 const isSelf = (c) => {
-    if (props.ship.value && user.handle_verified && user.handle.toLowerCase().trim() === c.toLowerCase().trim()) {
+    if (props.ship.value && auth.user.verified && auth.citizen.handle.toLowerCase().trim() === c.toLowerCase().trim()) {
         return true
     }
     return false
 }
 
 const addCrew = async (crew) => {
-    console.log("adding crewmember: ", crew)
     modal.value.add = false
-    const data = {
-        handle: crew.handle,
-        role: crew.role
-    }
 
-    await $fetch(`/api/ship/${props.ship.id}/crew/add`, {
+    const {status, data} = await $api(`/api/ships/${props.ship.id}/crew/add`, {
         key: 'addCrewmate',
         method: 'POST',
-        body: data,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Added",
-                text: "Crewmember successfully added",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Add Error: ', _ctx.response._data)
+        body: {
+            handle: crew.handle,
+            role: crew.role
         }
     })
+
+    if (status == 'success') {
+        $swal.fire({
+            title: 'Success',
+            text: 'Crewmember successfully added',
+            icon: 'success',
+            confirmButtonText: 'OK!'
+        })
+    }
+
     await refresh()
 }
 
 const removeCrew = async (member) => {
-    console.log("removing crewmate: ", member.handle)
-    await $fetch(`/api/ship/${props.ship.id}/crew/remove`, {
+    modal.value.show = false
+    
+    const { status } = await $api(`/api/ships/${props.ship.id}/crew/remove`, {
         key: 'removeCrewmate',
         method: 'POST',
-        body: { handle: member.handle },
-        onResponse(_ctx) {
-            console.log(_ctx.response.statusText)
-            if(_ctx.response.status == 200) {
-                $swal.fire({
-                    title: "Removed",
-                    text: "Crewmember successfully removed",
-                    icon: 'success',
-                    confirmButtonText: 'OK!'
-                })
-            } else {
-                modal.value.show = false
-                parseResponseCode(_ctx.response)
-            }
-        }
-    }).catch((error) => {
-        // probably a disconnect between client and server state. Refresh to fix.
-        //reloadNuxtApp()
+        body: { 
+            handle: member.handle 
+        },
     })
-    modal.value.show = false
+
+    if (status == 'success') {
+        $swal.fire({
+            title: "Removed",
+            text: "Crewmember successfully removed",
+            icon: 'success',
+            confirmButtonText: 'OK!'
+        })
+    }
+
     await refresh()
 }
 
 const updateCrew = async (member, role) => {
-    console.log("updating crew:", member.handle, role)
-    // do me next
-    await $fetch(`/api/ship/${props.ship.id}/crew/update`, {
+    modal.value.show = false
+
+    const { status } = await $api(`/api/ships/${props.ship.id}/crew/update`, {
         key: 'updateCrew',
         method: 'POST',
         body: { 
             handle: member.handle, 
             role: role 
-        },
-        onResponse(_ctx) {
-            console.log(_ctx.response.statusText)
-            if(_ctx.response.status == 200) {
-                $swal.fire({
-                    title: "Updated",
-                    text: "Crewmember successfully updated",
-                    icon: 'success',
-                    confirmButtonText: 'OK!'
-                })
-            } else {
-                modal.value.show = false
-                parseResponseCode(_ctx.response)
-            }
         }
-    }).catch((error) => {
-        // probably a disconnect between client and server state. Refresh to fix.
-        //reloadNuxtApp()
     })
-    modal.value.show = false
-    await refresh()
-}
 
-/*
-async function addShip(ship) {
-    console.log("adding ship: ", ship)
-    await $fetch('/api/ship/add', {
-        key: 'addShip',
-        method: 'POST',
-        body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Added",
-                text: "Ship successfully added",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Add Error: ', _ctx.response._data)
-        }
-    })
+    if (status == 'success') {
+        $swal.fire({
+            title: "Updated",
+            text: "Crewmember successfully updated",
+            icon: 'success',
+            confirmButtonText: 'OK!'
+        })
+    }
+
     await refresh()
 }
-    */
 
 //if(props.fleet) {
     // load the fleet view of the ship. Re-add this later.
 //} else {
-const {data: crew, pending, refresh} = await useFetch(`/api/ship/${props.ship.id}/crew`, {
-    onResponse(_ctx) {
-        _ctx.response._data.length = props.ship.max_crew
+const {data: crew, status, refresh} = await useAPI(`/api/ships/${props.ship.id}/crew`, {
+    onResponse({ response }) {
+        const data = response._data.data
+        data.length = props.ship.max_crew
+        response._data.data = data
     }
 })
 //}

@@ -1,9 +1,30 @@
+<script setup>
+const { $api } = useNuxtApp()
+
+const debug = ref(false)
+const errors = ref({
+    verification: ""
+})
+
+const verifyAccount = async () => {
+    console.log('Verifying account')
+    const result = await $api(`/api/user/verify`, {
+        key: 'verifyAccount',
+        method: 'POST'
+    })
+    await refresh()
+}
+
+const { data: account, status, refresh } = await useAPI(`/api/user/account`)
+
+</script>
+
 <template>
     <div class="settings">
         <widgets-loading v-if="status == 'pending'" />
         <template v-else>
-            <settings-verify :account="account" class="settings-panel" v-if="!account.verified || debug" :errors="errors.verification" @verify="verifyAccount" />
-            <settings-info :account="account" class="settings-panel" @refresh="refresh" />
+            <settings-verify :account="account.data" class="settings-panel" v-if="!account.data.app_metadata.handle_verified || debug" :errors="errors.verification" @verify="verifyAccount" />
+            <settings-info :account="account.data" class="settings-panel" @refresh="refresh" />
             <panel class="settings-panel" title="Settings">More coming soon...</panel>
         </template>
         <div v-if="debug" class="debug">
@@ -11,32 +32,6 @@
         </div>
     </div>
 </template>
-
-<script setup>
-definePageMeta({
-    middleware: ['authenticated']
-})
-
-const debug = ref(false)
-const user = useUser()
-const errors = ref({
-    verification: ""
-})
-
-const verifyAccount = async () => {
-    console.log('Verifying account')
-    const result = await $fetch(`/api/user/verify`, {
-        key: 'verifyAccount',
-        method: 'POST'
-    })
-    await refresh()
-}
-
-const { data: account, status, refresh } = await useFetch(`/api/user/account`, {
-    key: 'getAccount'
-})
-
-</script>
 
 <style scoped>
   .settings {

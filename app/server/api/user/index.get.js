@@ -1,10 +1,9 @@
-export default defineAuthenticatedEventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
     let user = await loadUser(event.context.user)
 
     if(user) {
-        console.log('user found, getting citizen')
         user.info = await getCitizen(user.handle, true, user) ?? {}
-        console.log(user.info)
     }
-    return user
+
+    return apiSuccess(user)
 })

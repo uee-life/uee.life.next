@@ -1,6 +1,6 @@
 
 export default defineEventHandler(async (event) => {
-    return await latestUser()
+    return apiSuccess(await latestUser())
     //return await getStats()
 })
 /*

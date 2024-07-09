@@ -45,11 +45,9 @@ export default defineEventHandler(async (event) => {
             }
             data.push(cit)
         }
-        return data
+        return apiSuccess(data)
     } else {
-        return {
-            error: "Failed to access search api"
-        }
+        return apiError(event, 'Failed to access search API', 500)
     }
 })
 

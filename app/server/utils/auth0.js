@@ -1,6 +1,6 @@
 const config = useRuntimeConfig()
 
-const getToken = async () => {
+const getToken = defineCachedFunction(async () => {
     const body = {
         'client_id': config.auth0_m2m.client_id,
         'client_secret': config.auth0_m2m.client_secret,
@@ -14,14 +14,21 @@ const getToken = async () => {
         method: 'post',
         headers: { 'content-type': 'application/json'},
         body: body,
+        onRequest() {
+            console.log(`[CACHE][getToken] Cache updated`)
+        },
         onResponse({ request, response, options}) {
-            //console.log('got token: ', response._data)
+            console.log('got token: ', response._data)
             token = response._data.access_token
         }
     })
 
     return token
-}
+}, {
+    maxAge: 60 * 60 * 23,
+    name: 'auth0Token',
+    getKey: () => { return 'token'}
+})
 
 export const latestUser = async () => {
     const token = await getToken()
@@ -108,6 +115,12 @@ export const updateHandle = async (userId, handle) => {
     })
 }
 
+export const checkPermission = async (user, permissions) => {
+    console.log(`checking permissions for ${user.handle}, looking for ${permission}`)
+    const perms = await getPermissions(user.user_id)
+    return permissions.some(item => perms.includes(item))
+}
+
 export const getAccount = async (userId) => {
     const token = await getToken()
     const account = await $fetch(`https://ueelife.auth0.com/api/v2/users/${userId}`, {
@@ -117,6 +130,7 @@ export const getAccount = async (userId) => {
             'Authorization': `Bearer ${token}`
         }
     })
+
     if(account.app_metadata.verificationCode) {
         return account
     } else {
@@ -124,6 +138,18 @@ export const getAccount = async (userId) => {
         console.log("account: ", account)
         return account
     }
+}
+
+export const getPermissions = async (userId) => {
+    const token = await getToken()
+    const permissions = await $fetch(`https://ueelife.auth0.com/api/v2/users/${userId}/permissions`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    return permissions.map((item) => item.permission_name)
 }
 
 

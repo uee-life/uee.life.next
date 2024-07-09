@@ -14,14 +14,14 @@
             </div>
             <div class="line-item"><div class="label">Created: </div> <div> {{new Date(account.created_at).toDateString()}} @ {{new Date(account.created_at).toLocaleTimeString()}}</div></div>
             <div class="line-item"><div class="label">Last Login: </div> <div> {{new Date(account.last_login).toDateString()}} @ {{new Date(account.last_login).toLocaleTimeString()}}</div></div>
-            <div class="line-item">
+            <div class="line-item  pointer">
                 <div class="label">Login IP: </div> 
                 <span v-if="showIP" @click="showIP = !showIP"> {{ account.last_ip }} </span>
                 <span v-else @click="showIP = !showIP">[click to show]</span>
             </div>
               <br />
               <h3>RSI Connection</h3>
-            <div class="line-item pointer">
+            <div class="line-item">
                 <div class="label">RSI Handle: </div> 
                 <span> {{account.app_metadata.handle}}
                     <img class="verified" src="@/assets/tick.png" v-if="account.app_metadata.handle_verified" />
@@ -66,15 +66,13 @@ const ifSure = (cb) => {
 }
 
 const changeHandle = async () => {
-    console.log(`updating handle to ${handle.value}`)
-    const result = await $fetch(`/api/user/handle`, {
+    const result = await $api(`/api/user/handle`, {
         method: 'POST',
         body: {
             handle: handle.value
         }
     })
     emit('refresh')
-    console.log(result)
 }
 
 </script>
@@ -85,8 +83,9 @@ const changeHandle = async () => {
         display: flex;
         height: fit-content;
         padding: 10px;
-        padding-top: 20px;
+        margin-top: 10px;
         margin-bottom: 20px;
+        width: 100%;
         opacity: 0;
     }
 

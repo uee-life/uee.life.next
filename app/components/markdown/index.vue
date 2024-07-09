@@ -3,6 +3,7 @@
 </template>
 
 <script setup>
+const { $api } = useNuxtApp()
 const { parseMarkdown } = useMarkdown();
 
 const props = defineProps({
@@ -21,7 +22,7 @@ const markdown = ref("")
 const loadMarkdown = async () => {
   let data = null
   if (props.file) {
-    data = await $fetch('/content/' + props.file)
+    data = await $api('/content/' + props.file)
   } else {
     data = props.markdown
   }
