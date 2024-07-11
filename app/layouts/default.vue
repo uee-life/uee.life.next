@@ -2,9 +2,7 @@
   <div class="app">
     <layout-header-default />
 
-    <widgets-notification messageType="warning" messageText="Test Version - Data May Not Persist" :modality="true" v-if="config.public.test_env" > 
-      Warning warning
-    </widgets-notification>
+    <widgets-notification messageType="warning" messageText="Test Version - Data May Not Persist" :modality="false" v-if="config.public.test_env" ></widgets-notification>
 
     <layout-navbar-default />
     <div class="main">
