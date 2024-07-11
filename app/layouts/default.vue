@@ -3,6 +3,7 @@
     <layout-header-default />
 
     <widgets-notification messageType="warning" messageText="Test Version - Data May Not Persist" :modality="true" v-if="config.public.test_env" > 
+      Warning warning
     </widgets-notification>
 
     <layout-navbar-default />

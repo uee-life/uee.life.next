@@ -21,7 +21,7 @@
             type: String,
             required: true,
             validator(value, props) {
-                return ['error', 'warning', 'information', 'casual',].includes(value)
+                return ['error', 'warning', 'debug', 'information',].includes(value)
             }
         },
         modality: {
