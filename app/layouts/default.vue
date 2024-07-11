@@ -1,9 +1,9 @@
 <template>
   <div class="app">
     <layout-header-default />
-    <panel class="warning-panel" v-if="config.public.test_env">
-      Test Version. Content May Not Persist.
-    </panel>
+
+    <widgets-notification messageType="warning" messageText="Test Version - Data May Not Persist" :modality="false" v-if="config.public.test_env" ></widgets-notification>
+
     <layout-navbar-default />
     <div class="main">
       <layout-dock name="left-dock" />
@@ -24,15 +24,6 @@ const auth = useAuthStore()
 </script>
 
 <style scoped>
-
-.warning-panel {
-  display: flex;
-  margin: 10px;
-  background: rgba(255,0,0,0.1);
-  color: #dbf3ff;
-  justify-content: center;
-  min-height: 30px;
-}
 
 .app {
   position: relative;
