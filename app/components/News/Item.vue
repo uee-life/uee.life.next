@@ -64,6 +64,8 @@ const style = computed({
     position: relative;
     opacity: 1;
     flex-grow: 1;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
 }
 
 .news-item .news-content {

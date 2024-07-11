@@ -1,7 +1,6 @@
-import { manager } from '~/server/utils/auth0'
 
 export default defineEventHandler(async (event) => {
-    manager()
+    return apiSuccess(await latestUser())
     //return await getStats()
 })
 /*

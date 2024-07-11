@@ -18,7 +18,7 @@
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/orgs">Organizations</nuxt-link>
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/explore">Explore</nuxt-link>
             <br>
-            <template v-if="user && user.handle">
+            <template v-if="auth.isAuthenticated">
                 <nuxt-link class="burger-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
                 <a class="burger-button" @click="toggleMenu() && useLogout()">Sign Off</a>
             </template>
@@ -30,7 +30,7 @@
 
 <script setup>
 import { gsap } from 'gsap'
-const user = useUser()
+const auth = useAuthStore()
 const menuActive = ref(false)
 const burgerType = ref("hamburger--collapse")
 
@@ -59,7 +59,7 @@ const hamburgerClass = computed({
 
 const citizenLink = computed({
     get() {
-        return `/citizens/${user.value.handle}`
+        return `/citizens/${auth.citizen.handle}`
     }
 })
 

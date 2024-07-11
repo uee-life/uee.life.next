@@ -1,73 +1,20 @@
-<template>
-    <div class='citizen'>
-        <client-only>
-            <teleport to="#left-dock">
-                <panel-dock title="Navigation" class="left-nav">
-                    <div class="left-nav-button"><router-link to="/citizens">Search Citizens</router-link></div>
-                    <div class="left-nav-button"><a :href="dossierLink" target="_blank">Official Dossier</a></div>
-                </panel-dock>
-                <panel-dock v-if="citizen && citizen.links.length > 0" title="Citizen links">
-                    <div v-for="link in citizen.links" :key="link.url" class="link">
-                        <div class="left-nav-button"><a :href="link.url" target="_blank">{{linkDomain(link.url)}}</a></div>
-                    </div>
-                </panel-dock>
-                <panel-dock v-if="isOwner" title="Tools">
-                    <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
-                </panel-dock>
-            </teleport>
-            <teleport to="#right-dock">
-                <citizen-org v-if="citizen.info.orgs" :org="citizen.info.orgs.main"/>
-                <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
-            </teleport>
-        </client-only>
-        <div v-if="pending" class="loading">
-            <img src="@/assets/loading.gif" >
-        </div>
-        <template v-else-if="citizen.info.handle">
-            <citizen-info :isOwner="isOwner" :citizen="citizen.info" @refresh="refresh" />
-            <citizen-bio :bio="citizen.info.bio"/>
-            <div class="citizen-tabs">
-                <layout-tabs :tabs="tabs" :initialTab="initialTab">
-                    <template #tab-title-ships>
-                        SHIPS ({{ citizen.ships.length }})
-                    </template>
-                    <template #tab-content-ships>
-                        <fleet-view v-if="citizen.ships" :isOwner="isOwner" :ships="citizen.ships" @add="addShip" @remove="removeShip"/>
-                    </template>
-
-                    <template v-if="isOwner" #tab-title-location>
-                        LOCATION
-                    </template>
-                    <template v-if="isOwner" #tab-content-location>
-                        <citizen-location :isOwner="isOwner" :citizen="citizen"/>
-                    </template>
-                </layout-tabs>
-            </div>
-        </template>
-        <widgets-no-result text="Citizen Not Found" v-else />
-    </div>
-</template>
-
 <script setup>
-const {$swal} = useNuxtApp()
+const {$swal, $api} = useNuxtApp()
+
+const auth = useAuthStore()
+
 const route = useRoute()
 const tabs = ref(['ships', 'location'])
 const initialTab = ref('ships')
-const citizen = ref({
-    info: {
-        handle: '',
-        bio: ''
-    },
-    home: {},
-    ships: [],
-    orgs: null,
-    links: []
-})
+
+const ships = ref([])
+const links = ref([])
 
 const isOwner = computed({
     get() {
-        const user = useUser()
-        return user.value != undefined && citizen.value.info.handle == user.value.handle
+        return auth.isAuthenticated
+            && citizen.value.data.handle == auth.citizen.handle 
+            && auth.user.verified == 1
     }
 })
 
@@ -84,37 +31,43 @@ const dossierLink = computed({
 
 async function sync() {
     console.log('Syncing...')
-    await $fetch('/api/user/sync', {
+    await $api('/api/user/sync', {
         key: 'syncCitizen',
-        onResponse(_ctx) {
+        onResponse({ response }) {
             console.log('Sync done!')
-            const result = _ctx.response._data
-            console.log(result)
+            const result = response._data
+            console.log(response)
             $swal.fire({
                 title: result.status,
                 text: result.message,
                 icon: 'success',
                 confirmButtonText: 'OK!'
             })
-        },
-        onResponseError(_ctx) {
-            console.error('Sync Error', _ctx.response._data)
         }
     })
 }
 
 async function addShip(ship) {
-    await $fetch('/api/ship/add', {
+    await $api('/api/ships/add', {
         key: 'addShip',
         method: 'POST',
         body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Added",
-                text: "Ship successfully added",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
+        onResponse({ response }) {
+            if (response._data.status == 'success') {
+                $swal.fire({
+                    title: "Added",
+                    text: "Ship successfully added",
+                    icon: 'success',
+                    confirmButtonText: 'OK!'
+                })
+            } else {
+                $swal.fire({
+                    title: "Error",
+                    text: "Unable to add ship",
+                    icon: 'error',
+                    confirmButtonText: 'OK!'
+                })
+            }
         },
         onResponseError(_ctx) {
             console.error('Add Error: ', _ctx.response._data)
@@ -124,49 +77,103 @@ async function addShip(ship) {
 }
 
 async function removeShip(ship) {
-    await $fetch('/api/ship/remove', {
+    await $api('/api/ships/remove', {
         key: 'removeShip',
         method: 'POST',
         body: ship,
-        onResponse(_ctx) {
-            $swal.fire({
-                title: "Removed",
-                text: "Ship successfully removed",
-                icon: 'success',
-                confirmButtonText: 'OK!'
-            })
-        },
-        onResponseError(_ctx) {
-            console.error('Remove error: ', _ctx.response._data)
+        onResponse({ response }) {
+            if (response._data.status == 'success') {
+                $swal.fire({
+                    title: "Removed",
+                    text: "Ship successfully removed",
+                    icon: 'success',
+                    confirmButtonText: 'OK!'
+                })
+            } else {
+                $swal.fire({
+                    title: "Error",
+                    text: "Unable to remove ship",
+                    icon: 'error',
+                    confirmButtonText: 'OK!'
+                })
+            }
         }
     })
     await refresh()
 }
 
 async function getShips() {
-    await $fetch(`/api/citizen/${route.params.handle}/ships`, {
-        key: 'getShips',
-        async onResponse(_ctx) {
-            citizen.value.ships = _ctx.response._data
+    await $api(`/api/citizens/${route.params.handle}/ships`, {
+        onResponse({ response }) {
+            ships.value = response._data.data
         }
     })
 }
 
-const { refresh, pending } = await useFetch(`/api/citizen/${route.params.handle}`, {
+const { data: citizen, refresh, status } = await useAPI(`/api/citizens/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
-        async onResponse(_ctx) {
-            citizen.value.info = _ctx.response._data.data
-            if(citizen.value.info.website) {
-                citizen.value.links.push({text: 'Website', url: citizen.value.info.website})
+        async onResponse({ response }) {
+            const data = response._data
+            if(data.website) {
+                links.value.push({text: 'Website', url: data.website})
             }
-            getShips()
-        },
-        onResponseError(_ctx) {
+            await getShips()
         }
 })
 </script>
+
+<template>
+    <div class='citizen'>
+        <div v-if="status != 'success'" class="loading">
+            <img src="@/assets/loading.gif" >
+        </div>
+        <template v-else-if="citizen.status == 'success'">
+            <client-only>
+                <teleport to="#left-dock">
+                    <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
+                    <panel-dock title="Navigation" class="left-nav">
+                        <div class="left-nav-button"><router-link to="/citizens">Search Citizens</router-link></div>
+                        <div class="left-nav-button"><a :href="dossierLink" target="_blank">Official Dossier</a></div>
+                    </panel-dock>
+                    <panel-dock v-if="citizen && links.length > 0" title="Citizen links">
+                        <div v-for="link in links" :key="link.url" class="link">
+                            <div class="left-nav-button"><a :href="link.url" target="_blank">{{linkDomain(link.url)}}</a></div>
+                        </div>
+                    </panel-dock>
+                    <panel-dock v-if="isOwner" title="Tools">
+                        <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
+                    </panel-dock>
+                </teleport>
+                <teleport to="#right-dock">
+                    <!--citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/-->
+                    <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
+                </teleport>
+            </client-only>
+            <citizen-info :isOwner="isOwner" :citizen="citizen.data" @refresh="refresh" />
+            <citizen-bio :bio="citizen.data.bio"/>
+            <div class="citizen-tabs">
+                <layout-tabs :tabs="tabs" :initialTab="initialTab">
+                    <template #tab-title-ships>
+                        SHIPS ({{ ships.length }})
+                    </template>
+                    <template #tab-content-ships>
+                        <fleet-view v-if="ships" :isOwner="isOwner" :ships="ships" @add="addShip" @remove="removeShip"/>
+                    </template>
+
+                    <template v-if="isOwner" #tab-title-location>
+                        LOCATION
+                    </template>
+                    <template v-if="isOwner" #tab-content-location>
+                        <citizen-location :isOwner="isOwner" :citizen="citizen"/>
+                    </template>
+                </layout-tabs>
+            </div>
+        </template>
+        <widgets-no-result text="Citizen Not Found" v-else />
+    </div>
+</template>
 
 <style>
 .citizen.content {

@@ -16,13 +16,14 @@ import { gsap } from 'gsap'
 
 const props = defineProps({
     citizen: {
-        type: Object
+        type: Object,
+        required: true
     },
     size: {
         type: String,
         default: 'medium',
         validator: function (value) {
-            return ['tiny', 'small', 'medium'].indexOf(value) !== -1
+            return ['tiny', 'x-small', 'small', 'medium'].indexOf(value) !== -1
         }
     },
     showName: {
@@ -70,6 +71,28 @@ function citizenLink() {
         height: fit-content;
     }
 
+    .portrait.small .verified {
+        position: absolute;
+        top: 68px;
+        right: 0px;
+        width: 30px;
+        filter: drop-shadow(1px 1px 2px black);
+    }
+
+    .portrait.x-small {
+        width: 75px;
+        min-height: 75px;
+        height: fit-content;
+    }
+
+    .portrait.x-small .verified {
+        position: absolute;
+        top: 54px;
+        right: 2px;
+        width: 20px;
+        filter: drop-shadow(1px 1px 1px black);
+    }
+
     .portrait.tiny {
         width: 40px;
         min-height: 40px;
@@ -90,14 +113,6 @@ function citizenLink() {
         top: 118px;
         width: 45px;
         filter: drop-shadow(2px 2px 2px black);
-    }
-
-    .portrait.small .verified {
-        position: absolute;
-        top: 68px;
-        right: 0px;
-        width: 30px;
-        filter: drop-shadow(1px 1px 2px black);
     }
 
     .portrait.tiny .verified {

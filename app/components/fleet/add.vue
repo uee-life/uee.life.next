@@ -1,10 +1,10 @@
 <template>
-    <form v-if="!pending" @submit.prevent="addShip" class="ship-form">
+    <form v-if="status == 'success'" @submit.prevent="addShip" class="ship-form">
         <div>
             Manufacturer: 
             <select v-model="make">
                 <option disabled value="">Select Manufacturer</option>
-                <option v-for="m in makes" :key="m.tag" :value="m.tag">{{ m.name }}</option>
+                <option v-for="m in ships.data.makes" :key="m.tag" :value="m.tag">{{ m.name }}</option>
             </select>
         </div>
         <div>
@@ -20,17 +20,16 @@
 </template>
 
 <script setup>
+const { $api } = useNuxtApp()
 const emit = defineEmits(['add'])
 
 const ship = ref(null)
-const ships = ref([])
-const makes = ref(null)
 const make = ref("Origin")
 const name = ref("")
 
 const filteredShips = computed({
     get() {
-        return ships.value.filter(ship => {
+        return ships.value.data.models.filter(ship => {
             return ship.manufacturer.toLowerCase().includes(make.value.toLowerCase())
         })
     }
@@ -46,13 +45,7 @@ const addShip = () => {
     }          
 }
 
-const {data, pending, refresh} = await useFetch('/api/ship/models', {
-    key: 'getShips',
-    onResponse(_ctx) {
-        ships.value = _ctx.response._data.ships
-        makes.value = _ctx.response._data.manufacturers
-    }
-})
+const {data: ships, status} = await useAPI('/api/ships/models')
 </script>
 
 <style>

@@ -13,7 +13,7 @@
  </template>
 
 <script setup>
-
+const { $api } = useNuxtApp()
 const result = ref("")
 const input = ref("")
 const pending = ref(false)
@@ -41,16 +41,16 @@ async function autoGetResults() {
     }
 }
 
+//TODO: Optimize this.
 async function getResults() {
-    const data = {
-        search: input.value
-    }
-    await $fetch(`/api/search/org`, {
+    const data = await $api(`/api/search/org`, {
         method: 'POST',
-        body: data,
-        onResponse(_ctx) {
-            if(_ctx.response._data) {
-                result.value = _ctx.response._data.html
+        body: {
+            search: input.value
+        },
+        onResponse({ response }) {
+            if(response._data) {
+                result.value = response._data.data.html
                                 .replace(/\/media/g, 'https://robertsspaceindustries.com/media')
                                 .replace(/\/rsi/g, 'https://robertsspaceindustries.com/rsi')
             }

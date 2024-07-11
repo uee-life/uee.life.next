@@ -1,9 +1,3 @@
-<template>
-    <panel title="bio" titleSize="small">
-        {{ bio }}
-    </panel>
-</template>
-
 <script setup>
 defineProps({
     bio: {
@@ -11,3 +5,9 @@ defineProps({
     }
 })
 </script>
+
+<template>
+    <panel title="bio" titleSize="small">
+        {{ bio }}
+    </panel>
+</template>

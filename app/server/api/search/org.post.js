@@ -28,9 +28,8 @@ export default defineEventHandler(async (event) => {
         }
     })
     const org = res.data
-    console.log(org)
     
-    return org
+    return apiSuccess(org)
 })
 
 

@@ -19,6 +19,7 @@
 </template>
 
 <script setup>
+const { $api } = useNuxtApp()
 const emit = defineEmits(['add'])
 
 const props = defineProps({
@@ -36,7 +37,6 @@ const role = ref("")
 const handle = ref("")
 
 const resultClass = (res) => {
-    console.log(res)
     if (res.handle === handle.value) {
         return "result selected"
     } else {
@@ -64,7 +64,6 @@ const addCrew = () => {
             handle: handle.value,
             role: role.value || "Crewmember"
         }
-        console.log("emitting: ", crew)
         emit('add', crew) 
     }        
 }
@@ -73,7 +72,6 @@ async function autoGetResults() {
     if(search.value.length >= 3) {
         pending.value = true
         result.value = await searchCitizen(search.value)
-        console.log(result)
         pending.value = false
     } else {
         result.value = null
@@ -84,13 +82,23 @@ async function getResults() {
     const data = {
         text: input.value
     }
-    result.value = await $fetch(`/api/search/citizen`, {
+    result.value = await $api(`/api/search/citizen`, {
         method: 'POST',
         body: data,
         onResponse(_ctx) {
             pending.value = false
         }
     })
+}
+
+const searchCitizen = async (search) => {
+    const result = await $api(`/api/search/citizen`, {
+        method: 'POST',
+        body: {
+            text: search
+        }
+    })
+    return result
 }
 </script>
 

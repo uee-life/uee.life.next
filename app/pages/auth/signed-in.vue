@@ -7,9 +7,10 @@
 </template>
 
 <script setup>
-
-const {$swal} = useNuxtApp()
+const {$swal, $api} = useNuxtApp()
 const route = useRoute()
+
+const auth = useAuthStore()
 
 const returnPath = useCookie('auth0_return_path')
 
@@ -27,28 +28,26 @@ onMounted(async () => {
             }
         })
     } else {
-        await $fetch('/auth/callback', {
+        const { status } = await $api('/auth/callback', {
             key: 'authCallback',
-            query: route.query,
-            async onResponse(_ctx) {
-                const result = _ctx.response._data
-                console.log("onResponse: ", result)
-                if(result.status == "success") {
-                    navigateTo(returnPath.value)
-                } else {
-                    $swal.fire({
-                        title: "Error",
-                        text: result,
-                        icon: 'error',
-                        confirmButtonText: 'OK!'
-                    }).then((result) => {
-                        if(result.isConfirmed) {
-                          navigateTo('/')
-                        }
-                    })
-                }
-            }
+            query: route.query
         })
+
+        if (status == 'success') {
+            auth.loadUser()
+            navigateTo(returnPath.value)
+        } else { 
+            $swal.fire({
+                title: "Error",
+                text: result,
+                icon: 'error',
+                confirmButtonText: 'OK!'
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    navigateTo('/')
+                }
+            })
+        }
     }
   })
 })

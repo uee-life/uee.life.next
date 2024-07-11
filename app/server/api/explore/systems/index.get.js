@@ -7,5 +7,5 @@ export default defineEventHandler(async (event) => {
     result.forEach(record => {
         systems.push(record.system)
     })
-    return systems
+    return apiSuccess(systems)
 })

@@ -19,6 +19,8 @@
 
 <script setup>
 const config = useRuntimeConfig();
+
+const auth = useAuthStore()
 </script>
 
 <style scoped>

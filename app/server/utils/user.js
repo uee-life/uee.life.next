@@ -1,12 +1,4 @@
-
-export const loggedIn = async (event) => {
-    const user = await loadUser(event.context.user)
-    console.log("user", user)
-    if(user) {
-        return true
-    }
-    return false
-}
+import { getPermissions } from "./auth0"
 
 export const loadUser = async (user) => {
     if (user && user.id) {

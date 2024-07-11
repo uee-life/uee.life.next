@@ -1,31 +1,5 @@
-<template>
-    <div id="citizen-info" class="citizen-info">
-        <panel id="portrait">
-            <citizen-portrait :citizen="citizen" />
-        </panel>
-        <div class="info">
-            <div class="citizen-data">
-                <div class="labels">
-                    <span>UEE Record: </span>
-                    <span>Name: </span>
-                    <span>Handle: </span>
-                    <span>Enlisted: </span>
-                </div>
-                <div class="data">
-                    <span>{{ citizen.record }}</span>
-                    <span>{{ citizen.name }}</span>
-                    <span>{{ citizen.handle }}</span>
-                    <span>{{ citizen.enlisted }}</span>
-                </div>
-            </div>
-        </div>
-  </div>
-</template>
-
 <script setup>
 import { gsap } from "gsap"
-
-const user = useUser()
 
 const props = defineProps({
     citizen: {
@@ -53,6 +27,30 @@ onMounted(() => {
 })
 </script>
 
+<template>
+    <div id="citizen-info" class="citizen-info">
+        <panel id="portrait">
+            <citizen-portrait :citizen="citizen" />
+        </panel>
+        <div class="info">
+            <div class="citizen-data">
+                <div class="labels">
+                    <span>UEE Record: </span>
+                    <span>Name: </span>
+                    <span>Handle: </span>
+                    <span>Enlisted: </span>
+                </div>
+                <div class="data">
+                    <span>{{ citizen.record }}</span>
+                    <span>{{ citizen.name }}</span>
+                    <span>{{ citizen.handle }}</span>
+                    <span>{{ citizen.enlisted }}</span>
+                </div>
+            </div>
+        </div>
+  </div>
+</template>
+
 <style scoped>
     .citizen-info {
         display: flex;
@@ -73,6 +71,7 @@ onMounted(() => {
         flex-grow: 1;
         max-width: 350px;
         margin-left: 20px;
+        margin-bottom: 20px;
         opacity: 0;
     }
 
