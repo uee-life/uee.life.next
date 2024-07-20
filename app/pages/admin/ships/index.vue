@@ -21,18 +21,12 @@ const {data: shipModels} = await useAPI('/api/ships/models', {
         <client-only>
             <teleport to="#left-dock">
                 <panel-dock class="actions" title="action">
-                    <div class="left-left-button" @click="updateShips">
+                    <div class="left-nav-button" @click="updateShips">
                         Update Ships
                     </div>
                 </panel-dock>
             </teleport>
         </client-only>
-            <panel title="Site Data">
-                Coming soon...
-            </panel>
-            <panel title="Action Output" titleSize="small">
-                {{ result }}
-            </panel>
             <ship-summary-model 
                 v-if="shipModels" 
                 v-for="ship in shipModels.data.models" 

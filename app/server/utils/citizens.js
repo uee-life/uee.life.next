@@ -17,6 +17,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
             } else {
                 citizen.verified = false
             }
+            logActivity('NEO4J', `Creating Citizen: ${citizen.handle}`, user ? user.handle : 'Anonymous')
             await createCitizen(citizen)
         }
     } else {
@@ -25,6 +26,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
         // check and update verification
         if (user && user.verified == 1 && citizen.verified == false) {
             citizen.verified = true
+            logActivity('NEO4J', `Updating Citizen: ${citizen.handle}`, user.handle)
             updateCitizen(citizen)
         }
     }
@@ -94,7 +96,6 @@ async function createCitizen(citizen) {
 }
 
 export const updateCitizen = async (citizen) => {
-    console.log("Updating Citizen: ", citizen.handle)
     const query = 
         `MATCH (c:Citizen {handle: $handle})
          SET c += {

@@ -1,7 +1,7 @@
 const neo4j = require('neo4j-driver')
 const {uri, user, password} = require('../config/db_config')
 
-const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
+const driver = neo4j.driver(uri, neo4j.auth.basic(user, password), { disableLosslessIntegers: true })
 
 async function writeQuery(query, params) {
     const session = driver.session({ database: 'neo4j' });
@@ -40,7 +40,6 @@ async function readQuery(query, params={}) {
         );
 
         records = result.records;
-
     } catch (err) {
         console.error(`Something went wrong: ${err}`);
         error = err
@@ -55,10 +54,24 @@ async function readQuery(query, params={}) {
 
 function parseRecords(records) {
     const result = []
+
     for (const res of records) {
         const rec = {}
         for (const key of res.keys) {
-            rec[key] = res._fields[res._fieldLookup[key]].properties
+            const data = res._fields[res._fieldLookup[key]]
+
+            if (neo4j.isInt(data)) {
+                rec[key] = data
+            } else if (neo4j.isNode || neo4j.isRelationship ) {
+                if (data.properties) {
+                    rec[key] = data.properties
+                } else {
+                    rec[key] = data
+                }
+                
+            } else {
+                rec[key] = data
+            }
         }
         result.push(rec)
     }

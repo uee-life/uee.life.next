@@ -15,7 +15,7 @@ const updateRSI = async () => {
         <client-only>
             <teleport to="#left-dock">
                 <panel-dock class="actions" title="action">
-                    <div class="left-left-button" @click="updateRSI">
+                    <div class="left-nav-button" @click="updateRSI">
                         Update RSI data
                     </div>
                 </panel-dock>

@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
     return apiSuccess(news)
 })
 
+// Cached
 const rsiNews = defineCachedFunction(async (data) => {
     try {
         const baseURI = "https://robertsspaceindustries.com"
@@ -70,6 +71,7 @@ const rsiNews = defineCachedFunction(async (data) => {
                 news.push(art)
             }
         })
+        logActivity('CACHE', 'Updating RSI news cache')
         return news
     } catch (error) {
         console.error(error)
@@ -77,9 +79,8 @@ const rsiNews = defineCachedFunction(async (data) => {
     }
 }, {
     maxAge: 60 * 5,
-    name: 'rsiNews',
-    getKey: (data) => { return `${data.channel}-${data.series}-${data.page}`},
-    swr: false
+    name: 'rsi-News',
+    getKey: (data) => { return `${data.channel}-${data.series}-${data.page}`}
 })
 
 function computeDate(posted) {
