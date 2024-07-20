@@ -116,7 +116,7 @@ export const updateHandle = async (userId, handle) => {
 }
 
 export const checkPermission = async (user, permissions) => {
-    console.log(`checking permissions for ${user.handle}, looking for ${permission}`)
+    logActivity('AUTH', `Requesting Permissions ${permissions}`, user.handle)
     const perms = await getPermissions(user.user_id)
     return permissions.some(item => perms.includes(item))
 }

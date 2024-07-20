@@ -1,7 +1,7 @@
-const cheerio = require('cheerio')
-const {convertToMarkdown } = require('./markdown')
+import cheerio from 'cheerio'
+import  convertToMarkdown from './markdown'
 
-const config = require('~/config.json')
+const config = useRuntimeConfig()
 
 async function validCitizen(handle) {
     const res = await fetchCitizen(handle)
@@ -12,15 +12,15 @@ async function validCitizen(handle) {
     }
 }
 
-const fetchCitizen = /*defineCachedFunction(*/async (handle) => {
+export const fetchCitizen = defineCachedFunction(async (handle) => {
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle, {
         headers: {
-            'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+            'Cookie': `_rsi_device=${config.external.RSI_DEVICE}; Rsi-XSRF=${config.external.RSI_XSRF}; Rsi-Token=${config.external.RSI_TOKEN}`
         },
         onRequest() {
-            console.log(`fetchCitizen: fetching ${handle}`)
+            logActivity('CACHE', `Caching RSI data for ${handle}`)
         }
     }).catch(() => {
         return null
@@ -31,7 +31,7 @@ const fetchCitizen = /*defineCachedFunction(*/async (handle) => {
             const $ = cheerio.load(response)
             let info = {}
             info.handle = handle
-            if($('p:contains("authenticated")').text()) {
+            if ($('p:contains("authenticated")').text()) {
                 console.error($('p:contains("authenticated")').text())
             }
             info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
@@ -41,7 +41,7 @@ const fetchCitizen = /*defineCachedFunction(*/async (handle) => {
             info.portrait = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
             let image = $('div.thumb', '#public-profile').children()[0]
             if (image && image.attribs.src) {
-                if(image.attribs.src.startsWith('https')) {
+                if (image.attribs.src.startsWith('https')) {
                     info.portrait = image.attribs.src
                 } else {
                     info.portrait = `${baseURI}${image.attribs.src}`
@@ -57,14 +57,14 @@ const fetchCitizen = /*defineCachedFunction(*/async (handle) => {
     } else {
         return null
     }
-}/*, {
-    maxAge: 10,
-    name: 'fetchCitizen',
+}, {
+    maxAge: 60 * 5,
+    name: 'rsi-fetchCitizen',
     getKey: (handle) => handle
-})*/
+})
 
-// cache this.
-const fetchOrg = /*defineCachedFunction(*/async (org) => {
+
+export const fetchOrg = defineCachedFunction(async (org) => {
     const baseURI = "https://robertsspaceindustries.com"
     const resp = await $fetch(`${baseURI}/orgs/${org}`)
 
@@ -86,7 +86,7 @@ const fetchOrg = /*defineCachedFunction(*/async (org) => {
         info.manifesto = convertToMarkdown($('h2:contains("Manifesto")', '#organization').next().html())
         info.charter = convertToMarkdown($('h2:contains("Charter")', '#organization').next().html())
         info.founders = await fetchOrgFounders(org)
-        
+
         info.tag = org
 
         return info
@@ -94,28 +94,28 @@ const fetchOrg = /*defineCachedFunction(*/async (org) => {
         console.error(error)
         return null
     }
-}/*, {
+}, {
     maxAge: 60 * 60,
-    name: 'fetchOrg',
+    name: 'rsi-fetchOrg',
     getKey: (org) => org
-})*/
+})
 
 // cache this
-async function fetchOrgList(handle) {
+export const fetchOrgList = defineCachedFunction(async (handle) => {
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle + '/organizations', {
         headers: {
-            'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+            'Cookie': `_rsi_device=${config.external.RSI_DEVICE}; Rsi-XSRF=${config.external.RSI_XSRF}; Rsi-Token=${config.external.RSI_TOKEN}`
         }
     })
-    
+
     try {
         let orgs = {
             main: null,
             affiliated: []
         }
         const $ = cheerio.load(response)
-        
+
         const main = $('.main .info')[0]
         if (main) {
             const logoImg = $('.main').find('.thumb').find('img').prop('src')
@@ -129,7 +129,7 @@ async function fetchOrgList(handle) {
                     level: $(main).find('.ranking').find('.active').length
                 }
             }
-            const links = $('.affiliation').each( function (i, el) {
+            const links = $('.affiliation').each(function (i, el) {
                 const logo = $(el).find('.thumb').find('img').prop('src')
                 orgs.affiliated.push({
                     tag: $(el).find('.info').find('a').prop('href').split('/')[2],
@@ -148,7 +148,11 @@ async function fetchOrgList(handle) {
         console.error(error)
         return null
     }
-}
+}, {
+    maxAge: 60 * 5,
+    name: 'rsi-fetchOrgList',
+    getKey: (org) => org
+})
 
 
 //TODO: Can we deprecate this and just use the getOrgMembers function with rank=1?
@@ -176,7 +180,7 @@ async function fetchOrgFounders(org) {
         return founders
     } catch (error) {
         console.error(error)
-        return {error: "Org not found!"}
+        return { error: "Org not found!" }
     }
 }
 
@@ -186,10 +190,10 @@ function getID(handle) {
 }
 
 async function checkCitizens(members) {
-    for(let i in members) {
-        if(members[i].handle !== 'Redacted') {
+    for (let i in members) {
+        if (members[i].handle !== 'Redacted') {
             const id = await getID(members[i].handle)
-            if(id !== 0) {
+            if (id !== 0) {
                 members[i].verified = true
             }
         }
@@ -202,7 +206,7 @@ function computeRank(stars) {
 
     if (stars) {
         const starsize = parseInt(stars.match(/width\:\ (.*)\%/)[1])
-        if(starsize) {
+        if (starsize) {
             rank = starsize / 20
         }
 
@@ -213,7 +217,7 @@ function computeRank(stars) {
     return rank
 }
 
-async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
+export const fetchMembers = async (org, page = 1, isMain = true, rank = 0, handle = '') => {
 
     const url = "https://robertsspaceindustries.com/api/orgs/getOrgMembers"
     let i = 0
@@ -231,7 +235,7 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
 
     let members = []
     const totalMembers = resp.data.totalrows
-    
+
     const $ = cheerio.load(resp.data.html)
 
     $('li.member-item').each(function (i, el) {
@@ -240,8 +244,8 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
 
         let thumb = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
         const thumbimg = $(el).find('span.thumb').find('img')[0]
-        if(thumbimg && thumbimg.attribs.src) {
-            if(thumbimg.attribs.src.startsWith('https')) {
+        if (thumbimg && thumbimg.attribs.src) {
+            if (thumbimg.attribs.src.startsWith('https')) {
                 thumb = thumbimg.attribs.src
             } else {
                 thumb = `https://robertsspaceindustries.com${thumbimg.attribs.src}`
@@ -251,7 +255,7 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
         const rank = computeRank($(el).find('span.stars').attr('style'))
         let stars = 0
 
-        if(handle.trim() != '') {
+        if (handle.trim() != '') {
             const member = {
                 name: name,
                 handle: handle,
@@ -276,13 +280,14 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
         count: totalMembers,
         members: members
     }
-    
+
     result.members = await checkCitizens(result.members)
     return result
 }
 
+/*
 async function fetchOrgRank(org, handle) {
-    const res = await fetchMembers(org, undefined, undefined, handle=handle)
+    const res = await fetchMembers(org, undefined, undefined, handle = handle)
     const member = res.members[0]
 
     return parseInt(member.rank)
@@ -296,4 +301,4 @@ module.exports = {
     fetchOrgFounders,
     fetchMembers,
     fetchOrgRank
-}
+}*/

@@ -68,6 +68,7 @@ export default defineNuxtConfig({
     // redirect, ssr, cors, headers, static/swr
     //'/myroute/**': {ssr: true},
     '/api/**': { cors: true },
+    '/admin/**': { ssr: false }
   },
 
   runtimeConfig: {

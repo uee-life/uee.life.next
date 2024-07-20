@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
     }
     const path = getRequestURL(event)
     if (path.pathname.startsWith('/api/')) {
-        console.log('[API REQUEST]' + `[${user.handle}] ` + path)
+        logActivity('API-CALL', path, user.handle)
     } else {
-        console.log('[WEB REQUEST]' + `[${user.handle}] ` + path)
+        logActivity('WEB-CALL', path, user.handle)
     }
 })

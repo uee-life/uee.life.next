@@ -206,3 +206,18 @@ export const updateCrew = async (ship, crew) => {
         return error
     }
 }
+
+export const getShipStats = async () => {
+    const query = 
+        `match (a:Ship) 
+         return {label: 'Ships', value: count(a)} as stats
+         union all
+         match (a:ShipModel) 
+         return {label: 'Models', value: count(a)} as stats
+         union all
+         MATCH (n:Organization {official: true, type: 'Manufacturer'})
+         return {label: 'Makes', value: count(n)} as stats`
+    
+    const { result } = await readQuery(query)
+    return result
+}
