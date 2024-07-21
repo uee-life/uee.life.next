@@ -1,10 +1,9 @@
 <template>
   <div class="app">
     <layout-header-default />
-
-    <widgets-notification messageType="warning" messageText="Test Version - Data May Not Persist" :modality="false" v-if="config.public.test_env" ></widgets-notification>
-
+    <layout-notifications />
     <layout-navbar-default />
+
     <div class="main">
       <layout-dock name="left-dock" />
       <div class="content">
@@ -14,13 +13,29 @@
       <layout-dock name="right-dock" style="margin-right: -5px"/>
       <layout-footer />
     </div>
+    
+    <client-only>
+        <teleport to="#notifications">
+            <widgets-notification
+                messageType="warning" 
+                messageText="Test Version - Data May Not Persist" 
+                :modality="false" 
+                v-if="config.public.test_env"></widgets-notification>
+            <widgets-notification 
+                messageType="info" 
+                messageText="Account not verified - Click to open settings" 
+                :modality="false" 
+                v-if="auth.isAuthenticated && !auth.citizen.verified"
+                @click="navigateTo('/settings')" 
+                style="cursor: pointer" />
+        </teleport>
+    </client-only>
   </div>
 </template>
 
 <script setup>
-const config = useRuntimeConfig();
-
 const auth = useAuthStore()
+const config = useRuntimeConfig();
 </script>
 
 <style scoped>

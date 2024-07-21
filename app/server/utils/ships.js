@@ -140,6 +140,11 @@ export const getShip = async (identifier) => {
     }
 }
 
+export const getShipOwner = async (identifier) => {
+    const ship = await getShip(identifier)
+    return ship.owner
+}
+
 export const getCrew = async (identifier) => {
     const query = 
         `MATCH (c:Citizen)-[r:CREW_OF]->(s:Ship {id: $id})
@@ -158,15 +163,16 @@ export const getCrew = async (identifier) => {
     return crew    
 }
 
-export const addCrew = async (ship, crew) => {
+export const addCrew = async (ship, crew, owner) => {
     const query = 
         `MATCH (c:Citizen {handle: $handle})
-         MATCH (s:Ship {id: $id})
+         MATCH (s:Ship {id: $id})-[:OWNED_BY]->(Citizen {handle: $owner})
          MERGE (c)-[:CREW_OF {role: $role}]->(s)`
 
     const params = {
         id: ship,
         handle: crew.handle,
+        owner: owner,
         role: crew.role
     }
     console.log(query, params)
