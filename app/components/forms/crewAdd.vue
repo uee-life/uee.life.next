@@ -12,7 +12,7 @@
                 v-model="search" 
                 placeholder="Citizen Search" />
         <div v-if="result" class="results">
-            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" :class="resultClass(res)" @selected="selected"/>
+            <citizen-card v-for="res in result.data" :key="res.handle" :citizen="res" :class="resultClass(res)" @selected="selected"/>
         </div>
         <input type="submit" :class="canSubmit" value="Add" />
     </form>
