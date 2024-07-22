@@ -97,7 +97,26 @@ const addVerificationCode = async (userId) => {
     return code
 }
 
-export const verifyUser = async (userId) => {
+export const verifyUser = async (userId, handle) => {
+    // put in a check to make sure this handle hasn't already been verified.
+    const token = await getToken()
+    const existingUser = await $fetch(`https://ueelife.auth0.com/api/v2/users`, {
+        method: 'get',
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        query: {
+            q: `app_metadata.handle:"${handle}" AND app_metadata.handle_verified: true`,
+            per_page: 100
+        }
+    })
+    console.log("Existing User: ")
+    console.log(existingUser)
+    if(existingUser) {
+        console.log('Handle already linked to an account')
+        return null
+    }
     return await updateAppMetadata(userId, {
         handle_verified: true
     })

@@ -1,7 +1,7 @@
 <script setup>
 const { $api } = useNuxtApp()
 
-const debug = ref(false)
+const debug = ref(true)
 const errors = ref({
     verification: ""
 })

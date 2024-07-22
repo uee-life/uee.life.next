@@ -3,7 +3,7 @@ import { fetchCitizen } from "~/server/utils/rsi"
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const account = await getAccount(user.user_id)
-    console.log(account)
+
     const ver_code = account.app_metadata.verificationCode
     if(!ver_code) {
         return apiError("This shouldn't happen (no verification code)")
@@ -11,7 +11,14 @@ export default defineAuthenticatedEventHandler(async (event) => {
         console.log('verification code: ', ueelifeCode(ver_code))
     }
     const bio_code = await fetchCitizen(user.handle).then((citizen) => {
-        return citizen.bio.match(/\[ueelife\:[A-Za-z0-9\-]+\]/i)[0]
+        const code = citizen.bio.match(/\[ueelife\:[A-Za-z0-9\-]+\]/i)
+        console.log(citizen.bio)
+        console.log('bio code: ' + code)
+        if (code) {
+            return code[0]
+        } else {
+            return null
+        }
     }).catch((err) => {
         console.error(err)
         return ""
@@ -22,7 +29,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
         console.log('found in bio: ', bio_code)
     }
     if (ueelifeCode(ver_code) == bio_code) {
-        const result = await verifyUser(user.user_id)
+        const result = await verifyUser(user.user_id, user.handle)
         return apiSuccess(result)
     } else {
         return apiError("codes no matchy")

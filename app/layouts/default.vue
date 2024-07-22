@@ -25,7 +25,7 @@
                 messageType="info" 
                 messageText="Account not verified - Click to open settings" 
                 :modality="false" 
-                v-if="auth.isAuthenticated && !auth.citizen.verified"
+                v-if="auth.isAuthenticated && !auth.user.verified"
                 @click="navigateTo('/settings')" 
                 style="cursor: pointer" />
         </teleport>

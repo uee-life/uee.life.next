@@ -28,6 +28,10 @@ export const getCitizen = async (handle, create = false, user = null) => {
             citizen.verified = true
             logActivity('NEO4J', `Updating Citizen: ${citizen.handle}`, user.handle)
             updateCitizen(citizen)
+        } else if (user && user.verified == 0 && citizen.verified == true) {
+            citizen.verified = false
+            logActivity('NEO4J', `Updating Citizen: ${citizen.handle}`, user.handle)
+            updateCitizen(citizen)
         }
     }
 
@@ -116,7 +120,7 @@ export const updateCitizen = async (citizen) => {
 }
 
 export const removeCitizen = async (handle) => {
-    console.log("Removing Citizen: ", handle)
+    logActivity('NEO4J', `Removing Citizen: ${handle}`)
 
     // remove citizen plus child nodes, if they exist.
     const query =
@@ -129,4 +133,22 @@ export const removeCitizen = async (handle) => {
     }
 
     await writeQuery(query, params)
+}
+
+export const isVerified = async (handle) => {
+    const query = 
+        `MATCH (c:Citizen)
+         WHERE c.handle =~ $handle
+         RETURN c as citizen`
+
+         const params = {
+            handle: '(?i)' + handle
+         }
+
+         const result = await readQuery(query, params)
+         if (result.result[0]) {
+            return result.result[0].citizen.verified
+         }
+         return false
+         
 }
