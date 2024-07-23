@@ -1,6 +1,6 @@
-const cheerio = require('cheerio')
+import cheerio from 'cheerio'
 
-function convertToMarkdown(html) {
+export const convertToMarkdown = (html) => {
     const $ = cheerio.load(html)
 
     $('h1').each(function (i, el) {
@@ -59,8 +59,4 @@ function convertToMarkdown(html) {
     })*/
 
     return $.text().replace(/\t/g, '').replace(/\>\s+/, '> ')
-}
-
-module.exports = {
-    convertToMarkdown
 }

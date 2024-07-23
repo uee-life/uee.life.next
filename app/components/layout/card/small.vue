@@ -88,11 +88,4 @@ const computedLink = computed({
     color: #dbf3ff;
     margin: 0;
 }
-
-.verified {
-    position: absolute;
-    right: 3px;
-    bottom: 3px;
-    width: 25px;
-}
 </style>

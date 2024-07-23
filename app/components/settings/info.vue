@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-const {$swal} = useNuxtApp()
+const {$swal, $api} = useNuxtApp()
 const emit = defineEmits(['refresh'])
 
 const props = defineProps({
@@ -49,20 +49,33 @@ const showEmail = ref(false)
 const showIP = ref(false)
 const handle = ref(props.account.app_metadata.handle)
 
-const ifSure = (cb) => {
-    $swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, change it!'
-    }).then((result) => {
-        if (result.value) {
-            cb()        
-        }
-    })
+const ifSure = async (cb) => {
+
+    if (handle.value == props.account.app_metadata.handle) {
+        return
+    } else if (await handleClaimed() && handle.value != props.account.app_metadata.handle) {
+        $swal.fire({
+            title: 'Handle Unavailable',
+            text: 'This handle has already been claimed and verified!',
+            icon: 'error',
+            confirmButtonText: 'OK!'
+        })
+    } else {
+        $swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+            console.log(result)
+            if (result.isConfirmed) {
+                cb()        
+            }
+        })
+    }
 }
 
 const changeHandle = async () => {
@@ -72,7 +85,16 @@ const changeHandle = async () => {
             handle: handle.value
         }
     })
-    emit('refresh')
+    console.log(result)
+    reloadNuxtApp()
+}
+
+const handleClaimed = async () => {
+    const citizen = await $api(`/api/citizens/${handle.value}`)
+    if (citizen.data.verified) {
+        return true
+    }
+    return false
 }
 
 </script>

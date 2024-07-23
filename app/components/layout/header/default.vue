@@ -11,7 +11,7 @@
                 <div v-if="auth.isAuthenticated" class="user">
                     <nuxt-link :to="citizenLink">
                         <span class="name">{{ auth.citizen.name ? auth.citizen.name : auth.citizen.handle }}</span>
-                        <citizen-portrait v-if="auth.isAuthenticated" size="x-small" :citizen="auth.citizen" />
+                        <citizen-portrait v-if="auth.isAuthenticated" size="x-small" shape="round" :citizen="auth.citizen" />
                     </nuxt-link>
                 </div>
             </transition>
@@ -69,7 +69,7 @@ const citizenLink = computed({
     .page-head-right {
         display: flex;
         flex-direction: column;
-        margin: 15px;
+        margin: 10px;
     }
 
     .page-head-right .user {

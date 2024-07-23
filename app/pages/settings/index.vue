@@ -1,7 +1,7 @@
 <script setup>
 const { $api } = useNuxtApp()
 
-const debug = ref(false)
+const debug = ref(true)
 const errors = ref({
     verification: ""
 })
@@ -13,6 +13,7 @@ const verifyAccount = async () => {
         method: 'POST'
     })
     await refresh()
+    reloadNuxtApp()
 }
 
 const { data: account, status, refresh } = await useAPI(`/api/user/account`)

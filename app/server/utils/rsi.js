@@ -1,5 +1,5 @@
 import cheerio from 'cheerio'
-import  convertToMarkdown from './markdown'
+import { isVerified } from './citizens'
 
 const config = useRuntimeConfig()
 
@@ -184,23 +184,6 @@ async function fetchOrgFounders(org) {
     }
 }
 
-//TODO: remove this. temporary until we get user verification back in
-function getID(handle) {
-    return 0
-}
-
-async function checkCitizens(members) {
-    for (let i in members) {
-        if (members[i].handle !== 'Redacted') {
-            const id = await getID(members[i].handle)
-            if (id !== 0) {
-                members[i].verified = true
-            }
-        }
-    }
-    return members
-}
-
 function computeRank(stars) {
     let rank = 0
 
@@ -281,7 +264,6 @@ export const fetchMembers = async (org, page = 1, isMain = true, rank = 0, handl
         members: members
     }
 
-    result.members = await checkCitizens(result.members)
     return result
 }
 

@@ -23,7 +23,7 @@
             type: String,
             required: true,
             validator(value, props) {
-                return ['error', 'warning', 'debug', 'information',].includes(value)
+                return ['error', 'warning', 'debug', 'info'].includes(value)
             }
         },
         modality: {
@@ -55,7 +55,7 @@
     min-height: 30px;
     max-width: 100%;
     font: 14px michroma;
-    text-shadow: 1px 1px black, -1px 1px black, -1px -1px black, 1px -1px black;
+    text-shadow: 1px 1px 2px black, -1px 1px 2px black, -1px -1px 2px black, 1px -1px 2px black;
 }
 
 .notification.hasModal {
@@ -88,7 +88,7 @@
 }
 
 .warning {
-    background: rgba(255, 240, 0, 0.6); /* repeating-linear-gradient(45deg, rgba(255, 240, 0, 0.6), rgba(255, 240, 0, 0.6) 5px, transparent 5px, transparent 10px);*/
+    background: repeating-linear-gradient(45deg, rgba(255, 240, 0, 0.6), rgba(255, 240, 0, 0.6) 5px, transparent 5px, transparent 10px);
     color: #dbf3ff;
 }
 
