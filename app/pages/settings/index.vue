@@ -13,6 +13,7 @@ const verifyAccount = async () => {
         method: 'POST'
     })
     await refresh()
+    reloadNuxtApp()
 }
 
 const { data: account, status, refresh } = await useAPI(`/api/user/account`)

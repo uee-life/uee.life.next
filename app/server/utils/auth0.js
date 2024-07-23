@@ -113,19 +113,30 @@ export const verifyUser = async (userId, handle) => {
     })
     console.log("Existing User: ")
     console.log(existingUser)
-    if(existingUser) {
+    if(existingUser[0]) {
         console.log('Handle already linked to an account')
         return null
     }
+    // Update existing session
+    db.prepare("UPDATE user SET verified=1 WHERE user_id = ?").run(userId)
+
     return await updateAppMetadata(userId, {
         handle_verified: true
     })
 }
 
 export const updateHandle = async (userId, handle) => {
+    console.debug("updating: ", handle)
     const account = await getAccount(userId)
-    // delete old citizen record, plus anything directly linked to it.
-    removeCitizen(account.app_metadata.handle)
+    // delete old citizen record, plus anything directly linked to it, if a verified account existed.
+    console.debug(account)
+    if (account.app_metadata.handle_verified) {
+        await removeCitizen(account.app_metadata.handle)
+    }
+
+    // update existing session
+    db.prepare("UPDATE user SET handle = ? WHERE user_id = ?").run(handle, userId)
+    db.prepare("UPDATE user SET verified=0 WHERE user_id = ?").run(userId)
 
     // update metadata with new handle
     return await updateAppMetadata(userId, {

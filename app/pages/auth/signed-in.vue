@@ -28,7 +28,7 @@ onMounted(async () => {
             }
         })
     } else {
-        const { status } = await $api('/auth/callback', {
+        const { status, result } = await $api('/auth/callback', {
             key: 'authCallback',
             query: route.query
         })

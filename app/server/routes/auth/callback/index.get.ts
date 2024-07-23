@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
         resp.verified = resp['https://uee.life/app_metadata'].handle_verified
         const auth0user: Auth0User = resp;
 
-        const existingUser = db.prepare("SELECT * FROM user WHERE handle = ?").get(auth0user.handle) as
+        const existingUser = db.prepare("SELECT * FROM user WHERE user_id = ?").get(auth0user.sub) as
                 | DatabaseUser
                 | undefined;
         

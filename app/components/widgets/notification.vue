@@ -23,7 +23,7 @@
             type: String,
             required: true,
             validator(value, props) {
-                return ['error', 'warning', 'debug', 'information',].includes(value)
+                return ['error', 'warning', 'debug', 'info'].includes(value)
             }
         },
         modality: {
@@ -55,7 +55,7 @@
     min-height: 30px;
     max-width: 100%;
     font: 14px michroma;
-    text-shadow: 2px 2px black, -2px 2px black, -2px -2px black, 2px -2px black;
+    text-shadow: 1px 1px 2px black, -1px 1px 2px black, -1px -1px 2px black, 1px -1px 2px black;
 }
 
 .notification.hasModal {

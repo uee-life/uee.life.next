@@ -1,7 +1,8 @@
 <template>
     <div v-if="citizen" :class="portraitSize()">
         <nuxt-link :to="citizenLink()">
-            <img class="image" :src="citizen.portrait" />
+            <!--img src="@/assets/portrait-bg.png" class="portrait-bg"/-->
+            <img :class="imageShape()" :src="citizen.portrait" />
             <img v-if="citizen.verified" class="verified" src="@/assets/verified.png" />
         </nuxt-link>
         <div v-if="showName" class="name">
@@ -12,8 +13,6 @@
 </template>
 
 <script setup>
-import { gsap } from 'gsap'
-
 const props = defineProps({
     citizen: {
         type: Object,
@@ -26,6 +25,13 @@ const props = defineProps({
             return ['tiny', 'x-small', 'small', 'medium'].indexOf(value) !== -1
         }
     },
+    shape: {
+        type: String,
+        default: 'square',
+        validator: function (value) {
+            return ['round', 'square'].indexOf(value) !== -1
+        }
+    },
     showName: {
         type: Boolean,
         default: false
@@ -33,7 +39,11 @@ const props = defineProps({
 })
 
 function portraitSize() {
-    return `portrait ${props.size}`
+    return `portrait ${props.size} ${props.shape} ${props.citizen.verified ? 'verified' : ''}`
+}
+
+function imageShape() {
+    return `image ${props.shape}`
 }
 
 function citizenLink() {
@@ -48,6 +58,10 @@ function citizenLink() {
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    .portrait.round.verified {
+        background: url("@/assets/portrait-bg.png") top center / cover;
     }
 
     .portrait a {
@@ -69,6 +83,7 @@ function citizenLink() {
         width: 100px;
         min-height: 100px;
         height: fit-content;
+        padding: 11px;
     }
 
     .portrait.small .verified {
@@ -80,16 +95,17 @@ function citizenLink() {
     }
 
     .portrait.x-small {
-        width: 75px;
-        min-height: 75px;
+        width: 85px;
+        min-height: 85px;
         height: fit-content;
+        padding: 10px;
     }
 
     .portrait.x-small .verified {
         position: absolute;
-        top: 54px;
-        right: 2px;
-        width: 20px;
+        top: 55px;
+        right: 8px;
+        width: 22px;
         filter: drop-shadow(1px 1px 1px black);
     }
 
@@ -97,6 +113,7 @@ function citizenLink() {
         width: 40px;
         min-height: 40px;
         height: fit-content;
+        padding: 5px;
     }
 
     .portrait .image {
@@ -104,6 +121,10 @@ function citizenLink() {
         width: 100%;
         vertical-align: middle;
         border: 1px solid #546f84;
+    }
+
+    .portrait .image.round {
+        border-radius: 50%;
     }
 
     .portrait.medium .verified {
@@ -126,5 +147,12 @@ function citizenLink() {
     .portrait.small .name {
         font-size: 12px;
         text-align: center;
+    }
+
+    .portrait-bg {
+        position:absolute;
+        width: 100%;
+        top: 0;
+        right: -5px;
     }
 </style>
