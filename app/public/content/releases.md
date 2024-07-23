@@ -1,3 +1,23 @@
+# v0.1.1 Security & Bug Fix Patch
+*Updated: 23 July 2954*
+
+A new update is live on the test server, tightening some Authorization controls on our bac-end API, as well as fixing some bugs/issues with citizen verification and user account management.
+
+Also fixed a vulnerability that would allow someone to take over another person's verified account.
+
+It's not all boring though. If you are logged in, and verified, see how fancy your portrait in the top right is now ;)
+
+# Content
+- Added a notification banner stack to support muliple notificatiosn of different types (info, warning, error and debug)
+- Added a banner notifying you if your account is not yet verified
+- Added more granular access checks to some key API's
+- Updated profile picture in the site header, added a verified flair to the picture
+
+# Fixes
+- [Security] Fixed an vulnerability that would allow a user to take over another citizens account
+- Fixed an issue when changing your handle and immediately trying to re-verify
+- Added a check to make sure you are not able to change your handle to an existing users verified handle
+
 # v0.1.0 Initial Test Release
 *Updated: 20 July 2954*
 
