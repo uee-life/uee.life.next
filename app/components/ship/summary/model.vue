@@ -1,8 +1,5 @@
 <template>
-    <div class="ship-summary" :title="ship.model">
-        <panel-title :text="ship.model"/>
-        <img  @click="selected" :src="shipImage" />
-        <img class="manufacturer" :src="manufacturerImage" />
+    <panel class="ship-summary" :title="ship.model" title-size="small">
         <div class="ship-info">
             <div class="info">
                 <div class="line-item"><span class="label">Type:</span><span class="data">{{ ship.career }} - {{ ship.role }}</span></div>
@@ -13,13 +10,14 @@
                 <div class="line-item"><span class="data">{{ ship.description }}</span></div>
             </div>
         </div>
+        <img  @click="selected" :src="shipImage" />
+        <img class="manufacturer" :src="manufacturerImage" />
         <div class="mask" @click="$emit('selected', ship.id)"></div>
-        <span class="corner top left"></span>
-        <span class="corner top right"></span>
-        <span class="corner bottom left"></span>
-        <span class="corner bottom right"></span>
-        <img v-if="isAdmin" title="Remove Ship" class="delete" @click="remove" src="@/assets/delete.png">
-    </div>
+        <template v-if="isAdmin">
+            <img title="Edit Ship" class="button edit" @click="edit" src="@/assets/edit.png" />
+            <img v-if="isAdmin" title="Remove Ship" class="button delete" @click="remove" src="@/assets/delete.png" />
+        </template>
+    </panel>
 </template>
 
 <script setup>
@@ -126,17 +124,24 @@ const shipSize = computed({
     .manufacturer {
         position: absolute;
         right: 0;
+        bottom: 0;
         width: 100px;
         opacity: 0.8;
     }
 
-    .ship-summary .delete {
+    .button {
         position: absolute;
         top: 5px;
-        right: 5px;
         width: 20px;
         height: 20px;
         z-index: 20;
         cursor: pointer;
+    }
+    .button.delete {
+        right: 5px;
+    }
+
+    .button.edit {
+        right: 30px;
     }
 </style>
