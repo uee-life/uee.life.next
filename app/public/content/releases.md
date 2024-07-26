@@ -18,6 +18,8 @@ It's not all boring though. If you are logged in, and verified, see how fancy yo
 - Fixed an issue when changing your handle and immediately trying to re-verify
 - Added a check to make sure you are not able to change your handle to an existing users verified handle
 
+---
+
 # v0.1.0 Initial Test Release
 *Updated: 20 July 2954*
 

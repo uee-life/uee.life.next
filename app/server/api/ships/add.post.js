@@ -5,7 +5,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     const ship = await readBody(event)
 
     if (user && user.verified) {
-        const error = await addShip(ship, user.handle)
+        const error = await addShipModel(ship, user.handle)
         if (error) {
             return apiError(event, `Something went wrong: ${error}`)
         } else {

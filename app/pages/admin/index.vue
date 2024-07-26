@@ -1,4 +1,5 @@
 <script setup>
+const result = ref('')
 
 </script>
 
