@@ -20,6 +20,12 @@
             }
         }
     })
+    const isUpdate = ref(false)
+    if (props.shipInfo.manufacturer) {
+        isUpdate.value = true
+    }
+
+    const emit = defineEmits(['submit'])
 
     const shipModel = ref(props.shipInfo)
 
@@ -28,35 +34,28 @@
     const roles = [...new Set(props.data.models.map(a => a.role))]
     const sizes = [...new Set(props.data.models.map(a => a.size))]
 
-    /*const identifier = computed({
-        get() {
-            return `${shipModel.value.manufacturer}_${shipModel.value.model.split(' ').join('_')}`.toLowerCase()
-        }
-    })*/
-
     function identifier() {
         return `${shipModel.value.manufacturer}_${shipModel.value.model.split(' ').join('_')}`.toLowerCase()
     }
 
-    function addShip() {
-        console.log('Adding ship: ' + identifier())
+    function submit() {
         shipModel.value.identifier = identifier()
-        console.log(shipModel.value)
+        emit('submit', shipModel.value)
     }
 </script>
 
 <template>
-    <form @submit.prevent="addShip()" class="ship-form">
+    <form @submit.prevent="submit" class="ship-form">
         <span class="field">
             <label for="manufacturer">Manufacturer:</label>
-            <select v-model="shipModel.manufacturer" id="manufacturer">
+            <select v-model="shipModel.manufacturer" id="manufacturer" :disabled="isUpdate">
                 <option disabled value="">Select Manufacturer</option>
                 <option v-for="m in data.makes" :key="m.tag" :value="m.tag">{{ m.name }}</option>
             </select>
         </span>
         <span class="field">
             <label for="model">Model:</label>
-            <input type="text" v-model="shipModel.model" id="model">
+            <input type="text" v-model="shipModel.model" id="model" :disabled="isUpdate">
         </span>
         <span class="field">
             <label for="identifier">Identifier:</label>
@@ -64,22 +63,22 @@
         </span>
         <span class="field">
             <label for="career">Career</label>
-            <select v-model="shipModel.career" id="career">
-                <option disabled value="">Select Career</option>
+            <input v-model="shipModel.career" type="text" name="career" id="career" list="careerlist">
+            <datalist id="careerlist">
                 <option v-for="(c, i) in careers">{{ c }}</option>
-            </select>
+            </datalist>
         </span>
         <span class="field">
             <label for="role">Role</label>
-            <select v-model="shipModel.role" id="role">
-                <option disabled value="">Select Role</option>
+            <input v-model="shipModel.role" type="text" name="role" id="role" list="rolelist">
+            <datalist id="rolelist">
                 <option v-for="(c, i) in roles">{{ c }}</option>
-            </select>
+            </datalist>
         </span>
         <span class="field">
             <label for="size">Size:</label>
             <select v-model="shipModel.size" id="size">
-                <option v-for="s in sizes">{{ s }}</option>
+                <option v-for="s in sizes.sort()">{{ s }}</option>
             </select>
         </span>
         <span class="field">
@@ -91,8 +90,8 @@
             <input type="number" v-model="shipModel.cargo" id="cargo">
         </span>
         <label for="description">Description</label>
-        <textarea v-model="shipModel.description" id="description"></textarea>
-        <input type="submit" value="Add" />
+        <textarea v-model="shipModel.description" id="description" rows="10"></textarea>
+        <input type="submit" value="OK" />
     </form>
 </template>
 

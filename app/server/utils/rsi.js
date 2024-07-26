@@ -16,9 +16,6 @@ export const fetchCitizen = defineCachedFunction(async (handle) => {
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle, {
-        headers: {
-            'Cookie': `_rsi_device=${config.external.RSI_DEVICE}; Rsi-XSRF=${config.external.RSI_XSRF}; Rsi-Token=${config.external.RSI_TOKEN}`
-        },
         onRequest() {
             logActivity('CACHE', `Caching RSI data for ${handle}`)
         }

@@ -3,13 +3,13 @@ const { $api } = useNuxtApp()
 const result = ref(null)
 const filter = ref('')
 const modal = ref({
-    show: false,
+    edit: false,
     add: false
 })
 const selected = ref(null)
 
 const updateShips = async () => {
-    result.value = await $api(`/api/admin/ships/import`)
+    result.value = await $api(`/api/admin/shipModels/import`)
     .catch((error) => {
         console.error(error)
     })
@@ -18,6 +18,7 @@ const updateShips = async () => {
 const filteredShips = computed({
     get() {
         return shipModels.value.data.models.filter(model => {
+            console.log(model)
             return model.identifier.toLowerCase().includes(filter.value.toLowerCase()) ||
                     model.manufacturer.toLowerCase().includes(filter.value.toLowerCase()) ||
                     model.model.toLowerCase().includes(filter.value.toLowerCase())
@@ -30,9 +31,26 @@ const shipImage = (id) => {
     return `/images/ships/${id}.jpg`
 }
 
-const showShipModel = (s) => {
+const editShipModel = (s) => {
+    console.log('editing: ' + s)
     selected.value = s
-    modal.value.show = true
+    modal.value.edit = true
+}
+
+async function addShip(ship) {
+    modal.value.add = false
+    await useAPI('/api/admin/shipModels/add', {
+        method: 'POST',
+        body: ship
+    })
+}
+
+async function editShip(ship) {
+    modal.value.edit = false
+    await useAPI('/api/admin/shipModels/add', {
+        method: 'POST',
+        body: ship
+    })
 }
 
 
@@ -63,28 +81,31 @@ const {data: shipModels, status} = await useAPI('/api/ships/models', {
         </client-only>
         <panel
             v-if="status == 'success'" 
-            v-for="ship in filteredShips" 
-            @click="showShipModel(ship)" class="ship-model">
+            v-for="ship in filteredShips"
+            class="ship-model">
             <img :src="shipImage(ship.identifier)"  class="ship-image"/>
             <div class="ship-info">
-                <div>{{ `${ship.manufacturer} - ${ship.model}` }}</div>
+                <div>{{ `${ship.manufacturer} ${ship.model}` }}</div>
                 <div>{{ `${ship.career} - ${ship.role}`}}</div>
                 <div>{{ `Cargo: ${ship.cargo}` }}</div>
                 <div>{{ `Crew: ${ship.max_crew}` }}</div>
-                {{ ship }}
             </div>
+            <div class="mask" @click="editShipModel(ship)"></div>
         </panel>
         
-        <layout-modal v-if="modal.show" title="Ship Model Info" @close = "modal.show = false">
-            <ship-summary-model 
-                :ship="selected" :is-admin="true"
-                @selected="showShipModel(ship)"/>
+        <layout-modal v-if="modal.edit" title="Edit ship model" @close = "modal.edit = false">
+            <forms-ship-model 
+                :data="shipModels.data"
+                :ship-info="selected"
+                @submit="editShip"/>
         </layout-modal>
         <layout-modal v-if="modal.add" title="Add a ship model" @close = "modal.add = false">
-            <forms-model-add 
+            <forms-ship-model
                 :data="shipModels.data"
+                @submit="addShip"
                 />
         </layout-modal>
+
     </div>
 </template>
 
@@ -97,6 +118,15 @@ const {data: shipModels, status} = await useAPI('/api/ships/models', {
     width: 100%;
     box-sizing: border-box;
     padding-top: 20px;
+}
+
+.mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    cursor: pointer;
 }
 
 .ship-image {

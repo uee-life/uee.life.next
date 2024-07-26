@@ -28,9 +28,10 @@ export const addShipModel = async (ship) => {
     // add ship static details and link to manufacturer
     const query =
         `MATCH (m:Organization {tag: $manufacturer, official: true})
-         MERGE (m)<-[:MADE_BY]-(s:ShipModel {
+         MERGE (s:ShipModel {identifier: $identifier})
+         SET s = {
             identifier: $identifier,
-            name: $model,
+            model: $model,
             manufacturer: $manufacturer,
             size: $size,
             cargo: $cargo,
@@ -38,9 +39,14 @@ export const addShipModel = async (ship) => {
             career: $career,
             role: $role,
             description: $description
-         })`
+         }
+         MERGE (m)<-[:MADE_BY]-(s)`
 
-    const error = await writeQuery(query, ship)
+    const { error } = await writeQuery(query, ship)
+    if (error) {
+        return error
+    }
+    return null
 }
 
 export const addShip = async (ship, handle) => {
