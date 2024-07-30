@@ -92,3 +92,26 @@ export const orgAddFounder = async (handle, tag) => {
     }
     const error = await writeQuery(query, params)
 }
+
+export const getOrgMembers = async (tag) => {
+    const query = 
+        `MATCH (c:Citizen)-[r:MEMBER_OF]->(o:Organization {tag: $tag})
+         RETURN c as member, r.rank as rank`
+    const { result, error } = await readQuery(query, {tag: tag})
+
+    const members = []
+
+    for (const res of result) {
+        const member = {
+            name: res.member.name,
+            handle: res.member.handle,
+            rank: res.rank,
+            portrait: res.member.portrait,
+            verified: res.member.verified,
+            status: await getStatus(res.member.handle)
+        }
+        members.push(member)
+    }
+    console.log(members)
+    return members
+}

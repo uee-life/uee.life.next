@@ -1,7 +1,7 @@
 <template>
     <div class="panel">
         <panel-title class="panel-title" v-if="title" :text="title" :size="titleSize" />
-        <div class="panel-content">
+        <div :class="contentClass">
             <slot></slot>
         </div>
         <span class="corner top left"></span>
@@ -24,6 +24,20 @@ const props = defineProps({
         default: "medium",
         validator(value, props) {
             return ['small', 'medium', 'large'].includes(value)
+        }
+    },
+    centered: {
+        type: Boolean,
+        default: false
+    }
+})
+
+const contentClass = computed({
+    get() {
+        if (props.centered) {
+            return 'panel-content centered'
+        } else {
+            return 'panel-content'
         }
     }
 })
@@ -65,6 +79,10 @@ onMounted(() => {
     .panel-content {
         opacity: 0;
         display: flex;
+    }
+
+    .panel-content.centered {
+        justify-content: center;
     }
 
     strong {

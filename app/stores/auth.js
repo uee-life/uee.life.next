@@ -4,6 +4,7 @@ export const useAuthStore = defineStore('auth', () => {
     const { $api } = useNuxtApp()
     // state
     const user = ref(null)
+    const status = ref(null)
     const loading = ref(true)
 
     const isAuthenticated = computed({
@@ -20,6 +21,10 @@ export const useAuthStore = defineStore('auth', () => {
             return user.value.info
         }
     })
+
+    function setStatus(newStatus) {
+        status.value = status
+    }
 
     async function loadUser() {
         const res = await $api(`/api/user`, {
@@ -43,5 +48,5 @@ export const useAuthStore = defineStore('auth', () => {
         isAuthenticated.value = false
     }
 
-    return { user, citizen, isAuthenticated, loading, loadUser, initApp, $reset }
+    return { user, citizen, isAuthenticated, loading, loadUser, setStatus, initApp, $reset }
 })

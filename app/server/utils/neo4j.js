@@ -1,9 +1,9 @@
-const neo4j = require('neo4j-driver')
-const {uri, user, password} = require('../config/db_config')
+import neo4j from 'neo4j-driver'
+import {uri, user, password}  from '../config/db_config'
 
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password), { disableLosslessIntegers: true })
 
-async function writeQuery(query, params) {
+export const writeQuery = async (query, params) => {
     const session = driver.session({ database: 'neo4j' });
     let records = []
     let error = null
@@ -30,7 +30,7 @@ async function writeQuery(query, params) {
 }
 
 // return the full record set?
-async function readQuery(query, params={}) {
+export const readQuery = async (query, params={}) => {
     const session = driver.session({ database: 'neo4j' });
     let records = [];
     let error = null;
@@ -52,7 +52,7 @@ async function readQuery(query, params={}) {
     }
 }
 
-function parseRecords(records) {
+export const parseRecords = (records) => {
     const result = []
 
     for (const res of records) {
@@ -62,13 +62,16 @@ function parseRecords(records) {
 
             if (neo4j.isInt(data)) {
                 rec[key] = data
-            } else if (neo4j.isNode || neo4j.isRelationship ) {
+            } else if (neo4j.isNode(data) || neo4j.isRelationship(data) ) {
                 if (data.properties) {
                     rec[key] = data.properties
                 } else {
                     rec[key] = data
                 }
                 
+            } else if (neo4j.isDateTime(data)) {
+                console.log('datetime')
+                rec[key] = data.toStandardDate()
             } else {
                 rec[key] = data
             }
@@ -76,10 +79,4 @@ function parseRecords(records) {
         result.push(rec)
     }
     return result
-}
-
-module.exports = {
-    writeQuery,
-    readQuery,
-    parseRecords
 }

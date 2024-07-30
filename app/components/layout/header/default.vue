@@ -11,7 +11,7 @@
                 <div v-if="auth.isAuthenticated" class="user">
                     <nuxt-link :to="citizenLink">
                         <span class="name">{{ auth.citizen.name ? auth.citizen.name : auth.citizen.handle }}</span>
-                        <citizen-portrait v-if="auth.isAuthenticated" size="x-small" shape="round" :citizen="auth.citizen" />
+                        <citizen-portrait v-if="auth.isAuthenticated" size="small" shape="round" :citizen="auth.citizen" :show-status="true"/>
                     </nuxt-link>
                 </div>
             </transition>

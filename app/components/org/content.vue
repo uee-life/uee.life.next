@@ -1,5 +1,5 @@
 <template>
-    <panel :title="title">
+    <panel :title="title" :centered="centered">
         <markdown :markdown="content" :class="contentClass"/>
     </panel>
 </template>

@@ -35,6 +35,8 @@ export const getCitizen = async (handle, create = false, user = null) => {
         }
     }
 
+    citizen.status = await getStatus(citizen.handle, 'online')
+
     return citizen
 }
 

@@ -24,7 +24,7 @@ const citizenLink = computed({
 </script>
 
 <template>
-    <div :class="redacted" @click="$emit('selected', citizen)">
+    <div :class="redacted" @click="navigateTo(citizenLink)">
         <span class="thumb">
             <img :src="citizen.portrait" />
         </span>
@@ -32,6 +32,14 @@ const citizenLink = computed({
             <h2 class="name">{{citizen.name}}</h2>
             <span class="symbol">{{citizen.handle}}</span>
             <span v-if="citizen.org" class="org">[{{citizen.org}}]</span>
+            <span v-if="citizen.rank">
+                <img class="rank" src="@/assets/star.png" v-for="i in Array(citizen.rank)" />
+            </span>
+            <template v-if="citizen.status && citizen.verified">
+                <img v-if="citizen.status.active == 'idle'" class="status" title="away" src="@/assets/status-away.png" />
+                <img v-if="citizen.status.active == 'online'" class="status" title="online" src="@/assets/status-online.png" />
+                <img v-if="citizen.status.active == 'offline'" class="status" title="offline" src="@/assets/status-offline.png" />
+            </template>
         </span>
     </div>
 </template>
@@ -42,6 +50,13 @@ const citizenLink = computed({
     flex-grow: 1;
     position: relative;
 }
+
+.status {
+    position: absolute;
+    width: 13px;
+    top: 3px;
+    right: 3px;
+} 
 
 .card.redacted {
     background-color: rgba(255,34,34,0.2);
@@ -89,6 +104,10 @@ const citizenLink = computed({
     justify-content: center;
     margin-left: 20px;
     margin-top: -5px;
+}
+
+.rank {
+    width: 20px;
 }
 
 .no-decor {
