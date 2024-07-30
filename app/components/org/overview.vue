@@ -16,7 +16,7 @@ async function getFounder(handle) {
         server: false,
         lazy: true,
         async onResponse(_ctx) {
-            const citizen = _ctx.response._data
+            const citizen = _ctx.response._data.data
             founders.value.push(citizen)
         }
     })
@@ -122,7 +122,7 @@ ul.info-items {
     height: fit-content;
 }
 
-.founders .portrait {
+.founders .founder {
     margin: 5px 10px;
 }
 

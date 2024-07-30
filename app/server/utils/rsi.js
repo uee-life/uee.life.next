@@ -246,8 +246,8 @@ export const fetchMembers = async (org, page = 1, isMain = true, rank = 0, handl
             members.push(member)
         } else {
             const member = {
-                name: 'Redacted',
-                handle: 'Redacted',
+                name: '[REDACTED]',
+                handle: '[REDACTED]',
                 rank: rank,
                 portrait: thumb,
                 verified: false
