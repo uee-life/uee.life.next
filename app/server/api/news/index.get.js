@@ -18,9 +18,7 @@ export default defineEventHandler(async (event) => {
     if (data.series === 'news-update') {
         for (const feed of feeds) {
             if (feed.type == 1) {
-                console.log('adding feed: ' + feed.source)
                 const yt = await ytFeed(feed, earliest)
-                console.log(yt)
                 news = mergeNews(news, yt)
             } else if (feed.type == 2) {
                 // placeholder. This should pass in the feed object for generic wordpress RSS feeds
