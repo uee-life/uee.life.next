@@ -1,3 +1,17 @@
+# v0.1.2 Minor Feature Update
+*Updated: 30 July 2954*
+
+Pushing out a new update with some low key features added, including some visual improvements, online status for verified accounts, as well as some administrative functionality which will allow us to add in all the missing ships, and update existing ships if there are any issues. Please notify us via discord of any incorrect data or missing ships!
+
+We also still need verification folk are able to register and verify their citizen record, so let us know if you do so successfully! Thanks!
+
+## &#x1F50E; Testing Focus
+- New account flow
+- Account verification
+- Ship & Crew Management
+
+---
+
 # v0.1.1 Security & Bug Fix Patch
 *Updated: 23 July 2954*
 
