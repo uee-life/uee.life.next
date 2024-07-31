@@ -1,5 +1,5 @@
 <template>
-    <panel ref="newsitem" class="news-item" id="news-item">
+    <panel ref="newsitem" class="news-item" id="news-item" :title="item.source" title-size="small">
         <a :href="item.link" style="text-decoration: none" target="blank">
             <div class="news-content">
                 <div class="background" :style="style"></div>
@@ -10,6 +10,7 @@
                 <div class="news-item-info">
                     <div><b>{{ item.title }}</b></div>
                     <div>Posted: {{ item.posted }}</div>
+                    <div>{{ item.source }}</div>
                 </div>
             </div>
             <img class="source-img" :src="item.source_img" :title="item.source"/>
