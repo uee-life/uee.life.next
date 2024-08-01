@@ -159,7 +159,7 @@ const { data: citizen, refresh, status } = await useAPI(`/api/citizens/${route.p
                         SHIPS ({{ ships.length }})
                     </template>
                     <template #tab-content-ships>
-                        <fleet-view v-if="ships" :isOwner="isOwner" :ships="ships" @add="addShip" @remove="removeShip"/>
+                        <ship-collection v-if="ships" :isOwner="isOwner" :ships="ships" @add="addShip" @remove="removeShip"/>
                     </template>
 
                     <template v-if="isOwner" #tab-title-location>

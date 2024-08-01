@@ -68,27 +68,18 @@ const addCrew = () => {
     }        
 }
 
-async function autoGetResults() {
+const autoGetResults = async () => {
     if(search.value.length >= 3) {
-        pending.value = true
-        result.value = await searchCitizen(search.value)
-        pending.value = false
+        await getResults()
     } else {
         result.value = null
     }
 }
 
-async function getResults() {
-    const data = {
-        text: input.value
-    }
-    result.value = await $api(`/api/search/citizen`, {
-        method: 'POST',
-        body: data,
-        onResponse(_ctx) {
-            pending.value = false
-        }
-    })
+const getResults = async () => {
+    pending.value = true
+    result.value = await searchCitizen(search.value)
+    pending.value = false
 }
 
 const searchCitizen = async (search) => {

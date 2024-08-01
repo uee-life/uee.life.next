@@ -18,9 +18,7 @@ export default defineEventHandler(async (event) => {
     if (data.series === 'news-update') {
         for (const feed of feeds) {
             if (feed.type == 1) {
-                console.log('adding feed: ' + feed.source)
                 const yt = await ytFeed(feed, earliest)
-                console.log(yt)
                 news = mergeNews(news, yt)
             } else if (feed.type == 2) {
                 // placeholder. This should pass in the feed object for generic wordpress RSS feeds
@@ -111,7 +109,6 @@ function computeDate(posted) {
 }
 
 function mergeNews(first, second) {
-    console.log("merging")
     let result = []
     while (first.length + second.length > 0) {
         if(first.length === 0) {
@@ -128,6 +125,5 @@ function mergeNews(first, second) {
             result.push(first.shift())
         }
     }
-    console.log(result)
     return result
 }

@@ -1,6 +1,13 @@
+import { shipCount } from "~/server/utils/stats"
 
 export default defineEventHandler(async (event) => {
-    return apiSuccess(await latestUser())
+    const stats = {
+        online: await onlineCount(),
+        verified: await verifiedCount(),
+        ships: await shipCount()
+        //latest: await latestUser()
+    }
+    return apiSuccess(stats)
     //return await getStats()
 })
 /*

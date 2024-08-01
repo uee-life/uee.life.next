@@ -1,10 +1,10 @@
 <template>
     <div id="fleet-view" class="fleet-view">
-        <fleet-summary v-if="showSummary" @filter="setFilter" :fleet="ships"/>
-        <fleet-list :ships="filteredShips" @remove="removeShip" :isAdmin="isOwner"/>
+        <ship-collection-summary v-if="showSummary" @filter="setFilter" :fleet="ships"/>
+        <ship-collection-list :ships="filteredShips" @remove="removeShip" :isAdmin="isOwner"/>
         <panel-button v-if="isOwner" text="Add Ship" class="add-ship" @click="showModal = true" />
         <layout-modal v-if="showModal" title="Add Ship" @close="showModal = false">
-            <fleet-add @add="addShip" />
+            <forms-ship @add="addShip" />
         </layout-modal>
     </div>
 </template>

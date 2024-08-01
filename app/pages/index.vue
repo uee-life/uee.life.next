@@ -18,7 +18,9 @@
                     <panel-dock v-if="isMobile" title="Community Links" type="links">
                         <widgets-links :links="communityLinks"/>
                     </panel-dock>
-                    <panel-dock title="Test" type="test"/>
+                    <panel-dock title="Stats" type="stats">
+                        <widgets-stats />
+                    </panel-dock>
                 </teleport>
             </client-only>
 

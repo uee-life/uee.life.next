@@ -187,8 +187,8 @@ const {data: crew, status, refresh} = await useAPI(`/api/ships/${props.ship.id}/
 
 .assigned .edit {
     position: absolute;
-    top: -6px;
-    right: -6px;
+    top: 20px;
+    right: 5px;
     width: 20px;
     height: 20px;
     cursor: pointer;
