@@ -28,6 +28,10 @@ const addFleet = async (fleet) => {
     })
 }
 
+const selected = (fleet) => {
+    navigateTo(`/fleets/${fleet.id}`)
+}
+
 const { data: fleets, status, refresh } = await useAPI(`/api/orgs/${props.org.tag}/fleets`)
 </script>
 
@@ -37,6 +41,7 @@ const { data: fleets, status, refresh } = await useAPI(`/api/orgs/${props.org.ta
         <template v-if="status == 'success'">
             <template v-if="fleets.data.length > 0">
                 {{ fleets.data }}
+                <fleet-summary v-for="item in fleets.data" :fleet="item.fleet" @selected="selected"/>
             </template>
             <widgets-no-result text="No Fleets Configured" v-else />
         </template>

@@ -27,6 +27,7 @@ const addFleet = async (fleet, tag) => {
         MATCH (o:Organization {tag: $tag})
         MERGE (g:VehicleGroup {name: $name})-[:BELONGS_TO]->(o)
         SET g = {
+            id: left(randomUUID(), 8),
             name: $name,
             purpose: $purpose,
             cmdr: $cmdr
