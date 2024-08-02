@@ -1,4 +1,6 @@
 <script setup>
+const { $api } = useNuxtApp()
+
 const props = defineProps({
     org: {
         type: Object,
@@ -16,6 +18,16 @@ const modals = ref({
     fleet: false
 })
 
+const addFleet = async (fleet) => {
+    modals.value.fleet = false
+    console.log('adding fleet: ')
+    console.log(fleet)
+    const result = await $api(`/api/orgs/${props.org.tag}/fleets/add`, {
+        method: 'POST',
+        body: fleet
+    })
+}
+
 const { data: fleets, status, refresh } = await useAPI(`/api/orgs/${props.org.tag}/fleets`)
 </script>
 
@@ -31,7 +43,7 @@ const { data: fleets, status, refresh } = await useAPI(`/api/orgs/${props.org.ta
         <WidgetsLoading v-else />
         <panel-button v-if="isOwner" text="Add Fleet" class="add-fleet" @click="modals.fleet = true" />
         <layout-modal v-if="modals.fleet" title="Add Fleet" @close="modals.fleet = false">
-            <forms-fleet />
+            <forms-fleet @submit="addFleet"/>
         </layout-modal>
     </div>
 </template>

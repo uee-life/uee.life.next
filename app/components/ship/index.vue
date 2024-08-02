@@ -2,10 +2,10 @@
     <div>
         <ClientOnly>
             <teleport to="#left-dock">
-                <panel-dock title="Fleet"></panel-dock>
                 <panel-dock v-if="ship" title="owner" class="owner">
                     <citizen-portrait :citizen="ship.owner" :showName="true"></citizen-portrait>
                 </panel-dock>
+                <panel-dock title="Fleet"></panel-dock>
             </teleport>
         </ClientOnly>
         <layout-banner 

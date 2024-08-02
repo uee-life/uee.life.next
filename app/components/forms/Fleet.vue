@@ -2,31 +2,22 @@
     <form @submit.prevent="submit" class="fleet-form">
         <label for="name">Fleet Name:</label>
         <div>
-            <input class="input" type="text" id="name" v-model="name" maxlength="16">
+            <input class="input" type="text" id="name" v-model="data.name" maxlength="16">
             <span v-if="error.name != ''" class="error">{{ error.name }}</span>
         </div>
         <label for="purpose">Purpose:</label>
-        <input class="input" type="text" id="purpose" v-model="purpose">
+        <input class="input" type="text" id="purpose" v-model="data.purpose">
         <template v-if="!group">
             <label for="commander">Commander (optional):</label>
-            <input 
-                class="input" 
-                id="commander" 
-                @keyup.enter="getResults()" 
-                @input="autoGetResults()" 
-                v-model="search" 
-                placeholder="Citizen Search" />
-            <div v-if="result" class="results">
-                <citizen-card v-for="res in result.data" :key="res.handle" :citizen="res" :class="resultClass(res)" @selected="selected"/>
-            </div>
+            <forms-input-citizen @selected="selected" />
         </template>
         <input type="submit" value="Submit" />
+        {{ data }}
     </form>
 </template>
 
 <script setup>
-const { $api } = useNuxtApp()
-
+const emit = defineEmits(['submit'])
 const props = defineProps({
     group: {
         type: Object,
@@ -36,73 +27,28 @@ const props = defineProps({
     }
 })
 
-const pending = ref(false)
-const result = ref('')
+const data = ref({
+    name: '',
+    purpose: '',
+    cmdr: ''
+})
 
-const name = ref('')
-const purpose = ref('')
-const search = ref('')
-const cmdr = ref('')
 const error = ref({
     name: ''
 })
 
 const selected = (citizen) => {
-    cmdr.value = citizen.handle
+    data.value.cmdr = citizen.handle
 }
 
 const submit = async () => {
     // do checks then emit things
-    if (name.value === '') {
+    if (data.value.name === '') {
         error.value.name = '* A name is required!'
         return
     }
 
-    if (props.group) {
-        await updateFleet()
-    } else {
-        await addFleet()
-    }
-}
-
-const updateFleet = async () => {
-
-}
-
-const addFleet = async () => {
-
-}
-
-const autoGetResults = async () => {
-    if(search.value.length >= 3) {
-        await getResults()
-    } else {
-        result.value = null
-    }
-}
-
-const getResults = async () => {
-    pending.value = true
-    result.value = await searchCitizen(search.value)
-    pending.value = false
-}
-
-const searchCitizen = async (search) => {
-    const result = await $api(`/api/search/citizen`, {
-        method: 'POST',
-        body: {
-            text: search
-        }
-    })
-    return result
-}
-
-const resultClass = (res) => {
-    if (res.handle === cmdr.value) {
-        return "result selected"
-    } else {
-        return "result"
-    }
+    emit('submit', data.value)
 }
 </script>
 
@@ -113,6 +59,11 @@ const resultClass = (res) => {
     max-width: 400px;
     padding: 15px;
 }
+
+.error {
+    color: red;
+}
+
 input {
     margin: 5px 0;
 }

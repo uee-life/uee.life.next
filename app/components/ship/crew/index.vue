@@ -21,7 +21,7 @@
             <ship-crew-record :crew="selected" @remove="removeCrew" @update="updateCrew" :canEdit="edit"/>
         </layout-modal>
         <layout-modal v-if="modal.add" title="Add Crew" @close="modal.add = false">
-            <forms-crew-add @add="addCrew"/>
+            <forms-crew @add="addCrew"/>
         </layout-modal>
     </panel>
 </template>
