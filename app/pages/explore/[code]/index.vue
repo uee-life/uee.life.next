@@ -7,13 +7,12 @@ const pois = ref([])
 const tabs = ref([])
 const initialTab = ref("locations")
 
-// needs fixing for systems
 const starmapLink = computed({
     get() {
         if(location.value) {
-            let link = `https://robertsspaceindustries.com/starmap?location=${location.value.rsi_code}`
-            if (location.value.system) {
-                link = link + `&system=${location.value.system}`
+            let link = `https://robertsspaceindustries.com/starmap?location=`
+            if (location.value) {
+                link = link + `${location.value.data.rsi_code}&system=${location.value.data.system}`
             }
             return link
         } else {
@@ -24,7 +23,7 @@ const starmapLink = computed({
 
 const systemLink = computed({
     get() {
-        return `/explore/${location.value.system}`
+        return `/explore/${location.value.data.system}`
     }
 })
 
