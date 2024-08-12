@@ -12,7 +12,8 @@ const starmapLink = computed({
         if(location.value) {
             let link = `https://robertsspaceindustries.com/starmap?location=`
             if (location.value) {
-                link = link + `${route.params.code}`
+                link = link + `${location.value.data.rsi_code}&system=${location.value.data.system}`
+                console.log(location.value)
             }
             return link
         } else {
