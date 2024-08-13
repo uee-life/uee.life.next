@@ -9,14 +9,15 @@ const initialTab = ref("locations")
 
 const starmapLink = computed({
     get() {
-        
-        let link = `https://robertsspaceindustries.com/starmap?location=${location.value.data.rsi_code}`
-
-        if (location.value.data.system) {
-            link = link + `&system=${location.value.data.system}`
+        if(location.value) {
+            let link = `https://robertsspaceindustries.com/starmap?location=`
+            if (location.value) {
+                link = link + `${location.value.data.rsi_code}&system=${location.value.data.system}`
+            }
+            return link
+        } else {
+            return ""
         }
-        
-        return link
     }
 })
 
