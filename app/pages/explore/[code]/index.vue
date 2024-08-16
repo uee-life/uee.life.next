@@ -9,12 +9,18 @@ const initialTab = ref("locations")
 
 const starmapLink = computed({
     get() {
-        if(location.value) {
-            let link = `https://robertsspaceindustries.com/starmap?location=`
-            if (location.value) {
-                link = link + `${location.value.data.rsi_code}&system=${location.value.data.system}`
+        console.log(status.value)
+
+        let link = `https://robertsspaceindustries.com/starmap?location=`
+
+        if (status.value == "success") {
+            link = link + `${location.value.data.rsi_code}`
+            if (location.value.data.system) {
+                return link.concat("&system=", `${location.value.data.system}`)
             }
-            return link
+            else {
+                return link
+            }
         } else {
             return ""
         }
@@ -23,7 +29,11 @@ const starmapLink = computed({
 
 const systemLink = computed({
     get() {
-        return `/explore/${location.value.data.system}`
+        if (status.value == "success") {
+            return `/explore/${location.value.data.system}`
+        } else {
+            return ""
+        }
     }
 })
 
