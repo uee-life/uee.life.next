@@ -67,6 +67,7 @@ function citizenLink() {
 <style scoped>
 
     .avatar {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -128,7 +129,7 @@ function citizenLink() {
     .portrait.large .status {
         width: 16px;
         top: 5px;
-        right: 5px;
+        left: 5px;
     }
 
     .portrait.large .name {
@@ -164,7 +165,7 @@ function citizenLink() {
     .portrait.medium .status {
         width: 13px;
         top: 3px;
-        right: 3px;
+        left: 3px;
     }
 
     /* Small Image */
@@ -189,7 +190,7 @@ function citizenLink() {
 
     .portrait.small .status {
         top: 3px;
-        right: 3px;
+        left: 3px;
         width: 10px;
     }
 
@@ -212,7 +213,7 @@ function citizenLink() {
 
     .portrait.tiny .status {
         top: 2px;
-        right: 1px;
+        left: 1px;
         width: 8px;
     }
 </style>

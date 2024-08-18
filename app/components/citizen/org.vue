@@ -6,7 +6,7 @@
         <div class="org-name">
           {{ org.name }}
         </div>
-        <div class="org-title">
+        <div v-if="org.rank" class="org-title">
           Title: {{ org.rank.title }}
         </div>
     </panel-dock>

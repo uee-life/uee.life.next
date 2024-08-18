@@ -5,7 +5,7 @@
         <div class="ship-info">
             <h5>{{ ship.model }}</h5>
             <div>{{ ship.career }} - {{ ship.role }}</div>
-            <div v-if="ship.owner">Owner: <nuxt-link :to="citizenLink">{{ship.owner}}</nuxt-link></div>
+            <div v-if="ship.owner">Owner: <nuxt-link :to="citizenLink">{{ship.owner.name}}</nuxt-link></div>
         </div>
         <div class="mask" @click="navigateTo(`/ships/${ship.id}`)"></div>
         <img v-if="isAdmin" title="Remove Ship" class="delete" @click="$emit('remove', ship.id)" src="@/assets/delete.png">

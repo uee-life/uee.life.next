@@ -4,8 +4,8 @@ const { $api } = useNuxtApp()
 const auth = useAuthStore()
 const route = useRoute()
 
-const tabs = ["about", "fleets", "ships", "members", "affiliates"]
-const initialTab = "about"
+const tabs = ["info", "ships", "fleets", "members", "affiliates"]
+const initialTab = "info"
 const fleet = ref([])
 
 const spectrumLink = computed({
@@ -25,7 +25,12 @@ const isOwner = computed({
 })
 
 async function getOrgShips() {
-    fleet.value = await $api(`/api/orgs/${route.params.tag}/ships`)
+    fleet.value = await $api(`/api/orgs/${route.params.tag}/ships`, {
+        async onResponse({ response }) {
+            fleet.value = response.data
+        }
+    })
+    console.log(fleet.value)
 }
 
 const {status, data: org} = await useAPI(`/api/orgs/${route.params.tag}`, {
@@ -51,27 +56,27 @@ const {status, data: org} = await useAPI(`/api/orgs/${route.params.tag}`, {
                 :logo="org.data.logo" />
             <div class="org-tabs">
                 <layout-tabs :tabs="tabs" :initialTab="initialTab">
-                    <template #tab-title-about>
+                    <template #tab-title-info>
                         INFO
                     </template>
-                    <template #tab-content-about>
+                    <template #tab-content-info>
                         <org-content v-if="org.data.description" :content="org.data.description" :centered="true"></org-content>
                         <org-overview :org="org.data" />
                         <org-info :org="org.data" :isOwner="isOwner"/>
                     </template>
 
                     <template #tab-title-ships>
-                        FLEETS
+                        SHIPS
                     </template>
                     <template #tab-content-ships>
-                        <org-fleet :org="org.data" :isOwner="isOwner" />
+                        <ship-collection :ships="fleet.data" view="small" :showSummary="true" />
                     </template>
 
                     <template #tab-title-fleets>
-                        SHIPS
+                        FLEETS
                     </template>
                     <template #tab-content-fleets>
-                        <ship-collection :ships="fleet.data" view="small" :showSummary="true" />
+                        <org-fleet :org="org.data" :isOwner="isOwner" />
                     </template>
 
                     <template #tab-title-members>

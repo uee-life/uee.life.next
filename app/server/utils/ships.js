@@ -105,7 +105,7 @@ export const getShipList = async (handle) => {
 export const getOrgShipList = async (tag) => {
     console.log("Getting ships for org", tag)
     const query =
-        `MATCH (o:Organization)--(c:Citizen)<-[:OWNED_BY]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
+        `MATCH (o:Organization)<-[:MEMBER_OF]-(c:Citizen)<-[:OWNED_BY]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
          WHERE o.tag =~ $tag
          RETURN s as ship,
                 m as shipData,
