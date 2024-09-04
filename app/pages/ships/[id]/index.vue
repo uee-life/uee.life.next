@@ -7,7 +7,7 @@
 <script setup>
 const route = useRoute()
 
-const {status, data: response} = await useAPI(`/api/ships/${route.params.id}`, {
+const {status, data: response} = useAPI(`/api/ships/${route.params.id}`, {
     key: 'getShip'
 })
 

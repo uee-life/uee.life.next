@@ -188,10 +188,19 @@ function citizenLink() {
         filter: drop-shadow(1px 1px 1px black);
     }
 
+    .portrait.small.round .verified {
+        top: 50px;
+    }
+
     .portrait.small .status {
         top: 3px;
         left: 3px;
         width: 10px;
+    }
+
+    .portrait.small.round .status {
+        top: 5px;
+        left: 5px;
     }
 
 
@@ -212,7 +221,7 @@ function citizenLink() {
     }
 
     .portrait.tiny .status {
-        top: 2px;
+        top: 1px;
         left: 1px;
         width: 8px;
     }

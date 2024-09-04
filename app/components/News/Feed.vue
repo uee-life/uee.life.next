@@ -69,7 +69,7 @@ const sources = [
     ]
 
 // client only, because hydration issues
-const { status, refresh } = await useAPI(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages.value}`, {
+const { status, refresh } = useAPI(() => `/api/news?channel=${search.value.channel}&series=${search.value.series}&page=${pages.value}`, {
     key: 'getNews',
     server: false,
     lazy: true,

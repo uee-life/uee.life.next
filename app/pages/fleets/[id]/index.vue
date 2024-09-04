@@ -1,5 +1,6 @@
 <template>
     <widgets-loading v-if="status != 'success'" />
+    <widgets-no-result v-else-if="fleet.status == 'error'" :text="fleet.data"/>
     <div v-else class="fleet">
         <!--ClientOnly>
             <teleport to="#right-dock">
@@ -16,17 +17,19 @@
                 :logo="fleet.data.org.logo" />
         </nuxt-link>
         <panel title="Fleet Hierarchy" class="fleet-chart">
-            <layout-chart-fleet :datasource="fleet.data" :selected="selected"/>
+            <client-only>
+                <layout-chart-fleet :datasource="fleet.data" :selected="selected" @setSelected="setSelected"/>
+            </client-only>
         </panel>
-        <fleet-group :groupID="selected"></fleet-group>
+        <fleet-group :groupID="selected" @refresh="refresh" @reset="reset"></fleet-group>
     </div>
 </template>
 
 <script setup>
+    const { $api } = useNuxtApp()
     const route = useRoute()
     
-
-    const chart = ref({})
+    const fleetData = ref({})
     const selected = ref(route.params.id)
 
     const orgLink = computed({
@@ -38,9 +41,17 @@
         }
     })
 
-    const getSubGroups = async (groupID) => {
-        
+    const setSelected = (id) => {
+        console.log('setting selected to: ' + id)
+        selected.value = id
     }
 
-    const {status, data: fleet, refresh} = await useAPI(() => `/api/fleets/${selected.value}`)
+    const reset = () => {
+        selected.value = route.params.id
+        refresh()
+    }
+
+    const {status, data: fleet, refresh} = useAPI(() => `/api/fleets/${route.params.id}`, {
+        key: 'getFleet'
+    })
 </script>

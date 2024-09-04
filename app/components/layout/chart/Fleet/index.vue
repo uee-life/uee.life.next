@@ -7,9 +7,9 @@ const props = defineProps({
         required: true
     },
     selected: {
-        type: Number,
+        type: String,
         required: false,
-        default: 0
+        default: ''
     },
     pan: {
       type: Boolean,
@@ -31,11 +31,18 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['setSelected'])
+
 const cursorVal = ref('default')
 const panning = ref(false)
 const startX = ref(0)
 const startY = ref(0)
 const transformVal = ref('')
+
+const setSelected = (id) => {
+  console.log('set selected called')
+  emit('setSelected', id)
+}
 
 const panHandler = (e) => {
     let newX = 0
@@ -131,7 +138,7 @@ const setChartScale = (newScale) => {
 </script>
 
 <template>
-    <div v-bind="{ scopedSlots: $slots }"
+    <div v-bind="{ slots: $slots }"
         class="chart-container"
         @wheel="zoom && zoomHandler($event)"
         @mouseup="pan && panning && panEndHandler($event)">
@@ -141,7 +148,8 @@ const setChartScale = (newScale) => {
             @mousemove="pan && panning && panHandler($event)">
             <layout-chart-fleet-node 
                 :datasource="datasource"
-                :selected="selected">
+                :selected="selected"
+                @setSelected = "setSelected">
                 <template v-for="slot in Object.keys($slots)" :slot="slot" slot-scope="scope">
                     <slot :name="slot" v-bind="scope"></slot>
                 </template>
@@ -249,40 +257,5 @@ const setChartScale = (newScale) => {
   margin-top: 30px;
   color: rgba(68, 157, 68, 0.8);
 }
-.orgchart table {
-  border-spacing: 0;
-  border-collapse: separate;
-}
-.orgchart > table:first-child {
-  margin: 20px auto;
-}
-.orgchart td {
-  text-align: center;
-  vertical-align: top;
-  padding: 0;
-}
-.orgchart .lines:nth-child(3) td {
-  box-sizing: border-box;
-  height: 20px;
-}
-.orgchart .lines .topLine {
-  border-top: 2px solid rgba(84, 111, 132, 0.8);
-}
-.orgchart .lines .rightLine {
-  border-right: 1px solid rgba(84, 111, 132, 0.8);
-  float: none;
-  border-radius: 0;
-}
-.orgchart .lines .leftLine {
-  border-left: 1px solid rgba(84, 111, 132, 0.8);
-  float: none;
-  border-radius: 0;
-}
-.orgchart .lines .downLine {
-  background-color: rgba(84, 111, 132, 0.8);
-  margin: 0 auto;
-  height: 20px;
-  width: 2px;
-  float: none;
-}
+
 </style>

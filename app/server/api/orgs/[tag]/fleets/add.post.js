@@ -1,3 +1,5 @@
+import { addCommander } from "~/server/utils/vehicleGroups"
+
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const tag = getRouterParam(event, 'tag')
@@ -7,7 +9,10 @@ export default defineAuthenticatedEventHandler(async (event) => {
         const owners = await getOrgMembers(tag, 5)
         if(!!owners.find(item => item.handle === user.handle)) {
             console.log('is owner!')
-            await addFleet(fleet, tag)
+            const fleetID = await addFleet(fleet, tag)
+            if(fleet.cmdr) {
+                addCommander(await getCitizen(fleet.cmdr, true), fleetID)
+            }
         } else {
             accessDenied(event)
         }
@@ -23,6 +28,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
 })
 
 const addFleet = async (fleet, tag) => {
+    // this is wrong. Need to set cmdr to be an entity relationship CMDR_OF
     const query = `
         MATCH (o:Organization {tag: $tag})
         MERGE (g:VehicleGroup {name: $name})-[:BELONGS_TO]->(o)
@@ -31,14 +37,19 @@ const addFleet = async (fleet, tag) => {
             name: $name,
             purpose: $purpose,
             cmdr: $cmdr
-        }`
+        }
+        RETURN g.id as identifier
+    `
 
-    const { error } = await writeQuery(query, {
+    const { result, error } = await writeQuery(query, {
         name: fleet.name,
         purpose: fleet.purpose,
         cmdr: fleet.cmdr,
         tag: tag
     })
-    console.log(error)
-    return error
+    if (error) {
+        console.error(error)
+    } else {
+        return result[0]._fields[0]
+    }
 }

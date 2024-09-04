@@ -16,7 +16,7 @@ const verifyAccount = async () => {
     reloadNuxtApp()
 }
 
-const { data: account, status, refresh } = await useAPI(`/api/user/account`)
+const { data: account, status, refresh } = useAPI(`/api/user/account`)
 
 </script>
 

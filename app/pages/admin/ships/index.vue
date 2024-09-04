@@ -39,7 +39,7 @@ const editShipModel = (s) => {
 
 async function addShip(ship) {
     modal.value.add = false
-    await useAPI('/api/admin/shipModels/add', {
+    await $api('/api/admin/shipModels/add', {
         method: 'POST',
         body: ship
     })
@@ -47,14 +47,14 @@ async function addShip(ship) {
 
 async function editShip(ship) {
     modal.value.edit = false
-    await useAPI('/api/admin/shipModels/add', {
+    await $api('/api/admin/shipModels/add', {
         method: 'POST',
         body: ship
     })
 }
 
 
-const {data: shipModels, status} = await useAPI('/api/ships/models', {
+const {data: shipModels, status} = useAPI('/api/ships/models', {
     key: 'getShipModels',
     server: false,
     lazy: true,
@@ -63,7 +63,6 @@ const {data: shipModels, status} = await useAPI('/api/ships/models', {
 
 <template>
     <div class="main">
-        {{  filter }}
         <client-only>
             <teleport to="#left-dock">
                 <panel-dock class="actions" title="action">

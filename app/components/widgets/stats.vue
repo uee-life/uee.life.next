@@ -11,7 +11,7 @@ const online = ref(0)
 const ships = ref(0)
 const fleets = ref(0)
 
-const { data, status, refresh } = await useAPI(`/api/stats`, {
+const { data, status, refresh } = useAPI(`/api/stats`, {
     onResponse({ response }) {
         stats.value = response._data.data
     }

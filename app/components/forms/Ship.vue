@@ -45,7 +45,7 @@ const addShip = () => {
     }          
 }
 
-const {data: ships, status} = await useAPI('/api/ships/models')
+const {data: ships, status} = useAPI('/api/ships/models')
 </script>
 
 <style>

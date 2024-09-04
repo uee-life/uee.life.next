@@ -47,7 +47,7 @@ async function getChildren() {
 }
 
 //TODO make this work SSR
-const {data: location, status} = await useAPI(`/api/explore/locations/${route.params.code}`, {
+const {data: location, status} = useAPI(`/api/explore/locations/${route.params.code}`, {
     key: 'getLocation',
     server: false,
     lazy: true,

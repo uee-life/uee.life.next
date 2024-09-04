@@ -141,7 +141,7 @@ const updateCrew = async (member, role) => {
 //if(props.fleet) {
     // load the fleet view of the ship. Re-add this later.
 //} else {
-const {data: crew, status, refresh} = await useAPI(`/api/ships/${props.ship.id}/crew`, {
+const {data: crew, status, refresh} = useAPI(`/api/ships/${props.ship.id}/crew`, {
     onResponse({ response }) {
         const data = response._data.data
         data.length = props.ship.max_crew

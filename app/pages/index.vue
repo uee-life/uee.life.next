@@ -21,6 +21,9 @@
                     <panel-dock title="Stats" type="stats">
                         <widgets-stats />
                     </panel-dock>
+                    <panel-dock title="Online" type="online">
+                        <widgets-online />
+                    </panel-dock>
                 </teleport>
             </client-only>
 

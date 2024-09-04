@@ -110,7 +110,7 @@ async function getShips() {
     })
 }
 
-const { data: citizen, refresh, status } = await useAPI(`/api/citizens/${route.params.handle}`, {
+const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,

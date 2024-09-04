@@ -5,10 +5,15 @@ const props = defineProps({
         required: true
     },
     selected: {
-        type: Number,
-        default: 0
+        type: String,
+        default: ''
     }
 })
+
+console.log('node component for: ' + props.datasource.info.id)
+console.log(props.datasource.groups)
+
+const emit = defineEmits(['setSelected'])
 
 const nodeClass = computed({
     get () {
@@ -18,45 +23,50 @@ const nodeClass = computed({
         return "node"
     }
 })
+
+const setSelected = (id) => {
+  console.log('click!')
+  console.log(id)
+  emit('setSelected', id)
+}
 </script>
 
 <template>
     <table>
         <tbody>
         <tr>
-        <td :colspan="datasource.children && datasource.children.length ? datasource.children.length*2 : null">
-            <div :class="nodeClass" :id="datasource.id" @click.stop="$emit('click', datasource)">
-            <slot :node-data="datasource">
-                <div class="title">
-                <i class="fa fa-users symbol"></i>
-                {{ datasource.info.name }}
-                </div>
-                <div class="content">{{ datasource.info.purpose }}</div>
-                <citizen-portrait v-if="datasource.cmdr" :citizen="datasource.cmdr" size="tiny"  class="node-cmdr"/>
-                <div v-else class="node-no-cmdr"></div>
-            </slot>
+        <td :colspan="datasource.groups && datasource.groups.length ? datasource.groups.length*2 : null">
+            <div :class="nodeClass" :id="datasource.info.id" @click.stop="setSelected(datasource.info.id)">
+              <slot :node-data="datasource">
+                  <div class="title">
+                    {{ datasource.info.name }}
+                  </div>
+                  <div class="content">{{ datasource.info.purpose }}</div>
+                  <citizen-portrait v-if="datasource.cmdr" :citizen="datasource.cmdr" size="tiny" shape="round" class="node-cmdr"/>
+                  <div v-else class="node-no-cmdr"></div>
+              </slot>
             </div>
         </td>
         </tr>
-        <template v-if="datasource.children && datasource.children.length">
+        <template v-if="datasource.groups && datasource.groups.length">
             <tr class="lines">
-            <td :colspan="datasource.children.length*2">
+            <td :colspan="datasource.groups.length*2">
                 <div class="downLine"></div>
             </td>
             </tr>
             <tr class="lines">
             <td class="rightLine"></td>
-            <template v-for="n in (datasource.children.length-1)">
+            <template v-for="n in (datasource.groups.length-1)">
                 <td class="leftLine topLine"></td>
                 <td class="rightLine topLine"></td>
             </template>
             <td class="leftLine"></td>
             </tr>
             <tr class="nodes">
-            <td colspan="2" v-for="child in datasource.children" :key="child.id">
-                <layout-chart-fleet-node :datasource="child" :handle-click="handleClick" :selected="selected">
+            <td colspan="2" v-for="group in datasource.groups" :key="group.id">
+                <layout-chart-fleet-node :datasource="group" @setSelected="setSelected" :selected="selected">
                 <template v-for="slot in Object.keys($slots)" :slot="slot" slot-scope="scope">
-                    <slot :name="slot" v-bind="scope" ></slot>
+                    <slot :name="slot" ></slot>
                 </template>
                 </layout-chart-fleet-node>
             </td>
@@ -66,12 +76,11 @@ const nodeClass = computed({
     </table>
 </template>
 
-<style>
+<style scoped>
 .orgchart .node-cmdr {
   position: absolute !important;
   left: -47px;
   top: 0px;
-  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -308,5 +317,40 @@ const nodeClass = computed({
   opacity: 0;
   transform: translateX(-130px);
 }
-
+.orgchart table {
+  border-spacing: 0;
+  border-collapse: separate;
+}
+.orgchart > table:first-child {
+  margin: 20px auto;
+}
+.orgchart td {
+  text-align: center;
+  vertical-align: top;
+  padding: 0;
+}
+.orgchart .lines:nth-child(3) td {
+  box-sizing: border-box;
+  height: 20px;
+}
+.orgchart .lines .topLine {
+  border-top: 2px solid rgba(84, 111, 132, 0.8);
+}
+.orgchart .lines .rightLine {
+  border-right: 1px solid rgba(84, 111, 132, 0.8);
+  float: none;
+  border-radius: 0;
+}
+.orgchart .lines .leftLine {
+  border-left: 1px solid rgba(84, 111, 132, 0.8);
+  float: none;
+  border-radius: 0;
+}
+.orgchart .lines .downLine {
+  background-color: rgba(84, 111, 132, 0.8);
+  margin: 0 auto;
+  height: 20px;
+  width: 2px;
+  float: none;
+}
 </style>

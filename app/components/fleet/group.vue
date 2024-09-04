@@ -1,4 +1,8 @@
 <script setup>
+const { $api } = useNuxtApp()
+
+const emit = defineEmits(['refresh', 'reset'])
+
 const props = defineProps({
     groupID: {
         type: String,
@@ -12,18 +16,66 @@ const canEdit = computed({
     }
 })
 
-const chart = ref({})
+const isAdmin = false
+
+//const chart = ref({})
 const modals = ref({
     group: false,
     commander: false,
     ship: false,
-    edit: false
+    edit: false,
+    confirm: false
 })
 
-const {status, data: group, refresh} = await useAPI(`/api/fleets/${props.groupID}`, {
-    onResponse({ response }) {
-        chart.value = response._data.data
-        chart.value.children = []
+const addGroup = async (group) => {
+    modals.value.group = false
+    console.log('adding group: ')
+    console.log(group)
+    const result = await $api(`/api/fleets/${props.groupID}`, {
+        method: 'POST',
+        body: group
+    })
+    emit('refresh')
+}
+
+const removeGroup = async () => {
+    modals.value.confirm = false
+    console.log(`removing group: ${props.groupID}`)
+    await $api(`/api/fleets/${props.groupID}`, {
+        method: 'DELETE'
+    })
+    emit('reset')
+}
+
+const updateGroup = async (group) => {
+    const result = await $api(`/api/fleets/${props.groupID}`, {
+        method: 'PUT',
+        body: group
+    })
+    return result
+}
+
+const addCmdr = async (cmdr) => {
+    modals.value.commander = false
+    const grp = group.value.data.info
+    grp.cmdr = cmdr
+    const result = await updateGroup(grp)
+    emit('refresh')
+    // do something with the updated group?
+}
+
+const removeCmdr = async () => {
+    const grp = group.value.data.info
+    grp.cmdr = ''
+    const result = await updateGroup(grp)
+    emit('refresh')
+}
+
+const {status, data: group, refresh} = useAPI(() => `/api/fleets/${props.groupID}`, {
+    key: 'getFleetGroup',
+    async onResponse({ response }) {
+        //chart.value = response._data.data
+        //chart.value.children = await getSubgroups()
     }
 })
 
@@ -34,18 +86,21 @@ const {status, data: group, refresh} = await useAPI(`/api/fleets/${props.groupID
     <div v-else class="fleet-group">
         <div class="info">
             <div class="info-panel no-grow">
+                <panel title="fleet" class="commander">
+                    {{ group.data.fleet.name }}
+                </panel>
                 <panel class="commander">
                     <div v-if="group.data.cmdr" class="assigned">
                         <h5>Group Commander</h5>
                         <citizen-portrait :citizen="group.data.cmdr" :show-name="true">
                             <div class="mask"></div>
-                            <img v-if="canEdit" @click="" class="edit" src="@/assets/delete.png">
+                            <img v-if="canEdit" @click="removeCmdr" class="edit" src="@/assets/delete.png">
                         </citizen-portrait>
                     </div>
                     <div v-else class="unassigned">
                         <h5>Group Commander</h5>
                         <div class="bg">
-                            <img v-if="canEdit" @click="modals.value.commander = true" src="@/assets/plus.png" class="add-new"/>
+                            <img v-if="canEdit" @click="modals.commander = true" src="@/assets/plus.png" class="add-new"/>
                             <div v-else class="add-new" />
                         </div>
                         <div class="name">Unassigned</div>
@@ -54,14 +109,27 @@ const {status, data: group, refresh} = await useAPI(`/api/fleets/${props.groupID
                 <slot name="assignment"></slot>
             </div>
             <div class="info-panel">
-                <panel :title="group.name" class="tools">
-                    <input v-if="isAdmin || (canEdit && (!group.cmdr || citizen.info.handle.toLowerCase() !== group.cmdr.toLowerCase()))" class="tool-button" @click="removeGroup" type="button" value="Delete Group">
+                <panel :title="group.data.info.name" class="tools">
+                    <input v-if="isAdmin || (canEdit && (!group.cmdr || citizen.info.handle.toLowerCase() !== group.cmdr.toLowerCase()))" class="tool-button" @click="modals.confirm = true" type="button" value="Delete Group">
                     <input v-if="isAdmin || (canEdit && (!group.cmdr || citizen.info.handle.toLowerCase() !== group.cmdr.toLowerCase()))" class="tool-button" @click="modals.edit = true" type="button" value="Edit Group">
-                    <input class="tool-button" @click="modals.value.group = true" type="button" value="Add Subgroup">
-                    <input class="tool-button" @click="modals.value.ship = true" type="button" value="Add Ship">
+                    <input class="tool-button" @click="modals.group = true" type="button" value="Add Subgroup">
+                    <input class="tool-button" @click="modals.ship = true" type="button" value="Add Ship">
                 </panel>
+                <!-- put ship list here -->
             </div>
         </div>
+        <layout-modal v-if="modals.group" title="Add Subgroup" @close="modals.group = false">
+            <forms-fleet @submit="addGroup" />
+        </layout-modal>
+        <layout-modal v-if="modals.confirm" title="Are you sure?" @close="modals.confirm = false" :show-close="false">
+            <div class="confirm">
+                <img class="button" src="@/assets/tick.png" @click="removeGroup">
+                <img class="button" src="@/assets/delete.png"  @click="modals.confirm = false">
+            </div>
+        </layout-modal>
+        <layout-modal v-if="modals.commander" title="Add Commander" @close="modals.commander = false">
+            <forms-commander @submit="addCmdr" />
+        </layout-modal>
     </div>
 </template>
 
@@ -73,6 +141,19 @@ const {status, data: group, refresh} = await useAPI(`/api/fleets/${props.groupID
     margin-left: -10px;
     margin-right: -10px;
     opacity: 1;
+}
+
+.confirm {
+    display: flex;
+    width: 200px;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm>.button {
+    margin: 10px;
+    width: 50px;
+    cursor: pointer;
 }
 
 .ship-modal {
@@ -113,6 +194,7 @@ const {status, data: group, refresh} = await useAPI(`/api/fleets/${props.groupID
     height: 30px;
     line-height: 30px;
     flex-basis: 120px;
+    cursor: pointer;
 }
 
 .fleet-list {

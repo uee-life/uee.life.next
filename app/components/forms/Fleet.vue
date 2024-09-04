@@ -1,6 +1,6 @@
 <template>
     <form @submit.prevent="submit" class="fleet-form">
-        <label for="name">Fleet Name:</label>
+        <label for="name">Group Name:</label>
         <div>
             <input class="input" type="text" id="name" v-model="data.name" maxlength="16">
             <span v-if="error.name != ''" class="error">{{ error.name }}</span>
@@ -12,7 +12,6 @@
             <forms-input-citizen @selected="selected" />
         </template>
         <input type="submit" value="Submit" />
-        {{ data }}
     </form>
 </template>
 

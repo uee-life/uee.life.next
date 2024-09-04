@@ -70,7 +70,6 @@ export const parseRecords = (records) => {
                 }
                 
             } else if (neo4j.isDateTime(data)) {
-                console.log('datetime')
                 rec[key] = data.toStandardDate()
             } else {
                 rec[key] = data

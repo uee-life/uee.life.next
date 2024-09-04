@@ -1,6 +1,6 @@
 <script setup>
 import { format } from 'date-fns'
-const {data, status, refresh} = await useAPI(`/api/admin/cache`)
+const {data, status, refresh} = useAPI(`/api/admin/cache`)
 </script>
 
 <template>

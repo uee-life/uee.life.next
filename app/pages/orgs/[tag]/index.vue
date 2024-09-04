@@ -33,7 +33,7 @@ async function getOrgShips() {
     console.log(fleet.value)
 }
 
-const {status, data: org} = await useAPI(`/api/orgs/${route.params.tag}`, {
+const {status, data: org} = useAPI(`/api/orgs/${route.params.tag}`, {
     key: 'getOrg',
     async onResponse(_ctx) {
         await getOrgShips()
