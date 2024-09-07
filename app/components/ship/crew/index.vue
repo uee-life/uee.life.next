@@ -1,5 +1,6 @@
 <template>
-    <panel title="Crew" class="crew">
+    <widgets-loading v-if="status == 'pending'" />
+    <panel v-else-if="status == 'success'" title="Crew" class="crew">
         <div v-for="(c, i) in crew.data" :key="i" class="crewman">
             <div v-if="c" class="assigned">
                 <h5 class="role">{{ c.role }}</h5>
@@ -24,6 +25,7 @@
             <forms-crew @add="addCrew"/>
         </layout-modal>
     </panel>
+    <widgets-no-result v-else text="Error loading crew" />
 </template>
 
 <script setup>

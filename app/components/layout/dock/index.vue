@@ -1,6 +1,5 @@
 <template>
-  <div class="dock">
-    <div :id="name"></div>
+  <div :id="name" class="dock">
   </div>
 </template>
 

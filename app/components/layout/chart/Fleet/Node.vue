@@ -10,9 +10,6 @@ const props = defineProps({
     }
 })
 
-console.log('node component for: ' + props.datasource.info.id)
-console.log(props.datasource.groups)
-
 const emit = defineEmits(['setSelected'])
 
 const nodeClass = computed({
@@ -25,8 +22,6 @@ const nodeClass = computed({
 })
 
 const setSelected = (id) => {
-  console.log('click!')
-  console.log(id)
   emit('setSelected', id)
 }
 </script>

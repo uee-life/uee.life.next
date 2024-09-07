@@ -5,15 +5,8 @@
                 <panel-dock v-if="ship" title="owner" class="owner">
                     <citizen-portrait :citizen="ship.owner" :showName="true"></citizen-portrait>
                 </panel-dock>
-                <panel-dock title="Fleet"></panel-dock>
             </teleport>
         </ClientOnly>
-        <layout-banner 
-            :name="ship.model"
-            :tag="ship.name"
-            :type="ship.career + ' / ' + ship.role"
-            :image="`/images/ships/${ship.identifier}.jpg`"
-            :logo="`/images/manufacturers/${ship.manufacturer}.png`"/>
         <div class="ship-info">
             <panel title="Registration" titleSize="small" class="info-panel">
                 <div class="info-items">
@@ -63,7 +56,6 @@
                 </div>
             </panel>
         </div>
-        <ship-crew :ship="ship" :edit="isOwner"/>
     </div>
 </template>
 
@@ -116,7 +108,7 @@ function updateName() {
 .ship-info {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -10px;
+    margin: 10px -10px;
 }
 
 .info-panel {

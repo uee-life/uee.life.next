@@ -47,6 +47,7 @@ export const createOrganization = async (org, official = false) => {
             tag: $tag,
             name: $name,
             type: $type,
+            logo: $logo
             description: $description,
             official: $official
         })`
@@ -55,6 +56,7 @@ export const createOrganization = async (org, official = false) => {
         tag: org.tag,
         name: org.name,
         type: org.model,
+        logo: org.logo,
         description: org.description,
         official: official
     }

@@ -49,28 +49,6 @@ export const addShipModel = async (ship) => {
     return null
 }
 
-export const addShip = async (ship, handle) => {
-    const query = 
-        `MATCH (c:Citizen {handle: $handle})
-         MATCH (m:ShipModel {identifier: $id})
-         MERGE (m)<-[:INSTANCE_OF]-(s:Ship {
-            id: left(randomUUID(), 8),
-            name: $name,
-            registered: datetime()
-        })-[:OWNED_BY]->(c)`
-
-    const params = {
-        handle: handle,
-        id: ship.id,
-        name: ship.name
-    }
-    const { error } = await writeQuery(query, params)
-    if (error) {
-        return error
-    }
-    return null
-}
-
 export const removeShip = async (ship, handle) => {
     const query = 
         `MATCH (s:Ship {id: $id})-[:OWNED_BY]->(c:Citizen {handle: $handle}) DETACH DELETE s`
@@ -80,48 +58,6 @@ export const removeShip = async (ship, handle) => {
         return error
     }
     return null
-}
-
-export const getShipList = async (handle) => {
-    const query =
-        `MATCH (c:Citizen)<-[:OWNED_BY]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
-         WHERE c.handle =~ $handle
-         RETURN s as ship,
-                m as shipData`
-    const { result } = await readQuery(query, {handle: "(?i)"+handle})
-    const ships = []
-    for (const res of result) {
-        const ship = {
-            ...res.ship,
-            ...res.shipData
-        }
-        //ship.data = res._fields[0].properties
-        //ship.model = res._fields[1].properties
-        ships.push(ship)
-    }
-    return ships
-}
-
-export const getOrgShipList = async (tag) => {
-    console.log("Getting ships for org", tag)
-    const query =
-        `MATCH (o:Organization)<-[:MEMBER_OF]-(c:Citizen)<-[:OWNED_BY]-(s:Ship)-[:INSTANCE_OF]->(m:ShipModel)
-         WHERE o.tag =~ $tag
-         RETURN s as ship,
-                m as shipData,
-                c as owner`
-    const result = await readQuery(query, {tag: "(?i)"+tag})
-    const ships = []
-    for (const res of result.result) {
-        const ship = {
-            owner: res.owner,
-            ...res.ship,
-            ...res.shipData
-        }
-
-        ships.push(ship)
-    }
-    return ships
 }
 
 export const getShip = async (identifier) => {

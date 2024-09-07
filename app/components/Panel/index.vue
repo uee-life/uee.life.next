@@ -1,5 +1,5 @@
 <template>
-    <div class="panel">
+    <div :class="`panel ${titleSize}`">
         <panel-title class="panel-title" v-if="title" :text="title" :size="titleSize" />
         <div :class="contentClass">
             <slot></slot>
@@ -70,6 +70,19 @@ onMounted(() => {
         max-width: 50px;
         max-height: 50px;
         margin-bottom: 20px;
+    }
+
+    /* buffer for the panel title */
+    .panel.large {
+        margin-top: 20px;
+    }
+
+    .panel.medium {
+        margin-top: 15px;
+    }
+
+    .panel.small {
+        margin-top: 10px;
     }
 
     .panel-title {

@@ -10,18 +10,29 @@
         </ClientOnly-->
         <nuxt-link :to="orgLink">
             <layout-banner 
+                display="content"
                 :name="fleet.data.org.name"
                 :tag="fleet.data.info.name"
                 :type="fleet.data.info.purpose"
                 image="/images/default/fleet.jpg"
                 :logo="fleet.data.org.logo" />
         </nuxt-link>
-        <panel title="Fleet Hierarchy" class="fleet-chart">
+        <panel title="Fleet Hierarchy" class="fleet-chart" title-size="small">
             <client-only>
                 <layout-chart-fleet :datasource="fleet.data" :selected="selected" @setSelected="setSelected"/>
             </client-only>
         </panel>
-        <fleet-group :groupID="selected" @refresh="refresh" @reset="reset"></fleet-group>
+        <fleet-group 
+            :fleet="fleet.data"
+            :selected="selected"
+            :ship-pool="shipPool"
+            @refresh="refresh" 
+            @reset="reset" 
+            @return="navigateTo(`/orgs/${fleet.data.org.tag}`)">
+            <template v-slot:assignment>
+                <panel style="margin:10px; text-align: center;" title="Assignment" title-size="small">Log in to view assignment</panel>
+            </template>
+        </fleet-group>
     </div>
 </template>
 
@@ -29,20 +40,20 @@
     const { $api } = useNuxtApp()
     const route = useRoute()
     
-    const fleetData = ref({})
     const selected = ref(route.params.id)
+
+    const shipPool = ref([])
 
     const orgLink = computed({
         get() {
-            if(status == 'success') {
-                return `/orgs/${fleet.data.org.tag}`
+            if(status.value == 'success') {
+                return `/orgs/${fleet.value.data.org.tag}`
             }
             return ''
         }
     })
 
     const setSelected = (id) => {
-        console.log('setting selected to: ' + id)
         selected.value = id
     }
 
@@ -51,7 +62,26 @@
         refresh()
     }
 
-    const {status, data: fleet, refresh} = useAPI(() => `/api/fleets/${route.params.id}`, {
-        key: 'getFleet'
+    const loadShipPool = async (tag) => {
+        const result = await $api(`/api/orgs/${tag}/ships`, {
+            key: 'getShipPool',
+            lazy: true,
+            server: false
+        })
+        if (result.status == 'success') {
+            shipPool.value = result.data
+        }
+    }
+
+    const {status, data: fleet, refresh} = await useAPI(() => `/api/fleets/${route.params.id}`, {
+        key: 'getFleet',
+        server: false,
+        lazy: true,
+        async onResponse({ response }) {
+            const res = response._data
+            if (res.status == 'success') {
+                await loadShipPool(res.data.org.tag)
+            }
+        }
     })
 </script>

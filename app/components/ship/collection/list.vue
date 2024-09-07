@@ -11,57 +11,71 @@
             </div>
             <div class="ships">
                 <template v-if="isMobile || display == 'small'">
-                    <ship-summary-small @selected="selected" v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove" />
+                    <ship-summary-small v-for="(s, index) in filteredShips" 
+                        :key="s.id" 
+                        :ship="s" 
+                        :index="index" 
+                        :isAdmin="isAdmin" 
+                        @selected="selected" 
+                        @remove="remove" />
                 </template>
                 <template v-else-if="display == 'table'">
-                    <ship-table @selected="selected" :ships="filteredShips" />
+                    <ship-table 
+                        :ships="filteredShips" 
+                        @selected="selected"/>
                 </template>
                 <template v-else>
-                    <ship-summary v-for="(s, index) in filteredShips" :key="s.id" :ship="s" :index="index" :isAdmin="isAdmin" @remove="remove"/>
+                    <ship-summary v-for="(s, index) in filteredShips" 
+                        :key="s.id" 
+                        :ship="s" 
+                        :index="index" 
+                        :isAdmin="isAdmin" 
+                        @selected='selected' 
+                        @remove="remove"/>
                 </template>
             </div>
         </template>
         <widgets-no-result v-else text="No Ships Found"/>
     </div>
 </template>
-
+Is 
 <script setup>
 import { gsap } from 'gsap'
 
 const props = defineProps({
     ships: {
-            type: Array,
-            default: function () {
-                return []
-            }
-        },
-        view: {
-            type: String,
-            default: 'large'
-        },
-        showControls: {
-            type: Boolean,
-            default: true
-        },
-        showFilter: {
-            type: Boolean,
-            default: true
-        },
-        showOwner: {
-            type: Boolean,
-            default: true
-        },
-        isAdmin: {
-            type: Boolean,
-            default: false
-        },
-        isMobile: {
-            type: Boolean,
-            default: false
+        type: Array,
+        default: function () {
+            return []
         }
+    },
+    view: {
+        type: String,
+        default: 'large'
+    },
+    showControls: {
+        type: Boolean,
+        default: true
+    },
+    showFilter: {
+        type: Boolean,
+        default: true
+    },
+    showOwner: {
+        type: Boolean,
+        default: true
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+    isMobile: {
+        type: Boolean,
+        default: false
+    }
 })
 
-const emit = defineEmits(['remove'])
+const emit = defineEmits(['selected','remove'])
 
 const search = ref('')
 const display = ref('large')
@@ -87,7 +101,7 @@ function show(selected) {
 }
 
 function selected(ship) {
-    console.log('selected emitted')
+    emit('selected', ship)
 }
 function remove(ship) {
     emit('remove', ship)

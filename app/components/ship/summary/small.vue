@@ -5,15 +5,14 @@
         <div class="ship-info">
             <h5>{{ ship.model }}</h5>
             <div>{{ ship.career }} - {{ ship.role }}</div>
-            <div v-if="ship.owner">Owner: <nuxt-link :to="citizenLink">{{ship.owner.name}}</nuxt-link></div>
+            <div v-if="ship.owner">Owner: {{ship.owner.name}}</div>
         </div>
-        <div class="mask" @click="navigateTo(`/ships/${ship.id}`)"></div>
+        <div class="mask" @click="$emit('selected', ship.id)"></div>
         <img v-if="isAdmin" title="Remove Ship" class="delete" @click="$emit('remove', ship.id)" src="@/assets/delete.png">
     </panel>
 </template>
 
 <script setup>
-
 const props = defineProps({
     ship: {
         type: Object,
@@ -44,10 +43,6 @@ const citizenLink = computed({
         return `/citizens/${props.ship.owner.handle}`
     }
 })
-
-function selected() {
-    $emit('selected', props.ship.id)
-}
 </script>
 
 <style scoped>
@@ -62,7 +57,7 @@ function selected() {
         display: flex;
         flex-grow: 1;
         flex-basis: 300px;
-        margin: 5px;
+        margin: 10px 5px;
         margin-bottom: 10px;
         padding: 9px;
         position: relative;

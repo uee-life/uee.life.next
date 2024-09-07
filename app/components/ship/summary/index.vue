@@ -33,8 +33,12 @@ const citizenLink = computed({
     }
 })
 
-async function remove() {
-    emit('remove', props.ship)
+function navigate() {
+    if (props.ship.assignment) {
+        navigateTo(`/assignments/${props.ship.assignment.id}`)
+    } else {
+        navigateTo(`/ships/${props.ship.id}`)
+    }
 }
 </script>
 
@@ -59,8 +63,8 @@ async function remove() {
                 <span v-if="ship.crew">{{ ship.crew }} / {{ ship.max_crew }}</span>
             </div>
         </div>
-        <div class="mask" @click="navigateTo(`/ships/${ship.id}`)"></div>
-        <img v-if="isAdmin" title="Remove Ship" class="delete" @click="remove" src="@/assets/delete.png">
+        <div class="mask" @click="navigate"></div>
+        <img v-if="isAdmin" title="Remove Ship" class="delete" @click="$emit('remove', ship)" src="@/assets/delete.png">
     </panel>
 </template>
 

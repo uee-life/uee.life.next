@@ -36,7 +36,8 @@ const computedClass = computed({
         font-family: 'Michroma';
         position:absolute;
         left: 0;
-        width: 100%;
+        padding-left: 25px;
+        width: calc(100% - 25px);
         display: flex;
         text-transform: uppercase;
         word-spacing:3px;
@@ -58,8 +59,7 @@ const computedClass = computed({
       top: -10px;
     }
     .section-title.small>.text {
-      font-size: 10px;
-      margin-left: 30px;
+        font-size: 10px;
     }
 
     .section-title.medium {
@@ -67,14 +67,12 @@ const computedClass = computed({
     }
     .section-title.medium>.text {
         font-size: 14px;
-        margin-left: 30px;
     }
 
     .section-title.large {
-        top: -22px;
+        top: -20px;
     }
     .section-title.large>.text {
         font-size: 18px;
-        margin-left: 20px;
     }
 </style>

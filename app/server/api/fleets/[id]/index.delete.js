@@ -16,8 +16,8 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const removeGroup = async (id) => {
     const query = `
-        MATCH (g:VehicleGroup {id: $id})<--{0,10}(a:VehicleGroup)
-        DETACH DELETE g,a
+        MATCH (g:VehicleGroup {id: $id})<--{0,10}(cg:VehicleGroup)<-[:ATTACHED_TO]-(a:Assignment)
+        DETACH DELETE g,cg,a
     `
 
     const {error} = await writeQuery(query, {

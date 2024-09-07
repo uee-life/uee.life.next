@@ -53,7 +53,6 @@ const { data, status, refresh } = useAPI(`/api/online`, {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
 }
 
 .online-item>span {

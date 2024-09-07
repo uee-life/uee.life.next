@@ -5,8 +5,10 @@
     <layout-navbar-default />
 
     <div class="main">
+      <layout-banner-dock name="banner-full" />
       <layout-dock name="left-dock" />
       <div class="content">
+        <layout-banner-dock name="banner-content" />
         <slot></slot>
       </div>
       <!-- the margin-right is to account for the scrollbar gutter -->
@@ -39,7 +41,6 @@ const config = useRuntimeConfig();
 </script>
 
 <style scoped>
-
 .app {
   position: relative;
   min-height: 100vh;

@@ -10,6 +10,10 @@ const initialTab = ref('ships')
 const ships = ref([])
 const links = ref([])
 
+const modals = ref({
+    ship: false
+})
+
 const isOwner = computed({
     get() {
         return auth.isAuthenticated
@@ -126,9 +130,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
 
 <template>
     <div class='citizen'>
-        <div v-if="status != 'success'" class="loading">
-            <img src="@/assets/loading.gif" >
-        </div>
+        <widgets-loading v-if="status != 'success'" />
         <template v-else-if="citizen.status == 'success'">
             <client-only>
                 <teleport to="#left-dock">
@@ -159,7 +161,9 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                         SHIPS ({{ ships.length }})
                     </template>
                     <template #tab-content-ships>
-                        <ship-collection v-if="ships" :isOwner="isOwner" :ships="ships" @add="addShip" @remove="removeShip"/>
+                        <ship-collection v-if="ships" :isOwner="isOwner" :ships="ships" @remove="removeShip">
+                            <panel-button v-if="isOwner" text="Add Ship" class="add-ship" @click="modals.ship = true" />
+                        </ship-collection>
                     </template>
 
                     <template v-if="isOwner" #tab-title-location>
@@ -170,6 +174,11 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                     </template>
                 </layout-tabs>
             </div>
+
+            <!-- Modals -->
+            <layout-modal v-if="modals.ship" title="Add Ship" @close="modals.ship = false">
+                <forms-ship @add="addShip" />
+            </layout-modal>
         </template>
         <widgets-no-result text="Citizen Not Found" v-else />
     </div>

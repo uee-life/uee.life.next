@@ -5,7 +5,9 @@ const auth = useAuthStore()
 const route = useRoute()
 
 const tabs = ["info", "ships", "fleets", "members", "affiliates"]
-const initialTab = "info"
+
+const initialTab = ref("info")
+
 const fleet = ref([])
 
 const spectrumLink = computed({
