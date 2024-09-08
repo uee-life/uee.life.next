@@ -1,5 +1,5 @@
 <template>
-    <panel class="fleet-panel" :title="fleet.name">
+    <panel class="fleet-panel" :title="fleet.name" title-size="medium">
         <div class="info">
             <div class="info-item"><span class="label">Purpose:</span><span class="value">{{ fleet.purpose }}</span></div>
             <div class="info-item"><span class="label">Commander:</span><span class="value">{{ fleet.cmdr }}</span></div>

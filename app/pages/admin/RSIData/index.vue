@@ -21,7 +21,7 @@ const updateRSI = async () => {
                 </panel-dock>
             </teleport>
         </client-only>
-            <panel title="Site Data">
+            <panel title="Site Data" title-size="medium">
                 Coming soon...
             </panel>
             <panel title="Action Output" titleSize="small">

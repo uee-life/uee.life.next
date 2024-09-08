@@ -1,5 +1,5 @@
 <template>
-    <panel id="profile-info" title="User Profile" class="profile-info">
+    <panel class="profile-info" id="profile-info" title="User Profile" title-size="medium">
         <div v-if="account" class="info">
             <h3>Account</h3>
             <div class="line-item">

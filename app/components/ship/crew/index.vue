@@ -1,6 +1,6 @@
 <template>
     <widgets-loading v-if="status == 'pending'" />
-    <panel v-else-if="status == 'success'" title="Crew" class="crew">
+    <panel v-else-if="status == 'success'" class="crew" title="Crew" title-size="medium">
         <div v-for="(c, i) in crew.data" :key="i" class="crewman">
             <div v-if="c" class="assigned">
                 <h5 class="role">{{ c.role }}</h5>

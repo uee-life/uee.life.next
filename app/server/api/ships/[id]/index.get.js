@@ -9,3 +9,25 @@ export default defineEventHandler(async (event) => {
     }
     
 })
+
+export const getShip = async (identifier) => {
+    // get ship instance
+    const query =
+        `MATCH (c:Citizen)<-[:OWNED_BY]-(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
+         RETURN c as owner,
+                s as ship,
+                m as info`
+    const { result } = await readQuery(query, {id: identifier})
+    // TODO: Check this actually returns a ship, else return an empty result.
+
+    if (result[0]) {
+        const ship = {
+            owner: result[0].owner,
+            ...result[0].ship,
+            ...result[0].info
+        }
+        return ship
+    } else {
+        return null
+    }
+}

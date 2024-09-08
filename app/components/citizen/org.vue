@@ -1,6 +1,6 @@
 <template>
-    <panel-dock :title="affiliate ? 'Affiliation' : org.model" class="citizen-org">
-        <nuxt-link :to="orgLink" class="org-link">
+    <panel-dock class="citizen-org" :title="affiliate ? 'Affiliation' : org.model" title-size="small">
+        <nuxt-link class="org-link" :to="orgLink">
           <img class="logo" :src="orgLogo" />
         </nuxt-link>
         <div class="org-name">

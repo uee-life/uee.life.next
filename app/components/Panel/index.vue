@@ -21,9 +21,9 @@ const props = defineProps({
     },
     titleSize: {
         type: String,
-        default: "medium",
+        default: "no-title",
         validator(value, props) {
-            return ['small', 'medium', 'large'].includes(value)
+            return ['no-title', 'small', 'medium', 'large'].includes(value)
         }
     },
     centered: {
@@ -83,6 +83,10 @@ onMounted(() => {
 
     .panel.small {
         margin-top: 10px;
+    }
+
+    .panel.no-title {
+        margin-top: 0px;
     }
 
     .panel-title {

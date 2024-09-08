@@ -4,25 +4,6 @@ export const getShipModel = async (identifier) => {
     // get ship static details
 }
 
-export const getAllShipModels = async () => {
-    console.log('Calling getAllShipModels')
-    const data = {
-        makes: [],
-        models: []
-    }
-    let query = "MATCH (s:ShipModel) return s as model"
-    const {result: models } = await readQuery(query)
-    for (const m of models) {
-        data.models.push(m.model)
-    }
-
-    query = "MATCH (m:Organization {type: 'Manufacturer'}) return m as make"
-    const {result: makes} =  await readQuery(query)
-    for (const m of makes) {
-        data.makes.push(m.make)
-    }
-    return data
-}
 
 export const addShipModel = async (ship) => {
     // add ship static details and link to manufacturer
@@ -58,28 +39,6 @@ export const removeShip = async (ship, handle) => {
         return error
     }
     return null
-}
-
-export const getShip = async (identifier) => {
-    // get ship instance
-    const query =
-        `MATCH (c:Citizen)<-[:OWNED_BY]-(s:Ship {id: $id})-[:INSTANCE_OF]->(m:ShipModel)
-         RETURN c as owner,
-                s as ship,
-                m as info`
-    const { result } = await readQuery(query, {id: identifier})
-    // TODO: Check this actually returns a ship, else return an empty result.
-
-    if (result[0]) {
-        const ship = {
-            owner: result[0].owner,
-            ...result[0].ship,
-            ...result[0].info
-        }
-        return ship
-    } else {
-        return null
-    }
 }
 
 export const getShipOwner = async (identifier) => {

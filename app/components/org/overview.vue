@@ -34,7 +34,7 @@ loadFounders()
 
 <template>
     <div class="info">
-        <panel title="roles" class="info-panel">
+        <panel class="info-panel" title="roles" title-size="small">
             <div class="info-items">
                 <div class="labels">
                     <span>Primary Role:</span>
@@ -46,7 +46,7 @@ loadFounders()
                 </div>
             </div>
         </panel>
-        <panel title="headquarters" class="info-panel">
+        <panel class="info-panel" title="headquarters" title-size="small">
             <div class="info-items">
                 <div class="labels">
                     <span>System:</span>
@@ -60,7 +60,7 @@ loadFounders()
                 </div>
             </div>
         </panel>
-        <panel title="founders" class="info-panel">
+        <panel class="info-panel" title="founders" title-size="small">
             <div class="founders">
                 <citizen-portrait class="founder" v-for="f in founders" :key="f.handle" :citizen="f" size="small" :showName="true" />
             </div>

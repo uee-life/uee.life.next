@@ -1,5 +1,5 @@
 <template>
-    <panel-dock title="Commander" class="commander-dock">
+    <panel-dock class="commander-dock" title="Commander" title-size="medium">
         <citizen-portrait :citizen="citizen" :show-name="true"/>
     </panel-dock>
 </template>

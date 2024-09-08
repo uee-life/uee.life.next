@@ -1,6 +1,6 @@
 <template>
     <div class="fleet-summary">
-        <panel title="Summary">
+        <panel title="Summary" title-size="medium">
             <div class="view-controls">
                 <div class="display-style">
                     <template v-if="!isMobile">

@@ -17,7 +17,7 @@
                 image="/images/default/fleet.jpg"
                 :logo="fleet.data.org.logo" />
         </nuxt-link>
-        <panel title="Fleet Hierarchy" class="fleet-chart" title-size="small">
+        <panel class="fleet-chart" title="Fleet Hierarchy" title-size="small">
             <client-only>
                 <layout-chart-fleet :datasource="fleet.data" :selected="selected" @setSelected="setSelected"/>
             </client-only>

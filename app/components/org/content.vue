@@ -1,5 +1,5 @@
 <template>
-    <panel :title="title" :centered="centered">
+    <panel :title="title" :centered="centered" :title-size="title.length > 0 ? 'small' : 'no-title'">
         <markdown :markdown="content" :class="contentClass"/>
     </panel>
 </template>

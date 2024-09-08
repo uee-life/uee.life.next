@@ -23,7 +23,7 @@ const result = ref('')
                 </panel-dock>
             </teleport>
         </client-only>
-        <panel title="Site Data">
+        <panel title="Site Data" title-size="small">
             Coming soon...
         </panel>
         <panel title="Action Output" titleSize="small">
