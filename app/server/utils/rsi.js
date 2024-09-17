@@ -31,7 +31,7 @@ export const fetchCitizen = defineCachedFunction(async (handle) => {
             if ($('p:contains("authenticated")').text()) {
                 console.error($('p:contains("authenticated")').text())
             }
-            info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
+            info.id = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
             info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
             info.bio = $('span:contains("Bio")', '#public-profile').next().text()
             info.enlisted = $("span:contains('Enlisted')", '#public-profile').next().text()
@@ -84,7 +84,7 @@ export const fetchOrg = defineCachedFunction(async (org) => {
         info.charter = convertToMarkdown($('h2:contains("Charter")', '#organization').next().html())
         info.founders = await fetchOrgFounders(org)
 
-        info.tag = org
+        info.id = org
 
         return info
     } catch (error) {
@@ -117,7 +117,7 @@ export const fetchOrgList = defineCachedFunction(async (handle) => {
         if (main) {
             const logoImg = $('.main').find('.thumb').find('img').prop('src')
             orgs.main = {
-                tag: $(main).find('a').prop('href').split('/')[2],
+                id: $(main).find('a').prop('href').split('/')[2],
                 name: $(main).find('a').text(),
                 logo: logoImg.startsWith('https://') ? logoImg : baseURI + logoImg,
                 model: $('.main').find('.right-col').find('span:contains("Archetype")').next().text(),
@@ -129,7 +129,7 @@ export const fetchOrgList = defineCachedFunction(async (handle) => {
             const links = $('.affiliation').each(function (i, el) {
                 const logo = $(el).find('.thumb').find('img').prop('src')
                 orgs.affiliated.push({
-                    tag: $(el).find('.info').find('a').prop('href').split('/')[2],
+                    id: $(el).find('.info').find('a').prop('href').split('/')[2],
                     name: $(el).find('.info').find('a').text(),
                     logo: logo.startsWith('https://') ? logo : baseURI + logo,
                     rank: {

@@ -11,7 +11,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
         citizen = await rsi.fetchCitizen(handle)
 
         // added a check for random citizens without a record number. Not sure why they exist.
-        if (citizen && citizen.record.startsWith("#") && create) {
+        if (citizen && citizen.id.startsWith("#") && create) {
             if(user && user.verified == 1) {
                 citizen.verified = true
             } else {
@@ -56,7 +56,7 @@ async function loadCitizen(handle) {
     }
 
     let citizen = {}
-    if(result.length > 0) {
+    if(result) {
         citizen = result[0].citizen
     }
     return citizen
@@ -68,7 +68,7 @@ async function createCitizen(citizen) {
     const query = 
         `MERGE (c:Citizen {
             handle: $handle,
-            record: $record,
+            id: $id,
             name: $name,
             enlisted: $enlisted,
             verified: $verified,
@@ -78,7 +78,7 @@ async function createCitizen(citizen) {
 
     const params = {
         handle: citizen.handle,
-        record: citizen.record,
+        id: citizen.id,
         name: citizen.name,
         enlisted: citizen.enlisted,
         verified: citizen.verified,
@@ -91,12 +91,12 @@ async function createCitizen(citizen) {
     if(citizen.orgs.main) {
         console.log("Found org, adding as member")
         const mainOrg = citizen.orgs.main
-        const org = await getOrganization(mainOrg.tag, true)
+        const org = await getOrganization(mainOrg.id, true)
         //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
-        await orgAddMember(citizen.handle, mainOrg.tag, mainOrg.rank.level, mainOrg.rank.title)
+        await orgAddMember(citizen.handle, mainOrg.id, mainOrg.rank.level, mainOrg.rank.title)
 
         if (org.founders && org.founders.find(item => item.handle === citizen.handle)) {
-            await orgAddFounder(citizen.handle, mainOrg.tag)
+            await orgAddFounder(citizen.handle, mainOrg.id)
         }
     }
 }
@@ -147,9 +147,9 @@ export const isVerified = async (handle) => {
             handle: '(?i)' + handle
          }
 
-         const result = await readQuery(query, params)
-         if (result.result[0]) {
-            return result.result[0].citizen.verified
+         const { result } = await readQuery(query, params)
+         if (result[0]) {
+            return result[0].citizen.verified
          }
          return false
          

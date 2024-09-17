@@ -61,6 +61,7 @@ const config = useRuntimeConfig();
   height: calc(100vh - 148px);
   /* set the gutter to stable so the layout doesn't get messed up turning on scrollbar */
   scrollbar-gutter: stable;
+  padding-top: 10px;
 }
 
 .app::before {

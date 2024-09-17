@@ -2,7 +2,7 @@ import { getFleetGroups } from "./groups.get"
 
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
-    const fleet = await getFleet(id)
+    const fleet = await getGroup(id)
     if (fleet) {
         return apiSuccess(fleet)
     } else {
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     
 })
 
-const getFleet = async (identifier) => {
+export const getGroup = async (identifier) => {
     const query =
         `MATCH (g:VehicleGroup {id: $id})-[:BELONGS_TO]->{0,10}(f:VehicleGroup)-[:BELONGS_TO]->(o:Organization)
          RETURN g as info,
@@ -26,13 +26,14 @@ const getFleet = async (identifier) => {
     if (result[0]) {
         const fleet = {
             org: result[0].org,
+            admins: await getOrgMembers(result[0].org.id, 5),
             fleet: result[0].fleet,
             info: result[0].info,
             cmdr: result[0].info.cmdr ? await getCitizen(result[0].info.cmdr) : '',
             groups: []
         }
         for (const group of result[0].groups) {
-            fleet.groups.push(await getFleet(group))
+            fleet.groups.push(await getGroup(group))
         }
         return fleet
     } else {

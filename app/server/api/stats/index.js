@@ -18,7 +18,7 @@ const onlineCount = async () => {
             WHERE r.updated > datetime() - duration('PT30M')
             RETURN count(c) as count`
     const { result } = await readQuery(query)
-    return result[0]
+    return result
 }
 
 /*

@@ -24,11 +24,12 @@
         </panel>
         <fleet-group 
             :fleet="fleet.data"
+            :is-admin="isAdmin"
             :selected="selected"
-            :ship-pool="shipPool"
+            :vehicle-pool="vehiclePool"
             @refresh="refresh" 
             @reset="reset" 
-            @return="navigateTo(`/orgs/${fleet.data.org.tag}`)">
+            @return="navigateTo(`/orgs/${fleet.data.org.id}`)">
             <template v-slot:assignment>
                 <panel style="margin:10px; text-align: center;" title="Assignment" title-size="small">Log in to view assignment</panel>
             </template>
@@ -39,17 +40,28 @@
 <script setup>
     const { $api } = useNuxtApp()
     const route = useRoute()
+    const auth = useAuthStore()
     
     const selected = ref(route.params.id)
 
-    const shipPool = ref([])
+    const vehiclePool = ref([])
 
     const orgLink = computed({
         get() {
             if(status.value == 'success') {
-                return `/orgs/${fleet.value.data.org.tag}`
+                return `/orgs/${fleet.value.data.org.id}`
             }
             return ''
+        }
+    })
+
+    const isAdmin = computed({
+        get() {
+            if (status.value == 'success' && auth.isAuthenticated && auth.user.verified && fleet.value.data.admins.find((admin) => admin.handle == auth.citizen.handle)) {
+                return true
+            } else {
+                return false
+            }
         }
     })
 
@@ -62,14 +74,15 @@
         refresh()
     }
 
-    const loadShipPool = async (tag) => {
-        const result = await $api(`/api/orgs/${tag}/ships`, {
-            key: 'getShipPool',
+    const loadVehiclePool = async (id) => {
+        const result = await $api(`/api/orgs/${id}/vehicles`, {
+            key: 'getVehiclePool',
             lazy: true,
             server: false
         })
+        console.log('RESULT', result)
         if (result.status == 'success') {
-            shipPool.value = result.data
+            vehiclePool.value = result.data
         }
     }
 
@@ -80,7 +93,7 @@
         async onResponse({ response }) {
             const res = response._data
             if (res.status == 'success') {
-                await loadShipPool(res.data.org.tag)
+                await loadVehiclePool(res.data.org.id)
             }
         }
     })

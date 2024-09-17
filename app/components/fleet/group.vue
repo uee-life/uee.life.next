@@ -8,11 +8,15 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     selected: {
         type: String,
         required: true
     },
-    shipPool: {
+    vehiclePool: {
         type: Array,
         default: () => {
             return []
@@ -37,9 +41,15 @@ const route = useRoute()
 const modals = ref({
     group: false,
     commander: false,
-    ship: false,
+    vehicle: false,
     edit: false,
     confirm: false
+})
+
+const canEdit = computed({
+    get() {
+        return props.isAdmin || isCmdr.value
+    }
 })
 
 const addGroup = async (group) => {
@@ -90,21 +100,32 @@ const removeCmdr = async () => {
     emit('refresh')
 }
 
-const addShip = async (id) => {
-    modals.value.ship = false
-    console.log('adding ship:', id)
-    const res = await $api(`/api/fleets/${props.selected}/assignments/add`, {
-        key: 'fleetAddShip',
+const addVehicle = async (id) => {
+    modals.value.vehicle = false
+
+    const res = await $api(`/api/fleets/${props.selected}/vehicles/add`, {
+        key: 'fleetAddVehicle',
         method: 'POST',
         body: {
-            shipID: id,
+            vehicleID: id,
             groupID: props.selected
         }
     })
+
+    refresh()
 }
 
-const removeShip = async () => {
-
+const removeVehicle = async (vehicle) => {
+    console.log('removing vehicle:', vehicle.id, 'from:', props.selected)
+    await $api(`/api/fleets/${props.selected}/vehicles/remove`, {
+        key: 'fleetRemoveVehicle',
+        method: 'POST',
+        body: {
+            vehicleID: vehicle.id,
+            groupID: props.selected
+        }
+    })
+    refresh()
 }
 
 const setGroup = async () => {
@@ -124,14 +145,10 @@ const setGroup = async () => {
     }
 }
 
-// Repurpose to get ships for the group.
+// Repurpose to get assignments for the group.
 
-const {status, data: ships, refresh} = await useAPI(() => `/api/fleets/${props.selected}/assignments`, {
-    key: 'getFleetGroupShips',
-    async onResponse({ response }) {
-        //chart.value = response._data.data
-        //chart.value.children = await getSubgroups()
-    }
+const {status, data: vehicles, refresh} = await useAPI(() => `/api/fleets/${props.selected}/vehicles`, {
+    key: 'getFleetGroupVehicles'
 })
 
 watch(
@@ -155,13 +172,13 @@ watch(
                         <h5>Group Commander</h5>
                         <citizen-portrait :citizen="group.cmdr" :show-name="true">
                             <div class="mask"></div>
-                            <img v-if="isCmdr" @click="removeCmdr" class="edit" src="@/assets/delete.png">
+                            <img v-if="canEdit" @click="removeCmdr" class="edit" src="@/assets/delete.png">
                         </citizen-portrait>
                     </div>
                     <div v-else class="unassigned">
                         <h5>Group Commander</h5>
                         <div class="bg">
-                            <img v-if="isCmdr" @click="modals.commander = true" src="@/assets/plus.png" class="add-new"/>
+                            <img v-if="canEdit" @click="modals.commander = true" src="@/assets/plus.png" class="add-new"/>
                             <div v-else class="add-new" />
                         </div>
                         <div class="name">Unassigned</div>
@@ -170,19 +187,21 @@ watch(
                 <slot name="assignment"></slot>
             </div>
             <div class="info-panel">
-                <panel title="Tools" title-size="small" class="tools">
-                    <input v-if="isCmdr" class="tool-button" @click="modals.confirm = true" type="button" value="Delete Group">
-                    <input v-if="isCmdr /*|| (canEdit && (!group.cmdr || citizen.info.handle.toLowerCase() !== group.cmdr.toLowerCase()))*/" class="tool-button" @click="modals.edit = true" type="button" value="Edit Group">
+                <panel v-if="canEdit" title="Tools" title-size="small" class="tools">
+                    <input v-if="isAdmin" class="tool-button" @click="modals.confirm = true" type="button" value="Delete Group">
+                    <input v-if="isAdmin /*|| (canEdit && (!group.cmdr || citizen.info.handle.toLowerCase() !== group.cmdr.toLowerCase()))*/" class="tool-button" @click="modals.edit = true" type="button" value="Edit Group">
                     <input class="tool-button" @click="modals.group = true" type="button" value="Add Subgroup">
-                    <input class="tool-button" @click="modals.ship = true" type="button" value="Add Ship">
+                    <input class="tool-button" @click="modals.vehicle = true" type="button" value="Add Vehicle">
                 </panel>
-                <ship-collection 
-                    :ships="ships.data" 
-                    :is-owner="isCmdr"
-                    @add="addShip"
-                    @remove="removeShip">
-                    <panel-button v-if="isCmdr" text="Add Ship" class="add-ship" @click="modals.ship = true" />
-                </ship-collection>
+                <vehicle-collection 
+                    :vehicles="vehicles.data" 
+                    :is-owner="canEdit"
+                    @add="addVehicle"
+                    @remove="removeVehicle">
+                    <panel-button v-if="canEdit" 
+                        text="Add Vehicle" 
+                        @click="modals.vehicle = true" />
+                </vehicle-collection>
             </div>
         </div>
         <layout-modal v-if="modals.group" title="Add Subgroup" @close="modals.group = false">
@@ -197,8 +216,10 @@ watch(
         <layout-modal v-if="modals.commander" title="Add Commander" @close="modals.commander = false">
             <forms-commander @submit="addCmdr" />
         </layout-modal>
-        <layout-modal v-if="modals.ship" title="Add Ship" @close="modals.ship = false">
-            <forms-fleet-ship :ship-pool="shipPool" @add="addShip"/>
+        <layout-modal v-if="modals.vehicle" title="Add Vehicle" @close="modals.vehicle = false">
+            <forms-fleet-vehicle 
+                :vehicle-pool="vehiclePool" 
+                @add="addVehicle"/>
         </layout-modal>
     </div>
 </template>
@@ -233,7 +254,7 @@ watch(
     cursor: pointer;
 }
 
-.ship-modal {
+.vehicle-modal {
     padding: 15px;
     max-height: 75vh;
     overflow-y: scroll;
@@ -280,7 +301,7 @@ watch(
 
 .info-panel.no-grow {
   flex-grow: 0 !important;
-  margin: auto !important;
+  margin: 0 auto !important;
 }
 
 .info-panel.group-info {

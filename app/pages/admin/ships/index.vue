@@ -93,13 +93,13 @@ const {data: shipModels, status} = useAPI('/api/ships/models', {
         </panel>
         
         <layout-modal v-if="modal.edit" title="Edit ship model" @close = "modal.edit = false">
-            <forms-ship-model 
+            <forms-vehicle-model 
                 :data="shipModels.data"
                 :ship-info="selected"
                 @submit="editShip"/>
         </layout-modal>
         <layout-modal v-if="modal.add" title="Add a ship model" @close = "modal.add = false">
-            <forms-ship-model
+            <forms-vehicle-model
                 :data="shipModels.data"
                 @submit="addShip"
                 />

@@ -29,7 +29,7 @@
                 </span>
             </div>
             <div class="line-item"><div class="label">Change Handle: </div> <div><input type="text" v-model="handle"> <input type="button" value="change" @click="ifSure(changeHandle)" /></div></div>
-            <em style="color: red; opacity:0.8">Warning: Changing handle revokes verification status, and deletes all ships and discoveries! Proceed with caution!</em>
+            <em style="color: red; opacity:0.8">Warning: Changing handle revokes verification status, and deletes all vehicles and discoveries! Proceed with caution!</em>
         </div>
     </panel>
 </template>

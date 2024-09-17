@@ -95,7 +95,7 @@ onMounted(() => {
 
     .panel-content {
         opacity: 0;
-        display: flex;
+        /*display: flex;*/
     }
 
     .panel-content.centered {

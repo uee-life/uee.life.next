@@ -4,14 +4,14 @@ const {$swal, $api} = useNuxtApp()
 const auth = useAuthStore()
 
 const route = useRoute()
-const tabs = ref(['ships', 'location'])
-const initialTab = ref('ships')
+const tabs = ref(['vehicles', 'location'])
+const initialTab = ref('vehicles')
 
-const ships = ref([])
+const vehicles = ref([])
 const links = ref([])
 
 const modals = ref({
-    ship: false
+    vehicle: false
 })
 
 const isOwner = computed({
@@ -51,23 +51,25 @@ async function sync() {
     })
 }
 
-async function addShip(ship) {
-    await $api('/api/ships/add', {
-        key: 'addShip',
+async function addVehicle(vehicle) {
+    modals.value.vehicle = false
+
+    await $api(`/api/citizens/${route.params.handle}/vehicles/add`, {
+        key: 'addVehicle',
         method: 'POST',
-        body: ship,
+        body: vehicle,
         onResponse({ response }) {
             if (response._data.status == 'success') {
                 $swal.fire({
                     title: "Added",
-                    text: "Ship successfully added",
+                    text: "Vehicle successfully added",
                     icon: 'success',
                     confirmButtonText: 'OK!'
                 })
             } else {
                 $swal.fire({
                     title: "Error",
-                    text: "Unable to add ship",
+                    text: "Unable to add vehicle",
                     icon: 'error',
                     confirmButtonText: 'OK!'
                 })
@@ -80,23 +82,23 @@ async function addShip(ship) {
     await refresh()
 }
 
-async function removeShip(ship) {
-    await $api('/api/ships/remove', {
-        key: 'removeShip',
+async function removeVehicle(vehicle) {
+    await $api('/api/vehicles/remove', {
+        key: 'citizenRemoveVehicle',
         method: 'POST',
-        body: ship,
+        body: vehicle,
         onResponse({ response }) {
             if (response._data.status == 'success') {
                 $swal.fire({
                     title: "Removed",
-                    text: "Ship successfully removed",
+                    text: "Vehicle successfully removed",
                     icon: 'success',
                     confirmButtonText: 'OK!'
                 })
             } else {
                 $swal.fire({
                     title: "Error",
-                    text: "Unable to remove ship",
+                    text: "Unable to remove vehicle",
                     icon: 'error',
                     confirmButtonText: 'OK!'
                 })
@@ -106,10 +108,10 @@ async function removeShip(ship) {
     await refresh()
 }
 
-async function getShips() {
-    await $api(`/api/citizens/${route.params.handle}/ships`, {
+async function getVehicles() {
+    await $api(`/api/citizens/${route.params.handle}/vehicles`, {
         onResponse({ response }) {
-            ships.value = response._data.data
+            vehicles.value = response._data.data
         }
     })
 }
@@ -123,7 +125,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
             if(data.website) {
                 links.value.push({text: 'Website', url: data.website})
             }
-            await getShips()
+            await getVehicles()
         }
 })
 </script>
@@ -157,13 +159,18 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
             <citizen-bio :bio="citizen.data.bio"/>
             <div class="citizen-tabs">
                 <layout-tabs :tabs="tabs" :initialTab="initialTab">
-                    <template #tab-title-ships>
-                        SHIPS ({{ ships.length }})
+                    <template #tab-title-vehicles>
+                        VEHICLES ({{ vehicles.length }})
                     </template>
-                    <template #tab-content-ships>
-                        <ship-collection v-if="ships" :isOwner="isOwner" :ships="ships" @remove="removeShip">
-                            <panel-button v-if="isOwner" text="Add Ship" class="add-ship" @click="modals.ship = true" />
-                        </ship-collection>
+                    <template #tab-content-vehicles>
+                        <vehicle-collection v-if="vehicles" 
+                            :isOwner="isOwner" 
+                            :vehicles="vehicles" 
+                            @remove="removeVehicle">
+                            <panel-button v-if="isOwner" 
+                                text="Add Vehicle" 
+                                @click="modals.vehicle = true" />
+                        </vehicle-collection>
                     </template>
 
                     <template v-if="isOwner" #tab-title-location>
@@ -176,8 +183,8 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
             </div>
 
             <!-- Modals -->
-            <layout-modal v-if="modals.ship" title="Add Ship" @close="modals.ship = false">
-                <forms-ship @add="addShip" />
+            <layout-modal v-if="modals.vehicle" title="Add Vehicle" @close="modals.vehicle = false">
+                <forms-vehicle @add="addVehicle" />
             </layout-modal>
         </template>
         <widgets-no-result text="Citizen Not Found" v-else />

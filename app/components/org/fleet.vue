@@ -22,7 +22,7 @@ const addFleet = async (fleet) => {
     modals.value.fleet = false
     console.log('adding fleet: ')
     console.log(fleet)
-    const result = await $api(`/api/orgs/${props.org.tag}/fleets/add`, {
+    const result = await $api(`/api/orgs/${props.org.id}/fleets/add`, {
         method: 'POST',
         body: fleet
     })
@@ -33,7 +33,7 @@ const selected = (fleet) => {
     navigateTo(`/fleets/${fleet.id}`)
 }
 
-const { data: fleets, status, refresh } = useAPI(`/api/orgs/${props.org.tag}/fleets`)
+const { data: fleets, status, refresh } = useAPI(`/api/orgs/${props.org.id}/fleets`)
 </script>
 
 <template>

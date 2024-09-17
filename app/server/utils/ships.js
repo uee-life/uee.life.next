@@ -8,7 +8,7 @@ export const getShipModel = async (identifier) => {
 export const addShipModel = async (ship) => {
     // add ship static details and link to manufacturer
     const query =
-        `MATCH (m:Organization {tag: $manufacturer, official: true})
+        `MATCH (m:Organization {id: $manufacturer, official: true})
          MERGE (s:ShipModel {identifier: $identifier})
          SET s = {
             identifier: $identifier,
@@ -24,17 +24,6 @@ export const addShipModel = async (ship) => {
          MERGE (m)<-[:MADE_BY]-(s)`
 
     const { error } = await writeQuery(query, ship)
-    if (error) {
-        return error
-    }
-    return null
-}
-
-export const removeShip = async (ship, handle) => {
-    const query = 
-        `MATCH (s:Ship {id: $id})-[:OWNED_BY]->(c:Citizen {handle: $handle}) DETACH DELETE s`
-    
-    const { error } = await writeQuery(query, {id: ship.id, handle: handle})
     if (error) {
         return error
     }

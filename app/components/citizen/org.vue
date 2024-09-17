@@ -1,5 +1,5 @@
 <template>
-    <panel-dock class="citizen-org" :title="affiliate ? 'Affiliation' : org.model" title-size="small">
+    <panel-dock class="citizen-org" :title="affiliate ? 'Affiliation' : orgModel" title-size="small">
         <nuxt-link class="org-link" :to="orgLink">
           <img class="logo" :src="orgLogo" />
         </nuxt-link>
@@ -21,6 +21,10 @@ org: {
 affiliate: {
   type: Boolean,
   default: false
+},
+title: {
+  type: String,
+  default: ''
 }
 })
 
@@ -37,8 +41,20 @@ const orgLogo = computed({
 
 const orgLink = computed({
     get() {
-        return `/orgs/${props.org.tag}`
+        return `/orgs/${props.org.id}`
     }
+})
+
+const orgModel = computed({
+  get() {
+    if (props.title) {
+      return props.title
+    } else if (props.org.model) {
+      return props.org.model
+    } else {
+      return 'Organization'
+    }
+  }
 })
 </script>
   

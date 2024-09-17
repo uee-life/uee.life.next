@@ -4,18 +4,19 @@ export default defineEventHandler(async (event) => {
     return apiSuccess(await getAssignment(id))
 })
 
-const getAssignment = async (id) => {
+const getAssignment2 = async (id) => {
     const query = `
-        MATCH (a:Assignment)-[:ATTACHED_TO]->(g:VehicleGroup)
+        MATCH (a:Assignment)-[:ATTACHED_TO]->(parent)
         WHERE a.id =~ $id
-        MATCH (s:Ship)-[:ASSIGNED_TO]->(a)
+        MATCH (s:Vehicle)-[:ASSIGNED_TO]->(a)
         MATCH (o:Citizen)<-[:OWNED_BY]-(s)
-        MATCH (s)-[:INSTANCE_OF]->(m:ShipModel)
+        MATCH (s)-[:INSTANCE_OF]->(m:VehicleModel)
         RETURN a as assignment,
-                s as ship,
-                m as shipData,
-                o as owner,
-                g as group`
+                parent.id as parent,
+                labels(parent) as type,
+                s as vehicle,
+                m as vehicleData,
+                o as owner`
 
     const { result } = await readQuery(query, {
         id: `(?i)${id}`
@@ -23,16 +24,25 @@ const getAssignment = async (id) => {
 
     const assignments = []
     for (const res of result) {
-        assignments.push({
-            assignment: res.assignment,
-            fleet: await getGroupFleet(res.group.id),
-            group: res.group,
-            ship: {
+        const ass = {
+            type: res.type,
+            parent: res.parent,
+            ...res.assignment,
+            //fleet: await getGroupFleet(res.group.id),
+            //group: res.group,
+            vehicle: {
                 owner: res.owner,
-                ...res.ship,
-                ...res.shipData
-            }
-        })
+                ...res.vehicleData,
+                ...res.vehicle
+            },
+            assigned: await getAssignedCitizens(res.assignment.id)
+        }
+        if (ass.type == 'VehicleGroup') { // fleet assignment
+            ass.fleet = await getGroupFleet(ass.parent)
+        } else if (ass.type == 'Vehicle') { // crew assignment
+            
+        }
+        assignments.push(ass)
     }
     return assignments[0]
 }
@@ -47,7 +57,7 @@ const getGroupFleet = async (id) => {
         const { result } = await readQuery(query, {
             id: id
         })
-        if (result[0]) {
+        if (result) {
             const fleet = {
                 org: result[0].org,
                 info: result[0].fleet
@@ -57,7 +67,19 @@ const getGroupFleet = async (id) => {
         return {}
 }
 
-const getAssignedCrew = async (id) => {
+const getAssignedCitizens = async (id) => {
+    console.log('getAssignedCitizens', id)
     const query = `
-        MATCH (c:Citizen)-[:ASSIGNED_TO]->(a:Assignment)`
+        MATCH (c:Citizen)-[:ASSIGNED_TO]->(a:Assignment {id: $id})
+        return c as citizen`
+
+    const { result } = await readQuery(query, {
+        id: id
+    })
+
+    const citizens = []
+    for (res of result) {
+        console.log(res)
+    }
+    return citizens
 }

@@ -54,17 +54,17 @@ async function loadShips(ships) {
 
     for (const ship of ships) {
         const manufacturer = {
-            tag: ship.data.manufacturerData.data.nameSmall,
+            id: ship.data.manufacturerData.data.nameSmall,
             name: ship.data.manufacturerData.data.name,
             description: ship.data.manufacturerData.data.description,
             model: "Manufacturer",
             official: true
         }
 
-        if(!manufacturers.includes(manufacturer.tag)) {
-            manufacturers.push(manufacturer.tag)
-            console.log("new manufacturer: ", manufacturer.tag)
-            if (!await orgExists(manufacturer.tag)) {
+        if(!manufacturers.includes(manufacturer.id)) {
+            manufacturers.push(manufacturer.id)
+            console.log("new manufacturer: ", manufacturer.id)
+            if (!await orgExists(manufacturer.id)) {
                 console.log("doesn't exist, creating")
                 console.log(manufacturer)
                 await addManufacturer(manufacturer)
@@ -74,7 +74,7 @@ async function loadShips(ships) {
         const shipObject = {
             identifier: ship.localName,
             model: ship.data.name,
-            manufacturer: manufacturer.tag,
+            manufacturer: manufacturer.id,
             size: ship.data.size,
             cargo: ship.data.cargo,
             max_crew: ship.data.vehicle.crewSize,
@@ -100,7 +100,7 @@ async function loadShips(ships) {
 async function addManufacturer(data) {
     /* if the manufacturer doesn't exist, add it here.
     Manufacturer data:
-    - tag: data.data.nameSmall [_AEGS] // prepend with _ to signify an official org
+    - id: data.data.nameSmall [_AEGS] // prepend with _ to signify an official org
     - name: data.data.name [Aegis Dynamics]
     - description: data.data.description [Aegis grew to prominence as...]
     - type: "Manufacturer" [Manufacturer]

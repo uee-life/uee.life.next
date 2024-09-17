@@ -13,6 +13,5 @@ const props = defineProps({
 .dock {
     position: relative;
     width: fit-content;
-    padding-top: 10px;
 }
 </style>

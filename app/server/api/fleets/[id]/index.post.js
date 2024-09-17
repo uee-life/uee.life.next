@@ -49,6 +49,6 @@ const addGroup = async (parentID, group) => {
     if (error) {
         return null
     } else {
-        return result[0]._fields[0]
+        return result[0].groupID
     }
 }

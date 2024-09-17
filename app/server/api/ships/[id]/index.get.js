@@ -20,11 +20,11 @@ export const getShip = async (identifier) => {
     const { result } = await readQuery(query, {id: identifier})
     // TODO: Check this actually returns a ship, else return an empty result.
 
-    if (result[0]) {
+    if (result) {
         const ship = {
-            owner: result[0].owner,
-            ...result[0].ship,
-            ...result[0].info
+            owner: result.owner,
+            ...result.ship,
+            ...result.info
         }
         return ship
     } else {

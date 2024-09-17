@@ -25,16 +25,16 @@ export const orgExists = async (tag) => {
     return false
 }
 
-async function loadOrganization(tag) {
-    const query = "MATCH (o:Organization {tag: $tag}) return o as org"
-    const {result, error} = await readQuery(query, {tag: tag})
+async function loadOrganization(orgID) {
+    const query = "MATCH (o:Organization {id: $orgID}) return o as org"
+    const {result, error} = await readQuery(query, {orgID: orgID})
 
     if (error) {
         return null
     }
 
     let org = null
-    if(result.length > 0) {
+    if(result) {
         org = result[0].org
     }
 
@@ -44,7 +44,7 @@ async function loadOrganization(tag) {
 export const createOrganization = async (org, official = false) => {
     const query = 
         `MERGE (o:Organization {
-            tag: $tag,
+            id: $id,
             name: $name,
             type: $type,
             logo: $logo
@@ -53,7 +53,7 @@ export const createOrganization = async (org, official = false) => {
         })`
 
     const params = {
-        tag: org.tag,
+        id: org.id,
         name: org.name,
         type: org.model,
         logo: org.logo,
@@ -63,44 +63,44 @@ export const createOrganization = async (org, official = false) => {
     await writeQuery(query, params)
 }
 
-export const orgAddMember = async (handle, tag, rank, title) => {
+export const orgAddMember = async (handle, orgID, rank, title) => {
     const query =
         `MATCH (c:Citizen)
          WHERE c.handle =~ $handle
-         MATCH (o:Organization {tag: $tag})
+         MATCH (o:Organization {id: $orgID})
          MERGE (c)-[:MEMBER_OF {rank: $rank, title: $title}]->(o)
          RETURN c`
     const params = {
         handle: "(?i)"+handle,
-        tag: tag,
+        orgID: orgID,
         rank: rank,
         title: title
     }
     const error = await writeQuery(query, params)
 }
 
-export const orgAddFounder = async (handle, tag) => {
+export const orgAddFounder = async (handle, orgID) => {
     // need to make sure the citizen is created first
     await getCitizen(handle, true)
     const query =
         `MATCH (c:Citizen)
          WHERE c.handle =~ $handle
-         MATCH (o:Organization {tag: $tag})
+         MATCH (o:Organization {id: $orgID})
          MERGE (c)-[:OWNER_OF]->(o)
          RETURN c`
     const params = {
         handle: "(?i)"+handle,
-        tag: tag
+        orgID: orgID
     }
     const error = await writeQuery(query, params)
 }
 
-export const getOrgMembers = async (tag, rank=0) => {
+export const getOrgMembers = async (orgID, rank=0) => {
     const query = 
-        `MATCH (c:Citizen)-[r:MEMBER_OF]->(o:Organization {tag: $tag})
+        `MATCH (c:Citizen)-[r:MEMBER_OF]->(o:Organization {id: $orgID})
          WHERE r.rank >= $rank
          RETURN c as member, r.rank as rank`
-    const { result, error } = await readQuery(query, {tag: tag, rank: rank})
+    const { result, error } = await readQuery(query, {orgID: orgID, rank: rank})
 
     const members = []
 
