@@ -69,7 +69,7 @@ const citizenLink = computed({
     .page-head-right {
         display: flex;
         flex-direction: column;
-        margin: 10px;
+        margin: 5px;
     }
 
     .page-head-right .user {

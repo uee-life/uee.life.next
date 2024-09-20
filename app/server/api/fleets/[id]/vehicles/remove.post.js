@@ -1,6 +1,3 @@
-import { removeAssignment } from "~/server/utils/assignments"
-import { getGroup } from "../index.get"
-
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)
@@ -19,11 +16,12 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const removeVehicle = async (vehicleID, groupID) => {
     // first, remove any org assignments to that vehicle
-    const group = getGroup(groupID)
+    const group = await getVehicleGroup(groupID)
+    console.log(group)
     await clearAssignments(vehicleID, group.org.id)
     const query = 
-        `MATCH (a:Vehicle {id: $vehicleID})-[:ATTACHED_TO]->(g:VehicleGroup {id: $groupID})
-         DETACH DELETE a`
+        `MATCH (v:Vehicle {id: $vehicleID})-[r:PART_OF]->(g:VehicleGroup {id: $groupID})
+         DELETE r`
 
     const params = {
         vehicleID: vehicleID,

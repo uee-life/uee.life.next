@@ -28,7 +28,7 @@ const props = defineProps({
 
 const vehicleImage = computed({
     get() {
-        return `/images/ships/${props.vehicle.identifier}.jpg`
+        return `/images/ships/small/${props.vehicle.identifier}.jpg`
     }
 })
 

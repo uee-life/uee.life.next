@@ -7,9 +7,9 @@ const props = defineProps({
         type: String,
         required: true
     },
-    showCrew: {
+    showOwner: {
         type: Boolean,
-        default: true
+        default: false
     }
 })
 
@@ -34,12 +34,16 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${props.vehicleId
 <template>
     <widgets-loading v-if="status == 'pending'" />
     <div v-else-if="status == 'success' && vehicle.status == 'success'">
+        <template v-if="showOwner">
+            <ClientOnly>
+                <teleport to="#left-dock">
+                    <panel-dock v-if="vehicle" title="vehicle owner" class="owner">
+                        <citizen-portrait :citizen="vehicle.data.owner" :showName="true"></citizen-portrait>
+                    </panel-dock>
+                </teleport>
+            </ClientOnly>
+        </template>
         <vehicle-info :vehicle="vehicle.data" />
-        <assignment v-if="showCrew" v-for="assignment in vehicle.data.assignments" 
-            :assignment="assignment" 
-            :max-assignees="vehicle.data.max_crew"
-            :owner="isOwner"
-            @refresh="$emit('refresh')" />
     </div>
     <widgets-no-result v-else text="Vehicle not found" />
 </template>

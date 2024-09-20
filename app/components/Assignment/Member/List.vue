@@ -134,8 +134,8 @@ const updateMember = async (member, role) => {
 
 .assigned .edit {
     position: absolute;
-    top: 20px;
-    right: 5px;
+    top: -7px;
+    right: -7px;
     width: 20px;
     height: 20px;
     cursor: pointer;
@@ -146,14 +146,15 @@ const updateMember = async (member, role) => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0 5px;
 }
 
 .unassigned .add-new {
     display: block;
     position: relative;
     box-sizing: border-box;
-    width: 100px;
-    height: 100px;
+    width: 95px;
+    height: 95px;
     padding: 20px;
     border: 1px dashed #546f84;
 }
@@ -165,7 +166,7 @@ const updateMember = async (member, role) => {
 .unassigned .bg {
     content: "";
     background: url('https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg');
-    background-size: 100px 100px;
+    background-size: 95px 95px;
     background-repeat: no-repeat;
     background-position-y: 25px;
     opacity: 0.4;

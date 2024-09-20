@@ -8,10 +8,6 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
     selected: {
         type: String,
         required: true
@@ -27,12 +23,32 @@ const props = defineProps({
 // hacky way to get around props not actually being read-only for objects
 const group = ref(JSON.parse(JSON.stringify(props.fleet)))
 
+const groupStatus = ref('success')
+
 const auth = useAuthStore()
 const isCmdr = computed({
     get() {
         return auth.isAuthenticated
             && auth.user.verified == 1
             && auth.citizen.handle == group.value.cmdr.handle
+    }
+})
+
+const isAdmin = computed({
+    get() {
+        if (auth.isAuthenticated) {
+            if(isCmdr.value) {
+                // can't be full admin of your own command group
+                return false
+            } else if(group.value.admins.some(e => e.handle == auth.citizen.handle)) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+        
     }
 })
 
@@ -48,7 +64,7 @@ const modals = ref({
 
 const canEdit = computed({
     get() {
-        return props.isAdmin || isCmdr.value
+        return isAdmin.value || isCmdr.value
     }
 })
 
@@ -56,7 +72,7 @@ const addGroup = async (group) => {
     modals.value.group = false
     console.log('adding group: ')
     console.log(group)
-    const result = await $api(`/api/fleets/${props.selected}`, {
+    const result = await $api(`/api/fleets/${props.selected}/add`, {
         method: 'POST',
         body: group
     })
@@ -66,8 +82,8 @@ const addGroup = async (group) => {
 const removeGroup = async () => {
     modals.value.confirm = false
     console.log(`removing group: ${props.selected}`)
-    await $api(`/api/fleets/${props.selected}`, {
-        method: 'DELETE'
+    await $api(`/api/fleets/${props.selected}/remove`, {
+        method: 'POST'
     })
     if (route.params.id == props.selected) {
         emit('return')
@@ -77,8 +93,8 @@ const removeGroup = async () => {
 }
 
 const updateGroup = async (group) => {
-    const result = await $api(`/api/fleets/${props.selected}`, {
-        method: 'PUT',
+    const result = await $api(`/api/fleets/${props.selected}/update`, {
+        method: 'POST',
         body: group
     })
     return result
@@ -129,7 +145,7 @@ const removeVehicle = async (vehicle) => {
 }
 
 const setGroup = async () => {
-    status.value = 'pending'
+    groupStatus.value = 'pending'
     const res = await $api(`/api/fleets/${props.selected}`, {
         key: 'getFleetGroup',
         onRequest() {
@@ -138,10 +154,11 @@ const setGroup = async () => {
     })
     console.log(res)
     if (res.status == 'success') {
+        console.log('got new group data', status)
         group.value = res.data
-        status.value = 'success'
+        groupStatus.value = 'success'
     } else {
-        status.value = 'error'
+        groupStatus.value = 'error'
     }
 }
 
@@ -162,9 +179,10 @@ watch(
 </script>
 
 <template>
-    <WidgetsLoading v-if="status == 'pending'"/>
+    <WidgetsLoading v-if="status == 'pending' || groupStatus == 'pending'"/>
     <WidgetsNoResult v-else-if="status == 'error'" text="Group not found"/>
     <div v-else class="fleet-group">
+        {{status}}
         <div class="info">
             <div class="info-panel no-grow">
                 <panel :title="group.info.name" title-size="small" class="commander">

@@ -8,17 +8,24 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
     // get citizen info, and create the entity if it doesn't exist yet
     if (group) {
-        const newGroupID = await addGroup(parentID, group)
-        if (!newGroupID) {
-            console.error(`Couldn't create new group`)
-            return apiError(`Couldn't create new group`, 400)
-        } else {
-            if (group.cmdr) {
-                const cmdr = await getCitizen(group.cmdr, true)
-                await addCommander(cmdr, newGroupID)
+        const parentVG = await getVehicleGroup(parentID)
+
+        if (parentVG.admins.some(e => e.handle == user.handle)) {
+            const newGroupID = await addGroup(parentID, group)
+            if (!newGroupID) {
+                console.error(`Couldn't create new group`)
+                return apiError(`Couldn't create new group`, 400)
+            } else {
+                if (group.cmdr) {
+                    const cmdr = await getCitizen(group.cmdr, true)
+                    addCommander(cmdr, newGroupID)
+                }
+                return apiSuccess("Group updated")
             }
-            return apiSuccess("Group added")
+        } else {
+            return accessDenied(event)
         }
+        
     } else {
         return apiError(event, 400)
     }
@@ -44,11 +51,9 @@ const addGroup = async (parentID, group) => {
         id: parentID
     })
 
-    console.log('addGroup:')
-    console.log(result)
-    return result
-}
-
-const addCommander = async (handle, groupID) => {
-    
+    if (error) {
+        return null
+    } else {
+        return result[0].groupID
+    }
 }

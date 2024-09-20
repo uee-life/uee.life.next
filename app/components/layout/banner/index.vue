@@ -7,7 +7,11 @@
                 :type="type"
                 :image="image"
                 :logo="logo"
-                @clicked="$emit('clicked')"/>
+                @clicked="$emit('clicked')">
+                <template v-slot:logo>
+                    <slot name="logoslot"></slot>
+                </template>
+            </panel-banner>
         </teleport>
     </ClientOnly>
 </template>

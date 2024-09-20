@@ -14,7 +14,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
         if (group.cmdr) {
             console.log('GOT CMDR: ' + group.cmdr)
             const cmdr = await getCitizen(group.cmdr, true)
-            addCommander(cmdr, groupID)
+            await addCommander(cmdr, groupID)
         }
         return apiSuccess("Group updated")
     } else {

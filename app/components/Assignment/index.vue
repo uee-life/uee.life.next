@@ -54,8 +54,8 @@ const remove = async (data) => {
 </script>
 
 <template>
-    <div v-if="assignment.type == 'Vehicle'">
-        <panel :title="`${assignment.name} Assigned`" title-size="medium">
+    <div v-if="assignment.class == 'Vehicle'">
+        <panel :title="`${assignment.type} Assigned`" title-size="medium">
             <assignment-member-list
                 :assignees="assignment.assignees" 
                 :max-assigned="maxAssignees"

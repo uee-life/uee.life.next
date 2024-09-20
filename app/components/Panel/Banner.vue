@@ -4,7 +4,9 @@
             <div class="mask" @click="$emit('clicked')">
             <div class="banner-bottom">
                 <div v-if="logo" class="banner-logo" id="banner-logo">
-                <img :src="logo" />
+                    <slot name="logo">
+                        <img :src="logo" />
+                    </slot>
                 </div>
                 <div class="banner-summary">
                     <h1>{{name}}<template v-if="tag"> /  <span class="tag"><slot name="tag">{{ tag.toUpperCase() }}</slot></span></template></h1>

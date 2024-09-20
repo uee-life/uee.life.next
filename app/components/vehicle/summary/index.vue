@@ -17,7 +17,7 @@ const emit = defineEmits(['remove'])
 
 const vehicleImage = computed({
     get() {
-        return `/images/ships/${props.vehicle.identifier}.jpg`
+        return `/images/ships/small/${props.vehicle.identifier}.jpg`
     }
 })
 
@@ -34,8 +34,8 @@ const citizenLink = computed({
 })
 
 function navigate() {
-    if (props.vehicle.assignment) {
-        navigateTo(`/assignments/${props.vehicle.assignment.id}`)
+    if (props.vehicle.assignments[0]) {
+        navigateTo(`/assignments/${props.vehicle.assignments[0].id}`)
     } else {
         navigateTo(`/vehicles/${props.vehicle.id}`)
     }

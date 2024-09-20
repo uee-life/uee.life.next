@@ -27,6 +27,7 @@ const regDate = computed({
     }
 })
 
+//TODO: Update this to make the change...
 function updateName() {
     console.log("updating vehicle name to: ", name.value)
     edit.value.name = false
@@ -35,13 +36,6 @@ function updateName() {
 
 <template>
     <div>
-        <ClientOnly>
-            <teleport to="#left-dock">
-                <panel-dock v-if="vehicle" title="vehicle owner" class="owner">
-                    <citizen-portrait :citizen="vehicle.owner" :showName="true"></citizen-portrait>
-                </panel-dock>
-            </teleport>
-        </ClientOnly>
         <div class="vehicle-info">
             <panel title="Registration" titleSize="small" class="info-panel">
                 <div class="info-items">
@@ -98,7 +92,7 @@ function updateName() {
 .vehicle-info {
     display: flex;
     flex-wrap: wrap;
-    margin: 10px -10px;
+    margin: 0px -10px;
 }
 
 .info-panel {

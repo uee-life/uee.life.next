@@ -1,3 +1,5 @@
+import { getParentGroup } from "./vehicleGroups"
+import { getVehicle } from "./vehicles"
 
 export const checkAssignmentPerms = async (target, user, data=null) => {
     const assignment = await getAssignment(target)
@@ -23,27 +25,25 @@ export const checkAssignmentPerms = async (target, user, data=null) => {
     }
 }
 
-export const createAssignment = async (targetID, ownerID, name, description='', max_assignees='0') => {
+export const createAssignment = async (targetID, ownerID, type, max='0') => {
     const query = `
         MATCH (owner {id: $ownerID})
         MATCH (target {id: $targetID})
         MERGE (owner)<-[:OWNED_BY]-(a:Assignment)-[:ATTACHED_TO]->(target)
         SET a = {
             id: left(randomUUID(), 8),
-            name: $name,
-            description: $description,
+            type: $type,
             max_assigned: $max
         }
         RETURN a as assignment
     `
-    console.log("assigning", targetID, ownerID, name, description)
+    console.log("assigning", targetID, ownerID, type, max)
 
     const { result } = await writeQuery(query, {
         ownerID: ownerID,
         targetID: targetID,
-        name: name,
-        description: description,
-        max: max_assignees
+        type: type,
+        max: max
     })
 
     return result.assignment
@@ -70,7 +70,7 @@ const getAssignmentMeta = async (assignee, assignment) => {
         WHERE assignee.id =~ $assignee
         AND assignment.id =~ $assignment
         return r.role as role,
-            r.joined as joined
+            r.assigned as assigned
     `
     const { result } = await readQuery(query, {
         assignee: assignee,
@@ -80,12 +80,12 @@ const getAssignmentMeta = async (assignee, assignment) => {
     if (result[0]) {
         return {
             role: result[0].role,
-            joined: result[0].joined
+            assigned: result[0].assigned
         }
     } else {
         return {
             role: '',
-            joined: ''
+            assigned: ''
         }
     }
 }
@@ -116,8 +116,8 @@ export const getAssignment = async (assignmentID) => {
                 ...await getAssignmentMeta(member, assignmentID)
             })
         }
-        return {
-            type: result[0].labels,
+        const assignment =  {
+            class: result[0].labels,
             owner: {
                 type: result[0].owner_type,
                 ...result[0].owner
@@ -126,7 +126,27 @@ export const getAssignment = async (assignmentID) => {
             assignees: assignees,
             ...result[0].assignment
         }
+
+        if (assignment.owner.type == 'Citizen') {
+            assignment.admins = [assignment.owner]
+            if (assignment.class == 'Vehicle') {
+                assignment.target = await getVehicle(assignment.target.id)
+            }
+        } else if (assignment.owner.type == 'Organization') {
+            if (assignment.class == 'Vehicle') {
+                const parent = await getParentGroup(assignment.target.id)
+                assignment.admins = parent.admins
+                assignment.fleet = parent.fleet
+                assignment.target = await getVehicle(assignment.target.id)
+            }
+        }
+
+        return assignment
     }
+}
+
+export const getAssignmentAdmins = async (assignmentID) => {
+
 }
 
 export const clearAssignments = async (targetID, ownerID) => {

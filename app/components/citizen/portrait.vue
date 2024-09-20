@@ -140,20 +140,20 @@ function citizenLink() {
     /* Medium Image */
 
     .portrait.medium {
-        width: 100px;
-        min-height: 100px;
+        width: 135px;
+        min-height: 135px;
         height: fit-content;
     }
 
     .portrait.medium.round {
-        padding: 11px;
+        padding: 14px;
     }
 
     .portrait.medium .verified {
         position: absolute;
-        top: 70px;
-        right: 0px;
-        width: 30px;
+        top: 80px;
+        right: 5px;
+        width: 35px;
         filter: drop-shadow(1px 1px 2px black);
     }
 
@@ -171,8 +171,8 @@ function citizenLink() {
     /* Small Image */
 
     .portrait.small {
-        width: 85px;
-        min-height: 85px;
+        width: 95px;
+        min-height: 95px;
         height: fit-content;
     }
 
@@ -182,14 +182,14 @@ function citizenLink() {
 
     .portrait.small .verified {
         position: absolute;
-        top: 62px;
+        top: 68px;
         right: 2px;
-        width: 22px;
+        width: 25px;
         filter: drop-shadow(1px 1px 1px black);
     }
 
     .portrait.small.round .verified {
-        top: 50px;
+        top: 58px;
     }
 
     .portrait.small .status {

@@ -22,7 +22,7 @@ const assignCitizen = async (data, target) => {
         WHERE c.id =~ $handle
         MATCH (a:Assignment)
         WHERE a.id =~ $target
-        MERGE (c)-[r:ASSIGNED_TO {role: $role, joined: datetime()}]->(a)
+        MERGE (c)-[r:ASSIGNED_TO {role: $role, assigned: datetime()}]->(a)
     `
 
     const { error } = await writeQuery(query, {
