@@ -16,3 +16,22 @@ export default defineAuthenticatedEventHandler(async (event) => {
         return apiError(event, 400)
     }
 })
+
+const addCrew = async (ship, crew, owner) => {
+    const query = 
+        `MATCH (c:Citizen {handle: $handle})
+         MATCH (s:Ship {id: $id})-[:OWNED_BY]->(Citizen {handle: $owner})
+         MERGE (c)-[:CREW_OF {role: $role}]->(s)`
+
+    const params = {
+        id: ship,
+        handle: crew.handle,
+        owner: owner,
+        role: crew.role
+    }
+    console.log(query, params)
+    const { error } = await writeQuery(query, params)
+    if (error) {
+        return error
+    }
+}

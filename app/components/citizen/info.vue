@@ -41,7 +41,7 @@ onMounted(() => {
                     <span>Enlisted: </span>
                 </div>
                 <div class="data">
-                    <span>{{ citizen.record }}</span>
+                    <span>{{ citizen.id }}</span>
                     <span>{{ citizen.name }}</span>
                     <span>{{ citizen.handle }}</span>
                     <span>{{ citizen.enlisted }}</span>

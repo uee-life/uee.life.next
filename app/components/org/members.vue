@@ -52,7 +52,7 @@ function pageChangeHandler(value) {
     refresh()
 }
 
-const {data: members, status, refresh} = await useAPI(() => `/api/orgs/${route.params.tag}/${props.affiliate ? "affiliates" : "members"}?page=${currentPage.value}`, {
+const {data: members, status, refresh} = useAPI(() => `/api/orgs/${route.params.id}/${props.affiliate ? "affiliates" : "members"}?page=${currentPage.value}`, {
     key: 'getMembers',
     server: false,
     lazy: true

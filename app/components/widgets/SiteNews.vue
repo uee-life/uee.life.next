@@ -1,5 +1,5 @@
 <template>
-    <panel title="Site News" class="site-news" id="site-news">
+    <panel class="site-news" id="site-news" title="Site News" title-size="medium">
         <div class="news">
             <markdown file="siteNews.md"/>
         </div>

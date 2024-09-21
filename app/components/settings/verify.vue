@@ -1,5 +1,5 @@
 <template>
-    <panel title="Verify Account" class="settings-verify">
+    <panel class="settings-verify" title="Verify Account" title-size="medium">
         <div>
             <h3>Welcome to UEE.life!</h3>
             <p>To verify your account, copy the unique code from below, then paste it into your <a href="https://robertsspaceindustries.com/account/profile">RSI account bio</a>!</p>

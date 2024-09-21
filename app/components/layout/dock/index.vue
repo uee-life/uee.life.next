@@ -1,6 +1,5 @@
 <template>
-  <div class="dock">
-    <div :id="name"></div>
+  <div :id="name" class="dock">
   </div>
 </template>
 
@@ -14,6 +13,5 @@ const props = defineProps({
 .dock {
     position: relative;
     width: fit-content;
-    padding-top: 10px;
 }
 </style>

@@ -1,8 +1,26 @@
+import { fleetCount, shipCount } from "~/server/utils/stats"
 
 export default defineEventHandler(async (event) => {
-    return apiSuccess(await latestUser())
+    const stats = {
+        online: (await onlineCount()).count,
+        verified: (await verifiedCount()).count,
+        ships: (await shipCount()).count,
+        fleets: (await fleetCount()).count
+        //latest: await latestUser()
+    }
+    return apiSuccess(stats)
     //return await getStats()
 })
+
+const onlineCount = async () => {
+    const query = 
+        `MATCH (c:Citizen)-[r:HAS_STATUS]->(s:Status)
+            WHERE r.updated > datetime() - duration('PT30M')
+            RETURN count(c) as count`
+    const { result } = await readQuery(query)
+    return result
+}
+
 /*
 async function getStats() {
     const stats = {}

@@ -5,7 +5,7 @@ export const getFeeds = async (earliest) => {
     return [
         {
             type: 1,
-            id: 'PLeBcPM4MDA6TYa5WSKlxeZv6htnJWJybc',
+            id: 'PLeBcPM4MDA6SAUOgx7ZPZRqBRPGoeQD0i',
             source: 'Astro Historian',
             image: '/images/astropub.png'
         },

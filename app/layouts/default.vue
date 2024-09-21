@@ -5,8 +5,10 @@
     <layout-navbar-default />
 
     <div class="main">
+      <layout-banner-dock name="banner-full" />
       <layout-dock name="left-dock" />
       <div class="content">
+        <layout-banner-dock name="banner-content" />
         <slot></slot>
       </div>
       <!-- the margin-right is to account for the scrollbar gutter -->
@@ -39,7 +41,6 @@ const config = useRuntimeConfig();
 </script>
 
 <style scoped>
-
 .app {
   position: relative;
   min-height: 100vh;
@@ -60,6 +61,7 @@ const config = useRuntimeConfig();
   height: calc(100vh - 148px);
   /* set the gutter to stable so the layout doesn't get messed up turning on scrollbar */
   scrollbar-gutter: stable;
+  padding-top: 10px;
 }
 
 .app::before {

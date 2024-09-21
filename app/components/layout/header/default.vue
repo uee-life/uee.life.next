@@ -3,7 +3,7 @@
         <div class="page-head-left">
             <nuxt-link to="/"><img class="logo" alt="logo" src="@/assets/logo.png"></nuxt-link>
             <div class="title">
-                Connect. Manage. Explore.
+                Explore. Manage. Connect.
             </div>
         </div>
         <div class="page-head-right">
@@ -11,7 +11,7 @@
                 <div v-if="auth.isAuthenticated" class="user">
                     <nuxt-link :to="citizenLink">
                         <span class="name">{{ auth.citizen.name ? auth.citizen.name : auth.citizen.handle }}</span>
-                        <citizen-portrait v-if="auth.isAuthenticated" size="small" shape="round" :citizen="auth.citizen" :show-status="true"/>
+                        <citizen-portrait v-if="auth.isAuthenticated" size="small" shape="round" :citizen="auth.citizen" :show-status="false"/>
                     </nuxt-link>
                 </div>
             </transition>
@@ -69,7 +69,7 @@ const citizenLink = computed({
     .page-head-right {
         display: flex;
         flex-direction: column;
-        margin: 10px;
+        margin: 5px;
     }
 
     .page-head-right .user {

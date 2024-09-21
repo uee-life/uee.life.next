@@ -1,5 +1,5 @@
 <template>
-    <div class="panel">
+    <div :class="`panel ${titleSize}`">
         <panel-title class="panel-title" v-if="title" :text="title" :size="titleSize" />
         <div :class="contentClass">
             <slot></slot>
@@ -21,9 +21,9 @@ const props = defineProps({
     },
     titleSize: {
         type: String,
-        default: "medium",
+        default: "no-title",
         validator(value, props) {
-            return ['small', 'medium', 'large'].includes(value)
+            return ['no-title', 'small', 'medium', 'large'].includes(value)
         }
     },
     centered: {
@@ -72,13 +72,30 @@ onMounted(() => {
         margin-bottom: 20px;
     }
 
+    /* buffer for the panel title */
+    .panel.large {
+        margin-top: 20px;
+    }
+
+    .panel.medium {
+        margin-top: 15px;
+    }
+
+    .panel.small {
+        margin-top: 10px;
+    }
+
+    .panel.no-title {
+        margin-top: 0px;
+    }
+
     .panel-title {
         opacity: 0;
     }
 
     .panel-content {
         opacity: 0;
-        display: flex;
+        /*display: flex;*/
     }
 
     .panel-content.centered {

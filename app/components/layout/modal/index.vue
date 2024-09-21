@@ -4,7 +4,7 @@
             <div class="modal-wrapper">
                 <div class="modal-container">
                     <panel class="modal-body" :title="title" titleSize="small">
-                        <input type="button" class="modal-close" @click="$emit('close')" value="X" />
+                        <input v-if="showClose" type="button" class="modal-close" @click="$emit('close')" value="X" />
                         <slot></slot>
                     </panel>
                 </div>
@@ -18,6 +18,10 @@ const props = defineProps({
     title: {
         type: String,
         default: ""
+    },
+    showClose: {
+        type: Boolean,
+        default: true
     }
 })
 </script>

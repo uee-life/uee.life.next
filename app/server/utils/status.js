@@ -14,11 +14,13 @@ export const getStatus = async (handle) => {
     const { result } = await readQuery(query, { handle: handle, status: 'active' })
 
     const status = {
-        active: 'offline'
+        active: 'offline',
+        last: ''
     }
 
     if (result[0]) {
         const updated = new Date(result[0].updated)
+        status.last = updated
         const now = new Date()
         const elapsed = now - updated
 
@@ -33,8 +35,6 @@ export const getStatus = async (handle) => {
             status.active = 'online'
         }
     }
-
-    console.log(status)
 
     return status
 }

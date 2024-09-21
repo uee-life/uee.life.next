@@ -25,7 +25,7 @@ export const writeQuery = async (query, params) => {
     }
     return {
         error: error,
-        result: records
+        result: parseRecords(records)
     }
 }
 
@@ -41,8 +41,10 @@ export const readQuery = async (query, params={}) => {
 
         records = result.records;
     } catch (err) {
-        console.error(`Something went wrong: ${err}`);
         error = err
+        console.error(`Something went wrong: ${err}`);
+        console.error(`Query: ${query}`)
+        console.error(`Params: ${JSON.stringify(params)}`)
     } finally {
         await session.close()
     }
@@ -70,7 +72,6 @@ export const parseRecords = (records) => {
                 }
                 
             } else if (neo4j.isDateTime(data)) {
-                console.log('datetime')
                 rec[key] = data.toStandardDate()
             } else {
                 rec[key] = data

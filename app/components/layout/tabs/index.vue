@@ -29,7 +29,7 @@ const props = defineProps({
     },
     initialTab: {
         type: String,
-        default: 'ships'
+        default: 'vehicles'
     }
 });
 

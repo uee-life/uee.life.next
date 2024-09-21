@@ -67,6 +67,7 @@ function citizenLink() {
 <style scoped>
 
     .avatar {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -128,7 +129,7 @@ function citizenLink() {
     .portrait.large .status {
         width: 16px;
         top: 5px;
-        right: 5px;
+        left: 5px;
     }
 
     .portrait.large .name {
@@ -139,20 +140,20 @@ function citizenLink() {
     /* Medium Image */
 
     .portrait.medium {
-        width: 100px;
-        min-height: 100px;
+        width: 135px;
+        min-height: 135px;
         height: fit-content;
     }
 
     .portrait.medium.round {
-        padding: 11px;
+        padding: 14px;
     }
 
     .portrait.medium .verified {
         position: absolute;
-        top: 70px;
-        right: 0px;
-        width: 30px;
+        top: 80px;
+        right: 5px;
+        width: 35px;
         filter: drop-shadow(1px 1px 2px black);
     }
 
@@ -164,14 +165,14 @@ function citizenLink() {
     .portrait.medium .status {
         width: 13px;
         top: 3px;
-        right: 3px;
+        left: 3px;
     }
 
     /* Small Image */
 
     .portrait.small {
-        width: 85px;
-        min-height: 85px;
+        width: 95px;
+        min-height: 95px;
         height: fit-content;
     }
 
@@ -181,16 +182,25 @@ function citizenLink() {
 
     .portrait.small .verified {
         position: absolute;
-        top: 62px;
+        top: 68px;
         right: 2px;
-        width: 22px;
+        width: 25px;
         filter: drop-shadow(1px 1px 1px black);
+    }
+
+    .portrait.small.round .verified {
+        top: 58px;
     }
 
     .portrait.small .status {
         top: 3px;
-        right: 3px;
+        left: 3px;
         width: 10px;
+    }
+
+    .portrait.small.round .status {
+        top: 5px;
+        left: 5px;
     }
 
 
@@ -211,8 +221,8 @@ function citizenLink() {
     }
 
     .portrait.tiny .status {
-        top: 2px;
-        right: 1px;
+        top: 1px;
+        left: 1px;
         width: 8px;
     }
 </style>

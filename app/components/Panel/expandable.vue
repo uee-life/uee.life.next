@@ -1,6 +1,6 @@
 <template>
     <div>
-    <panel :title="titleText" class="expandable" id="expandablePanel">
+    <panel class="expandable" id="expandablePanel" :title="titleText" :title-size="titleText.length > 0 ? 'medium' : 'no-title'">
         <div :class="contentClass">
             <slot></slot>
         </div>
@@ -34,7 +34,8 @@ const contentClass = computed({
 
 const props = defineProps({
     titleText: {
-        type: String
+        type: String,
+        default: ''
     },
     minSize: {
         type: String,

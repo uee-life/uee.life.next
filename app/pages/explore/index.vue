@@ -16,7 +16,7 @@
 </template>
   
 <script setup>
-const {data: systems, status} = await useAPI(`/api/explore/systems`)
+const {data: systems, status} = useAPI(`/api/explore/systems`)
 
 function systemImage(img) {
     if(img) {

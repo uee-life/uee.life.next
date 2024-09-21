@@ -1,4 +1,5 @@
 <script setup>
+const { $api } = useNuxtApp()
 const props = defineProps({
     name: {
         type: String,
@@ -27,7 +28,7 @@ function isValid(date) {
 }
 
 async function remove() {
-    await useAPI(`/api/admin/cache/remove`, {
+    await $api(`/api/admin/cache/remove`, {
         method: 'POST',
         body: { 
             item: props.name 

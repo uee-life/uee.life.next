@@ -24,7 +24,7 @@ const citizenLink = computed({
 </script>
 
 <template>
-    <div :class="redacted" @click="navigateTo(citizenLink)">
+    <div :class="redacted" @click="$emit('selected', citizen)">
         <span class="thumb">
             <img :src="citizen.portrait" />
         </span>

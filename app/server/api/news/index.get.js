@@ -109,7 +109,6 @@ function computeDate(posted) {
 }
 
 function mergeNews(first, second) {
-    console.log("merging")
     let result = []
     while (first.length + second.length > 0) {
         if(first.length === 0) {
@@ -126,6 +125,5 @@ function mergeNews(first, second) {
             result.push(first.shift())
         }
     }
-    console.log(result)
     return result
 }

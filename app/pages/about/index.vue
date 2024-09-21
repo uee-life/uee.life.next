@@ -16,22 +16,22 @@
             </teleport>
         </client-only>
         <section id="about">
-            <panel class="about-content" title="About UEE.life">
+            <panel title="About UEE.life" title-size="medium">
                 <markdown file="about.md"/>
             </panel>
         </section>
         <section id="social">
-            <panel title="Social Media">
+            <panel title="Social Media" title-size="medium">
                 <markdown file="social.md"/>
             </panel>
         </section>
         <section id="support">
-            <panel title="Support Us">
+            <panel title="Support Us" title-size="medium">
                 <markdown file="support.md"/>
             </panel>
         </section>
         <section id="releases">
-            <panel title="Releases">
+            <panel title="Releases" title-size="medium">
                 <markdown file="releases.md"/>
             </panel>
         </section>
