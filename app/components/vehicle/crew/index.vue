@@ -77,99 +77,20 @@ const addCrew = async (crew) => {
     modal.value.add = false
 
     emit('add', crew)
-
-        /*
-    const {status, data} = await $api(`/api/vehicles/${props.vehicle.id}/crew/add`, {
-        key: 'addCrewmate',
-        method: 'POST',
-        body: {
-            handle: crew.handle,
-            role: crew.role
-        }
-    })
-
-    if (status == 'success') {
-        $swal.fire({
-            title: 'Success',
-            text: 'Crewmember successfully added',
-            icon: 'success',
-            confirmButtonText: 'OK!'
-        })
-    }
-
-    emit('refresh')*/
-    /*emit('add', {
-        handle: crew.handle,
-        role: crew.role
-    })*/
 }
 
 const removeCrew = async (member) => {
-    /*modal.value.show = false
-    
-    const { status } = await $api(`/api/ships/${props.ship.id}/crew/remove`, {
-        key: 'removeCrewmate',
-        method: 'POST',
-        body: { 
-            handle: member.handle 
-        },
-    })
-
-    if (status == 'success') {
-        $swal.fire({
-            title: "Removed",
-            text: "Crewmember successfully removed",
-            icon: 'success',
-            confirmButtonText: 'OK!'
-        })
-    }
-
-    emit('refresh')*/
     emit('remove', {
         handle: member.handle
     })
 }
 
 const updateCrew = async (member, role) => {
-    /*modal.value.show = false
-
-    const { status } = await $api(`/api/ships/${props.ship.id}/crew/update`, {
-        key: 'updateCrew',
-        method: 'POST',
-        body: { 
-            handle: member.handle, 
-            role: role 
-        }
-    })
-
-    if (status == 'success') {
-        $swal.fire({
-            title: "Updated",
-            text: "Crewmember successfully updated",
-            icon: 'success',
-            confirmButtonText: 'OK!'
-        })
-    }
-
-    emit('refresh')*/
     emit('update', {
         handle: member.handle,
         role: role
     })
 }
-
-//if(props.fleet) {
-    // load the fleet view of the ship. Re-add this later.
-/*/} else {
-const {data: crew, status, refresh} = useAPI(`/api/ships/${props.ship.id}/crew`, {
-    onResponse({ response }) {
-        const data = response._data.data
-        data.length = props.ship.max_crew
-        response._data.data = data
-    }
-})
-//}
-*/
 
 </script>
 

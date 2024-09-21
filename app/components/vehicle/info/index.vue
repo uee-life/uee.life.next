@@ -1,7 +1,8 @@
 <script setup>
-
+const { $api } = useNuxtApp()
 const auth = useAuthStore()
 
+const emit = defineEmits(['refresh'])
 const props = defineProps({
     vehicle: {
         type: Object,
@@ -13,7 +14,7 @@ const edit = ref({
     name: false
 })
 
-const name = ref('')
+const name = ref(props.vehicle.name)
 
 const isOwner = computed({
     get() {
@@ -28,9 +29,16 @@ const regDate = computed({
 })
 
 //TODO: Update this to make the change...
-function updateName() {
+async function updateName() {
     console.log("updating vehicle name to: ", name.value)
     edit.value.name = false
+    await $api(`/api/vehicles/${props.vehicle.id}/update`, {
+        method: 'POST',
+        body: {
+            name: name.value
+        }
+    })
+    emit('refresh')
 }
 </script>
 

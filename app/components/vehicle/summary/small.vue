@@ -1,8 +1,8 @@
 <template>
-    <panel class="ship-summary" :title="vehicle.name" titleSize="small">
+    <panel class="vehicle-summary" :title="vehicle.name" titleSize="small">
         <img :src="vehicleImage" />
         <img class="manufacturer" :src="manufacturerImage" />
-        <div class="ship-info">
+        <div class="vehicle-info">
             <h5>{{ vehicle.model }}</h5>
             <div>{{ vehicle.career }} - {{ vehicle.role }}</div>
             <div v-if="vehicle.owner">Owner: {{vehicle.owner.name}}</div>
@@ -53,11 +53,11 @@ const citizenLink = computed({
         align-self: center;
     }
 
-    .ship-summary {
+    .vehicle-summary {
         display: flex;
         flex-grow: 1;
         flex-basis: 300px;
-        margin: 10px 5px;
+        margin: 10px 5px !important;
         margin-bottom: 10px;
         padding: 9px;
         position: relative;
@@ -66,7 +66,7 @@ const citizenLink = computed({
         cursor: pointer;
     }
 
-    .ship-summary .mask {
+    .vehicle-summary .mask {
         position: absolute;
         top: 0;
         left: 0;
@@ -75,7 +75,7 @@ const citizenLink = computed({
         z-index: 10;
     }
 
-    .ship-info {
+    .vehicle-info {
         display: flex;
         flex-direction: column;
         margin-left: 10px;

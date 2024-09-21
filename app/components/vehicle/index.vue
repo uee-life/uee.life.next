@@ -43,7 +43,7 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${props.vehicleId
                 </teleport>
             </ClientOnly>
         </template>
-        <vehicle-info :vehicle="vehicle.data" />
+        <vehicle-info :vehicle="vehicle.data" @refresh="refresh"/>
     </div>
     <widgets-no-result v-else text="Vehicle not found" />
 </template>

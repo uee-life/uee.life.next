@@ -97,6 +97,7 @@ const updateGroup = async (group) => {
         method: 'POST',
         body: group
     })
+    emit('refresh')
     return result
 }
 
@@ -152,7 +153,7 @@ const setGroup = async () => {
             console.log('getFleetGroup called')
         }
     })
-    console.log(res)
+
     if (res.status == 'success') {
         console.log('got new group data', status)
         group.value = res.data
@@ -180,9 +181,7 @@ watch(
 
 <template>
     <WidgetsLoading v-if="status == 'pending' || groupStatus == 'pending'"/>
-    <WidgetsNoResult v-else-if="status == 'error'" text="Group not found"/>
-    <div v-else class="fleet-group">
-        {{status}}
+    <div v-else-if="status == 'success'" class="fleet-group">
         <div class="info">
             <div class="info-panel no-grow">
                 <panel :title="group.info.name" title-size="small" class="commander">
@@ -207,7 +206,7 @@ watch(
             <div class="info-panel">
                 <panel v-if="canEdit" title="Tools" title-size="small" class="tools">
                     <input v-if="isAdmin" class="tool-button" @click="modals.confirm = true" type="button" value="Delete Group">
-                    <input v-if="isAdmin /*|| (canEdit && (!group.cmdr || citizen.info.handle.toLowerCase() !== group.cmdr.toLowerCase()))*/" class="tool-button" @click="modals.edit = true" type="button" value="Edit Group">
+                    <input v-if="isAdmin" class="tool-button" @click="modals.edit = true" type="button" value="Edit Group">
                     <input class="tool-button" @click="modals.group = true" type="button" value="Add Subgroup">
                     <input class="tool-button" @click="modals.vehicle = true" type="button" value="Add Vehicle">
                 </panel>
@@ -225,6 +224,9 @@ watch(
         <layout-modal v-if="modals.group" title="Add Subgroup" @close="modals.group = false">
             <forms-fleet @submit="addGroup" />
         </layout-modal>
+        <layout-modal v-if="modals.edit" title="Edit Subgroup" @close="modals.edit = false">
+            <forms-fleet :group="group.info" @submit="updateGroup" />
+        </layout-modal>
         <layout-modal v-if="modals.confirm" title="Are you sure?" @close="modals.confirm = false" :show-close="false">
             <div class="confirm">
                 <img class="button" src="@/assets/tick.png" @click="removeGroup">
@@ -240,6 +242,7 @@ watch(
                 @add="addVehicle"/>
         </layout-modal>
     </div>
+    <WidgetsNoResult v-else="status == 'error'" text="Group not found"/>
 </template>
 
 <style scoped>

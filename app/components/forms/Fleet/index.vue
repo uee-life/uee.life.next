@@ -21,16 +21,16 @@ const props = defineProps({
     group: {
         type: Object,
         default: function () {
-            return null
+            return {
+                name: '',
+                purpose: '',
+                cmdr: ''
+            }
         }
     }
 })
 
-const data = ref({
-    name: '',
-    purpose: '',
-    cmdr: ''
-})
+const data = ref(JSON.parse(JSON.stringify(props.group)))
 
 const error = ref({
     name: ''

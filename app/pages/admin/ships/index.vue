@@ -8,16 +8,16 @@ const modal = ref({
 })
 const selected = ref(null)
 
-const updateShips = async () => {
-    result.value = await $api(`/api/admin/shipModels/import`)
+const updateVehicles = async () => {
+    result.value = await $api(`/api/admin/vehicleModels/import`)
     .catch((error) => {
         console.error(error)
     })
 }
 
-const filteredShips = computed({
+const filteredVehicles = computed({
     get() {
-        return shipModels.value.data.models.filter(model => {
+        return vehicleModels.value.data.models.filter(model => {
             console.log(model)
             return model.identifier.toLowerCase().includes(filter.value.toLowerCase()) ||
                     model.manufacturer.toLowerCase().includes(filter.value.toLowerCase()) ||
@@ -27,35 +27,35 @@ const filteredShips = computed({
 })
 
 const shipImage = (id) => {
-    console.log(`ship: ${id}`)
-    return `/images/ships/${id}.jpg`
+    console.log(`vehicle: ${id}`)
+    return `/images/ships/small/${id}.jpg`
 }
 
-const editShipModel = (s) => {
+const editVehicleModel = (s) => {
     console.log('editing: ' + s)
     selected.value = s
     modal.value.edit = true
 }
 
-async function addShip(ship) {
+async function addVehicle(ship) {
     modal.value.add = false
-    await $api('/api/admin/shipModels/add', {
+    await $api('/api/admin/vehicleModels/add', {
         method: 'POST',
         body: ship
     })
 }
 
-async function editShip(ship) {
+async function editVehicle(ship) {
     modal.value.edit = false
-    await $api('/api/admin/shipModels/add', {
+    await $api('/api/admin/vehicleModels/add', {
         method: 'POST',
         body: ship
     })
 }
 
 
-const {data: shipModels, status} = useAPI('/api/ships/models', {
-    key: 'getShipModels',
+const {data: vehicleModels, status} = useAPI('/api/vehicles/models', {
+    key: 'getVehicleModels',
     server: false,
     lazy: true,
 })
@@ -80,28 +80,28 @@ const {data: shipModels, status} = useAPI('/api/ships/models', {
         </client-only>
         <panel
             v-if="status == 'success'" 
-            v-for="ship in filteredShips"
+            v-for="vehicle in filteredVehicles"
             class="ship-model">
-            <img :src="shipImage(ship.identifier)"  class="ship-image"/>
+            <img :src="vehicleImage(vehicle.identifier)"  class="ship-image"/>
             <div class="ship-info">
-                <div>{{ `${ship.manufacturer} ${ship.model}` }}</div>
-                <div>{{ `${ship.career} - ${ship.role}`}}</div>
-                <div>{{ `Cargo: ${ship.cargo}` }}</div>
-                <div>{{ `Crew: ${ship.max_crew}` }}</div>
+                <div>{{ `${vehicle.manufacturer} ${vehicle.model}` }}</div>
+                <div>{{ `${vehicle.career} - ${vehicle.role}`}}</div>
+                <div>{{ `Cargo: ${vehicle.cargo}` }}</div>
+                <div>{{ `Crew: ${vehicle.max_crew}` }}</div>
             </div>
-            <div class="mask" @click="editShipModel(ship)"></div>
+            <div class="mask" @click="editVehicleModel(vehicle)"></div>
         </panel>
         
-        <layout-modal v-if="modal.edit" title="Edit ship model" @close = "modal.edit = false">
+        <layout-modal v-if="modal.edit" title="Edit vehicle model" @close = "modal.edit = false">
             <forms-vehicle-model 
                 :data="shipModels.data"
                 :ship-info="selected"
-                @submit="editShip"/>
+                @submit="editVehicle"/>
         </layout-modal>
-        <layout-modal v-if="modal.add" title="Add a ship model" @close = "modal.add = false">
+        <layout-modal v-if="modal.add" title="Add a vehicle model" @close = "modal.add = false">
             <forms-vehicle-model
                 :data="shipModels.data"
-                @submit="addShip"
+                @submit="addVehicle"
                 />
         </layout-modal>
 

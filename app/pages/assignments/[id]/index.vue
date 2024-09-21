@@ -16,7 +16,12 @@ const isAdmin = computed({
 const ownerLink = computed({
     get() {
         if (status.value == 'success') {
-            return `/fleets/${response.value.data.owner.id}`
+            if (response.value.data.owner.type == 'Citizen') {
+                return `/citizens/${response.value.data.owner.id}`
+            } else {
+                return `/fleets/${response.value.data.fleet.id}`
+            }
+            
         } else {
             return ''
         }
@@ -44,7 +49,7 @@ const assignmentLogo = computed({
             case 'Organization':
                 return response.value.data.owner.logo
             case 'Citizen':
-                return response.value.data.owner.portrait
+                return `/images/manufacturers/${response.value.data.target.manufacturer}.png`
             default:
                 return ''
         }
@@ -57,7 +62,7 @@ const assignmentTag = computed({
             case 'Organization':
                 return response.value.data.fleet.name
             case 'Citizen':
-                return response.value.data.target.name ? response.value.data.target.name : response.value.data.target.id
+                return response.value.data.target.name ? response.value.data.target.name : vehicleID(response.value.data.target.id)
             default:
                 return response.value.data.class
         }
@@ -67,7 +72,7 @@ const assignmentTag = computed({
 const assignmentName = computed({
     get() {
         if (response.value.data.owner.type == 'Citizen' && response.value.data.class == 'Vehicle') {
-            return `${response.value.data.target.manufacturer} ${response.value.data.target.model}`
+            return response.value.data.target.model
         } else {
             return response.value.data.owner.name
         }
@@ -93,9 +98,9 @@ const { data: response, refresh, status } = useAPI(`/api/assignments/${route.par
                 :image="assignmentImage"
                 :logo="assignmentLogo" 
                 @clicked="navigateTo(ownerLink)">
-                <template v-slot:logoslot>
+                <!--template v-slot:logoslot>
                     <citizen-portrait :citizen="response.data.owner" size="medium" shape="round"></citizen-portrait>
-                </template>
+                </template-->
         </layout-banner>
         <template v-if="response.data.class == 'Vehicle'">
             <layout-banner v-if="response.data.owner.type == 'Organization'"
@@ -108,7 +113,7 @@ const { data: response, refresh, status } = useAPI(`/api/assignments/${route.par
                 @clicked="navigateTo(ownerLink)" />
             <vehicle v-if="response.data.target.id"
                 :vehicle-id="response.data.target.id"
-                :show-owner="response.data.owner.type == 'Organization'"
+                :show-owner="true"
                 @refresh="refresh" />
             <assignment 
                 :assignment="response.data"
