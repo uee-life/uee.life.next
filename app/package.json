@@ -43,5 +43,8 @@
     "sweetalert2": "^11.10.8",
     "vue-good-table-next": "^0.2.1",
     "vue-gtag-next": "^1.14.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-musl": "4.22.2"
   }
 }
