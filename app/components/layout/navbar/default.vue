@@ -1,35 +1,28 @@
-<template>
-    <div class="nav-bar" id="nav-bar">
-        <div class="nav-left">
-          <nuxt-link class="nav-button" to="/" exact>Home</nuxt-link>
-          <nuxt-link class="nav-button" to="/about">About</nuxt-link>
-          <nuxt-link class="nav-button" to="/citizens">Citizens</nuxt-link>
-          <nuxt-link class="nav-button" to="/orgs">Organizations</nuxt-link>
-          <nuxt-link class="nav-button" to="/explore">Explore</nuxt-link>
-        </div>
-        <div class="nav-right">
-          <template v-if="auth.isAuthenticated">
-            <nuxt-link v-if="auth.citizen.handle == 'Capn_Flint'" class="nav-button" to="/admin">Admin</nuxt-link>
-            <nuxt-link class="nav-button" :to="profileLink">Profile</nuxt-link>
-            <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>
-            <a class="nav-button" @click="useLogout()">Sign Off</a>
-          </template>
-          <a v-else class="nav-button" href="/auth/login">Sign In</a>
-        </div>
-    </div>
-</template>
-
 <script setup>
-
 const auth = useAuthStore()
 
-const profileLink = computed({
-  get() {
-    return `/citizens/${auth.citizen.handle}`
-  }
-})
-
 </script>
+
+<template>
+  <div class="nav-bar" id="nav-bar">
+      <div class="nav-left">
+        <nuxt-link class="nav-button" to="/" exact>Home</nuxt-link>
+        <nuxt-link class="nav-button" to="/about">About</nuxt-link>
+        <nuxt-link class="nav-button" to="/citizens">Citizens</nuxt-link>
+        <nuxt-link class="nav-button" to="/orgs">Organizations</nuxt-link>
+        <nuxt-link class="nav-button" to="/explore">Explore</nuxt-link>
+      </div>
+      <div class="nav-right">
+        <template v-if="auth.isAuthenticated">
+          <nuxt-link v-if="['Capn_Flint', 'Capn_Nemo'].includes(auth.citizen.handle)" class="nav-button" to="/admin">Admin</nuxt-link>
+          <nuxt-link class="nav-button" to="/assignments">Assignments</nuxt-link>
+          <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>
+          <a class="nav-button" @click="useLogout()">Sign Off</a>
+        </template>
+        <a v-else class="nav-button" href="/auth/login">Sign In</a>
+      </div>
+  </div>
+</template>
 
 <style scoped>
     .nav-bar {

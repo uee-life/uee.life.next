@@ -1,4 +1,4 @@
-import { getParentGroup } from "./vehicleGroups"
+import { getParentGroup, getVehicleGroup } from "./vehicleGroups"
 import { getVehicle } from "./vehicles"
 
 export const checkAssignmentPerms = async (target, user, data=null) => {
@@ -139,9 +139,15 @@ export const getAssignment = async (assignmentID) => {
                 assignment.fleet = parent.fleet
                 assignment.target = await getVehicle(assignment.target.id)
             }
+            if (assignment.class == 'VehicleGroup') {
+                //const group = await getVehicleGroup(assignment.target.id)
+                //assignment.fleet = group.fleet
+            }
         }
 
         return assignment
+    } else {
+        return null
     }
 }
 
