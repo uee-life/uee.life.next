@@ -1,14 +1,20 @@
-export default defineEventHandler(async (event) => {
+// Authenticated
+export default defineAuthenticatedEventHandler(async (event) => {
+    const user = loadUser(event.context.user)
     //TODO: do an admin authorization check here
-    const keys = await useStorage('cache').getKeys()
-    const shipStats = await getShipStats()
-    const summary = {
-        cache: {
-            count: keys.length
-        },
-        ships: parseStats(shipStats)
+    if (await checkPermission(user, ['admin:all'])) {
+        const keys = await useStorage('cache').getKeys()
+        const shipStats = await getShipStats()
+        const summary = {
+            cache: {
+                count: keys.length
+            },
+            ships: parseStats(shipStats)
+        }
+        return summary
+    } else {
+        return accessDenied(event)
     }
-    return summary
 })
 
 function parseStats(data) {
