@@ -2,10 +2,10 @@
     <div class="card-small">
         <router-link class="no-decor" :to="computedLink">
             <span class="thumb">
-                <img :src="computedImage" />
+                <img :src="image" />
             </span>
             <span class="card-data">
-                <slot />
+                <slot></slot>
             </span>
         </router-link>
     </div>
@@ -33,16 +33,6 @@ const computedLink = computed({
         }
     }
 })
-
-const computedImage = computed({
-    get() {
-        if(props.image) {
-            return props.image
-        } else {
-            return "/images/systems/default.jpg"
-        }
-    }
-})
 </script>
 
 <style scoped>
@@ -54,7 +44,7 @@ const computedImage = computed({
 
 .card-small>a {
     display: flex;
-    background: url('/images/fading-bars.png') repeat;
+    background: url('@/assets/fading-bars.png') repeat;
     padding: 5px;
     position: relative;
     height: fit-content;
@@ -97,12 +87,5 @@ const computedImage = computed({
     font-size: 14px;
     color: #dbf3ff;
     margin: 0;
-}
-
-.verified {
-    position: absolute;
-    right: 3px;
-    bottom: 3px;
-    width: 25px;
 }
 </style>

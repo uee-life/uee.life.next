@@ -1,25 +1,54 @@
 <template>
   <div class="app">
     <layout-header-default />
+    <layout-notifications />
     <layout-navbar-default />
+
     <div class="main">
+      <layout-banner-dock name="banner-full" />
       <layout-dock name="left-dock" />
       <div class="content">
-        <slot />
+        <layout-banner-dock name="banner-content" />
+        <slot></slot>
       </div>
-      <layout-dock name="right-dock" />
+      <!-- the margin-right is to account for the scrollbar gutter -->
+      <layout-dock name="right-dock" style="margin-right: -5px"/>
+      <layout-footer />
     </div>
-    <layout-footer-default />
+    
+    <client-only>
+        <teleport to="#notifications">
+            <widgets-notification
+                messageType="warning" 
+                messageText="Test Version - Data May Not Persist" 
+                :modality="false" 
+                v-if="config.public.test_env"></widgets-notification>
+            <widgets-notification 
+                messageType="info" 
+                messageText="Account not verified - Click to open settings" 
+                :modality="false" 
+                v-if="auth.isAuthenticated && !auth.user.verified"
+                @click="navigateTo('/settings')" 
+                style="cursor: pointer" />
+        </teleport>
+    </client-only>
   </div>
 </template>
+
+<script setup>
+const auth = useAuthStore()
+const config = useRuntimeConfig();
+</script>
 
 <style scoped>
 .app {
   position: relative;
   min-height: 100vh;
   max-width: 100vw;
-  /*padding-bottom: 175px;*/
+  padding-bottom: 90px;
   font-family: larabie;
+  max-width: 1920px;
+  margin: auto;
 }
 
 .main {
@@ -27,7 +56,12 @@
   flex-wrap: wrap;
   max-width: 1920px;
   margin: auto;
-  padding-bottom: 175px;
+  overflow-y: auto;
+  overflow-x: visible;
+  height: calc(100vh - 148px);
+  /* set the gutter to stable so the layout doesn't get messed up turning on scrollbar */
+  scrollbar-gutter: stable;
+  padding-top: 10px;
 }
 
 .app::before {
@@ -59,17 +93,4 @@
   flex-grow: 1;
   flex-basis: 300px;
 }
-
-.dock {
-  max-width: 260px;
-  margin: 0 auto;
-}
-
-/*.leftDock {
-   min-width: 240px;
- }*/
-.vue-portal-target {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}</style>
+</style>

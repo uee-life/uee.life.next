@@ -1,0 +1,37 @@
+// Public
+export default defineEventHandler(async (event) => {
+    const groupID = getRouterParam(event, 'id')
+
+    return apiSuccess(await perfMon(getVehicleList, groupID))
+})
+
+//TODO: Optimize this (too many DB calls)
+const getVehicleList = async (id) => {
+    const group = await getVehicleGroup(id, false)
+
+    const vehicles = []
+
+    if (group.org) {
+        const query =
+            `MATCH (s:Vehicle)-[:PART_OF]->(g:VehicleGroup)
+            WHERE g.id =~ $id
+            MATCH (o:Citizen)<-[:OWNED_BY]-(s)
+            MATCH (s)-[:INSTANCE_OF]->(m:VehicleModel)
+            RETURN s as vehicle,
+                    m as vehicleData,
+                    o as owner`
+        const result = await readQuery(query, {id: "(?i)"+id})
+        for (const res of result.result) {
+            const vehicle = {
+                owner: res.owner,
+                assignments: await getAssignments(res.vehicle.id, group.org.id),
+                ...res.vehicleData,
+                ...res.vehicle
+            }
+
+            vehicles.push(vehicle)
+        }
+    }
+    
+    return vehicles
+}

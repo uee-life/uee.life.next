@@ -3,13 +3,10 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-                    <panel-main class="modal-body">
-                        <panel-title v-if="title" :text="title" />
-                        <input type="button" class="modal-close" @click="$emit('close')" value="X" />
-                        <slot>
-                            default body
-                        </slot>
-                    </panel-main>
+                    <panel class="modal-body" :title="title" titleSize="small">
+                        <input v-if="showClose" type="button" class="modal-close" @click="$emit('close')" value="X" />
+                        <slot></slot>
+                    </panel>
                 </div>
             </div>
         </div>
@@ -21,12 +18,12 @@ const props = defineProps({
     title: {
         type: String,
         default: ""
+    },
+    showClose: {
+        type: Boolean,
+        default: true
     }
 })
-
-function close() {
-    $emit
-}
 </script>
 
 <style>
@@ -51,16 +48,13 @@ function close() {
 .modal-container {
   width: fit-content;
   margin: 0px auto;
-  padding: 20px 30px;
-  border-radius: 2px;
   transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
 }
 
 .modal-body {
-    background: rgba(13, 46, 66, 0.7);
-    width: fit-content;
+    background: rgba(13, 46, 66, 0.7) !important;
     padding: 10px;
+    max-height: 90vh;
 }
 
 .modal-close {

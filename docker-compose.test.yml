@@ -2,11 +2,15 @@ version: "3"
 
 services:
     app:
-        build: ./app/
+        build: ./
         container_name: uee-life-test
         restart: unless-stopped
         command:
             "npm run start"
+        ulimits:
+            nofile:
+                soft: 4096
+                hard: 4096
     
     nginx:
         image: nginx

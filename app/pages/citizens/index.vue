@@ -1,28 +1,43 @@
 <template>
-<client-only>
-    <div class='citizen-results'>
-        <teleport to="#left-dock">
-            <panel-dock title="find citizen" class="search-box">
-                <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Citizen Handle"/>
-            </panel-dock>
-        </teleport>
-        <div v-if="result" class="results">
-            <citizen-card v-for="res in result" :key="res.handle" :citizen="res" class="result">
-
-            </citizen-card>
+    <div class='citizen-search'>
+        <client-only>
+            <teleport to="#left-dock">
+                <panel-dock title="find citizen" class="search-box">
+                    <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Citizen Handle"/>
+                </panel-dock>
+            </teleport>
+        </client-only>
+        <div v-if="result && result.status == 'success' && result.data.length" class="results">
+            <citizen-card v-for="res in result.data" :key="res.handle" :citizen="res" class="result" @selected="selected"/>
         </div>
-        <widgets-no-result v-else />
+        <widgets-no-result v-else :text="noResultText"/>
     </div>
-</client-only>
 </template>
 
 <script setup>
+const { $api } = useNuxtApp()
+
 const result = ref(null)
 const input = ref("")
+const pending = ref(false)
+
+const noResultText = computed({
+    get() {
+        if (input.value.length >=3) {
+            if(pending.value) {
+                return "Searching..."
+            } else {
+                return "No Results"
+            }
+        } else {
+            return "Search Citizens"
+        }
+    }
+})
 
 async function autoGetResults() {
-    console.log('autogetresult: ' + input.value)
     if(input.value.length >= 3) {
+        pending.value = true
         getResults()
     } else {
         result.value = null
@@ -33,20 +48,22 @@ async function getResults() {
     const data = {
         text: input.value
     }
-    console.log("data: ", data)
-    result.value = await $fetch(`/api/search/citizen`, {
+    result.value = await $api(`/api/search/citizen`, {
         method: 'POST',
-        body: data
+        body: data,
+        onResponse(_ctx) {
+            pending.value = false
+        }
     })
 }
 
-function citizenLink(handle) {
-    return `/citizens/${handle}`;
+function selected(citizen) {
+    navigateTo(`/citizens/${citizen.handle}`)
 }
 </script>
 
 <style scoped>
-    .citizen-results {
+    .citizen-search {
         position: relative;
         width: 100%;
         padding-top: 14px;
@@ -74,55 +91,11 @@ function citizenLink(handle) {
         box-sizing: border-box;
         height: 100%;
         align-items: center;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
         padding: 5px 10px;
         position: relative;
         height: fit-content;
         border: 1px solid #546f84;
         flex-grow: 1;
     }
-
-    .result>a>.thumb {
-        display: inline-block;
-        width: 70px;
-        height: 70px;
-        position: relative;
-    }
-
-    .result>a>.thumb>img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        align-self: center;
-    }
-
-    .result>a>.identity {
-        display: flex;
-        line-height: 16px;
-        flex-direction: column;
-        justify-content: center;
-        margin-left: 20px;
-    }
-
-    .result>a>.identity>.org {
-        font-size: 0.9rem;
-        color: #739cb0;
-        margin-top: 2px;
-    }
-
-    .result>a>.identity>.symbol {
-        font-size: 0.9rem;
-        color: #739cb0;
-        margin-top: 2px;
-    }
-
-    .result>a>.right {
-        display: none;
-    }
-
-    .no-decor {
-        text-decoration: none;
-    }
-
 </style>

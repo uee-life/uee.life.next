@@ -6,13 +6,13 @@
             :type="locationType"
             :image="locationImage" 
             :logo="logoImage" />
-        <panel-main v-if="location" class="location-panel">
+        <panel v-if="location" class="location-panel">
             <div class="content">
                 <div class="location-info">
                     <h3 class="title"> {{ location.name }}</h3>
                     <p>
                         <span v-if="location.subtype">Type: <span class='value'>{{location.subtype}}</span><br></span>
-                        <span v-if="location.affiliation">Affiliation: <span class='value'>{{location.affiliation}}</span><br></span>
+                        <span v-if="location.affiliation">Affiliation: <span class='value'>{{affiliationText}}</span><br></span>
                         <span v-if="location.habitable">Habitable: <span class='value'>{{isHabitable}}</span><br></span>
                         <span>Population: <span class='value'>{{rating(location.population)}}</span><br></span>
                         <span>Risk: <span class='value'>{{rating(location.danger)}}</span><br></span>
@@ -20,7 +20,7 @@
                     <p>{{ location.description }}</p>
                 </div>
             </div>
-        </panel-main>
+        </panel>
         <div v-else>Location not found</div>
         <slot></slot>
         <div v-if="debug">{{ JSON.stringify(location, null, 2) }}</div>
@@ -67,10 +67,24 @@ const locationImage = computed({
     }
 })
 
+const affiliationText = computed({
+    get() {
+        const affiliations = {
+            "UNC": "Unclaimed",
+            "XIAN": "Xian",
+            "VNCL": "Vanduul",
+            "UEE": "UEE",
+            "BANU": "Banu",
+            "DEV": "Developing"
+        }
+        return affiliations[props.location.affiliation]
+    }
+})
+
 const logoImage = computed({
     get() {
-        if(props.location.affiliation == "UEE") {
-            return "/images/factions/UEE.png"
+        if(["UEE","BANU"].includes(props.location.affiliation)) {
+            return `/images/factions/${props.location.affiliation}.png`
         } else {
             return ""
         }
@@ -103,22 +117,6 @@ onMounted(() => {
     .location {
         width: 100%;
         opacity: 0;
-    }
-
-    .location-panel {
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background: url('/images/fading-bars.png') repeat;
-        z-index: 0;
-        padding-top: 0.1px;
-    }
-
-    .location-panel .content {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
     }
 
     .location-image {

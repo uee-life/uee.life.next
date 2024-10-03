@@ -1,7 +1,8 @@
 <template>
   <div>
-    <NuxtLayout v-if="$viewport.isLessThan('tablet')" name="default">
-      <NuxtPage />
+    <NuxtLayout v-if="$viewport.isLessThan('tablet')" name="mobile">
+
+   <NuxtPage />
     </NuxtLayout>
     <NuxtLayout v-else name="default">
       <NuxtPage />
@@ -12,4 +13,6 @@
 <script setup>
 import { useNuxtApp } from '#app';
 const { $viewport } = useNuxtApp()
+const auth = useAuthStore()
+auth.initApp()
 </script>

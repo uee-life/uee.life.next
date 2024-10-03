@@ -1,5 +1,5 @@
 <template>
-    <div ref="newsitem" class="news-item" id="news-item">
+    <panel ref="newsitem" class="news-item" id="news-item" :title="item.source" title-size="small">
         <a :href="item.link" style="text-decoration: none" target="blank">
             <div class="news-content">
                 <div class="background" :style="style"></div>
@@ -10,15 +10,12 @@
                 <div class="news-item-info">
                     <div><b>{{ item.title }}</b></div>
                     <div>Posted: {{ item.posted }}</div>
+                    <div>{{ item.source }}</div>
                 </div>
             </div>
             <img class="source-img" :src="item.source_img" :title="item.source"/>
-            <span class="corner top left"></span>
-            <span class="corner top right"></span>
-            <span class="corner bottom left"></span>
-            <span class="corner bottom right"></span>
         </a>
-    </div>
+    </panel>
 </template>
 
 <script setup>
@@ -68,6 +65,8 @@ const style = computed({
     position: relative;
     opacity: 1;
     flex-grow: 1;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
 }
 
 .news-item .news-content {
@@ -98,7 +97,7 @@ const style = computed({
     left: 0;
     bottom: 0;
     right: 0;
-    background: url('/images/fading-bars.png') repeat;
+    background: url('@/assets/fading-bars.png') repeat;
     z-index: 0;
 }
 </style>

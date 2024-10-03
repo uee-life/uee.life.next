@@ -18,7 +18,7 @@ export const useAuthenticatedUser = () => {
 };
 
 export const useLogout = () => {
-    return navigateTo(`https://ueelife.auth0.com/v2/logout?client_id=${config.AUTH0_CLIENT_ID}&returnTo=${config.APP_DOMAIN}/auth/logout`, {
+    return navigateTo(`https://ueelife.auth0.com/v2/logout?client_id=${config.auth0.client_id}&returnTo=${config.public.app_domain}/auth/logout`, {
         external: true
     })
 }

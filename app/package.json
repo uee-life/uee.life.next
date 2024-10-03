@@ -5,12 +5,15 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "start": "nuxt start",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/device": "^3.1.1",
     "@nuxtjs/google-fonts": "^3.1.3",
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@types/better-sqlite3": "^7.6.10",
     "nuxt": "^3.9.0",
     "vue": "^3.4.15",
@@ -19,13 +22,18 @@
   "dependencies": {
     "@auth0/auth0-vue": "^2.3.3",
     "@lucia-auth/adapter-sqlite": "^3.0.1",
+    "@nuxt-alt/google-analytics": "^0.0.3",
     "@nuxt/content": "^2.10.0",
+    "@nuxt/image": "^1.7.0",
     "@pinia/nuxt": "^0.5.1",
     "@sweetalert2/theme-borderless": "^5.0.16",
     "arctic": "^1.7.0",
     "better-sqlite3": "^9.6.0",
     "cheerio": "^1.0.0-rc.12",
+    "date-fns": "^3.6.0",
     "gsap": "^3.12.4",
+    "hamburgers": "^1.2.1",
+    "jquery": "^3.7.1",
     "lucia": "^3.2.0",
     "neo4j-driver": "^5.16.0",
     "nuxt-viewport": "^2.1.2",
@@ -33,8 +41,10 @@
     "sass": "^1.69.7",
     "sqlite3": "^5.1.7",
     "sweetalert2": "^11.10.8",
-    "vue-date-fns": "^2.0.2",
-    "vue-good-table": "^2.21.11",
+    "vue-good-table-next": "^0.2.1",
     "vue-gtag-next": "^1.14.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-musl": "4.22.2"
   }
 }

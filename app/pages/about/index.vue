@@ -1,6 +1,10 @@
+<script setup>
+
+</script>
+
 <template>
-    <client-only>
-        <div class="content">
+    <div class="about">
+        <client-only>
             <teleport to="#left-dock">
                 <panel-dock class="nav" title="nav">
                     <div class="left-nav-button"><nuxt-link :to="{ hash: '#about'}">About UEE.life</nuxt-link></div>
@@ -10,34 +14,29 @@
                 </panel-dock>
                 <widgets-made-by />
             </teleport>
-            {{ user }}
-            <section id="about">
-                <panel-main class="content" title="About UEE.life">
-                    <panel-markdown file="about.md"/>
-                </panel-main>
-            </section>
-            <section id="social">
-                <panel-main class="content" title="Social Media">
-                    <panel-markdown file="social.md"/>
-                </panel-main>
-            </section>
-            <section id="support">
-                <panel-main class="content" title="Support Us">
-                    <panel-markdown file="support.md"/>
-                </panel-main>
-            </section>
-            <section id="releases">
-                <panel-main class="content" title="Releases">
-                    <panel-markdown file="releases.md"/>
-                </panel-main>
-            </section>
-        </div>
-    </client-only>
+        </client-only>
+        <section id="about">
+            <panel title="About UEE.life" title-size="medium">
+                <markdown file="about.md"/>
+            </panel>
+        </section>
+        <section id="social">
+            <panel title="Social Media" title-size="medium">
+                <markdown file="social.md"/>
+            </panel>
+        </section>
+        <section id="support">
+            <panel title="Support Us" title-size="medium">
+                <markdown file="support.md"/>
+            </panel>
+        </section>
+        <section id="releases">
+            <panel title="Releases" title-size="medium">
+                <markdown file="releases.md"/>
+            </panel>
+        </section>
+    </div>
 </template>
-
-<script setup>
-
-</script>
 
 <style scoped>
     .about {
@@ -46,6 +45,7 @@
         flex-direction: column;
         width: 100%;
         box-sizing: border-box;
+        padding-top: 20px;
     }
 
     .nav {

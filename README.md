@@ -39,3 +39,33 @@ Required installs:
 * VSCode
 * NodeJS
 * Docker (Docker Desktop)
+
+# Feature Status
+
+* Core Content
+  * Main Page - Complete
+  * About Page - Complete
+  * Citizen Pages - Complete
+  * Org Pages - Complete
+  * Explore Pages - Complete
+* Core Infrastructure
+  * Auth0 integration - Complete
+  * API & Authorization - Complete
+  * Graph DB - Complete
+  * Container Deployment - Complete
+  * Certificate Management - Complete
+* Features
+  * Complete
+    * RSI news feed - Complete
+  * Needs Testing
+    * Citizen Verification - Testing
+    * Personal Ship Management - Testing
+    * Ship Crew Management - Testing
+  * In Development
+    * Org Fleet Management - In development
+    * Org Management - In development
+    * Non-RSI news feeds - In development
+    * Mobile Browser Support - In development
+  * Planning
+    * Events
+    * Friends lists

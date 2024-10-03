@@ -1,18 +1,3 @@
-<template>
-    <div :class="redacted">
-        <router-link class="no-decor" :to="citizenLink(citizen.handle)">
-            <span class="thumb">
-                <img :src="citizen.portrait" />
-            </span>
-            <span class="identity">
-                <h2 class="name">{{citizen.name}}</h2>
-                <span class="symbol">{{citizen.handle}}</span>
-                <span v-if="citizen.org" class="org">Org: {{citizen.org}}</span>
-            </span>
-        </router-link>
-    </div>
-</template>
-
 <script setup>
 const props = defineProps({
     citizen: {
@@ -24,91 +9,108 @@ const props = defineProps({
 const redacted = computed({
     get() {
         if (props.citizen.handle == "Redacted") {
-            return "result redacted"
+            return "card redacted"
         } else {
-            return "result"
+            return "card"
         }
     }
 })
 
-function citizenLink(handle) {
-    return `/citizens/${handle}`;
-}
+const citizenLink = computed({
+    get() {
+        return `/citizens/${props.citizen.handle}`;
+    }
+})
 </script>
 
+<template>
+    <div :class="redacted" @click="$emit('selected', citizen)">
+        <span class="thumb">
+            <img :src="citizen.portrait" />
+        </span>
+        <span class="identity">
+            <h2 class="name">{{citizen.name}}</h2>
+            <span class="symbol">{{citizen.handle}}</span>
+            <span v-if="citizen.org" class="org">[{{citizen.org}}]</span>
+            <span v-if="citizen.rank">
+                <img class="rank" src="@/assets/star.png" v-for="i in Array(citizen.rank)" />
+            </span>
+            <template v-if="citizen.status && citizen.verified">
+                <img v-if="citizen.status.active == 'idle'" class="status" title="away" src="@/assets/status-away.png" />
+                <img v-if="citizen.status.active == 'online'" class="status" title="online" src="@/assets/status-online.png" />
+                <img v-if="citizen.status.active == 'offline'" class="status" title="offline" src="@/assets/status-offline.png" />
+            </template>
+        </span>
+    </div>
+</template>
+
 <style scoped>
- .result {
-        display: flex;
-        flex-grow: 1;
-        margin: 5px;
-        position: relative;
-    }
+.card {
+    display: flex;
+    flex-grow: 1;
+    position: relative;
+}
 
-    .result.redacted {
-        background-color: rgba(255,34,34,0.2);
-    }
+.status {
+    position: absolute;
+    width: 13px;
+    top: 3px;
+    right: 3px;
+} 
 
-    .result>a {
-        display: flex;
-        box-sizing: border-box;
-        height: 100%;
-        align-items: center;
-        background: url('/images/fading-bars.png') repeat;
-        padding: 5px 10px;
-        position: relative;
-        height: fit-content;
-        border: 1px solid #546f84;
-        flex-grow: 1;
-    }
+.card.redacted {
+    background-color: rgba(255,34,34,0.2);
+}
 
-    .result.redacted>a {
-        border: 1px solid #ff2222;
-    }
+.card.redacted>a {
+    border: 1px solid #ff2222;
+}
 
-    .result>a>.thumb {
-        display: inline-block;
-        width: 70px;
-        height: 70px;
-        position: relative;
-    }
+.card {
+    display: flex;
+    box-sizing: border-box;
+    height: 100%;
+    align-items: start;
+    background: url('@/assets/fading-bars.png') repeat;
+    padding: 5px 10px;
+    position: relative;
+    height: fit-content;
+    border: 1px solid #546f84;
+    flex-grow: 1;
+    cursor: pointer;
+}
 
-    .result>a>.thumb>img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        align-self: center;
-    }
+.card>.thumb {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    position: relative;
+}
 
-    .result>a>.identity {
-        display: flex;
-        line-height: 16px;
-        flex-direction: column;
-        justify-content: center;
-        margin-left: 20px;
-    }
+.card>.thumb>img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    align-self: center;
+}
 
-    .result>a>.identity>.name {
-        margin-top: 0px;
-    }
+.card>.identity {
+    display: flex;
+    line-height: 18px;
+    font-size: 0.9rem;
+    color: #739cb0;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 20px;
+    margin-top: -5px;
+}
 
-    .result>a>.identity>.org {
-        font-size: 0.9rem;
-        color: #739cb0;
-        margin-top: 2px;
-    }
+.rank {
+    width: 20px;
+}
 
-    .result>a>.identity>.symbol {
-        font-size: 0.9rem;
-        color: #739cb0;
-        margin-top: 2px;
-    }
-
-    .result>a>.right {
-        display: none;
-    }
-    
-    .no-decor {
-        text-decoration: none;
-    }
+.no-decor {
+    text-decoration: none;
+}
 </style>

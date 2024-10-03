@@ -5,9 +5,6 @@ import { Auth0 } from "arctic";
 
 import type { DatabaseUser } from "./db";
 
-import { webcrypto } from "crypto";
-globalThis.crypto = webcrypto as Crypto;
-
 const adapter = new BetterSqlite3Adapter(db, {
     user: "user",
     session: "session"
@@ -37,4 +34,4 @@ declare module "lucia" {
 
 const config = useRuntimeConfig();
 
-export const auth0 = new Auth0(config.auth0.domain, config.auth0.client_id, config.auth0.client_secret, config.auth0.redirect_uri)
+export const auth0 = new Auth0(config.auth0.domain, config.auth0.client_id, config.auth0.client_secret, `${config.public.app_domain}/auth/signed-in`)

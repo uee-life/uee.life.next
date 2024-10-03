@@ -1,28 +1,45 @@
 <template>
-    <client-only>
-        <div class="content">
-            <teleport to="#left-dock">
-                <panel-dock title="News Source" type="news-filter"/>
-                <panel-dock title="Official Links" type="links">
-                    <widgets-links :links="officialLinks"/>
-                </panel-dock>
-                <panel-dock title="Community Links" type="links">
-                    <widgets-links :links="communityLinks"/>
-                </panel-dock>
-            </teleport>
-            <widgets-site-news v-if="!store.isMobile" style="margin-bottom: 30px"/>
-            <news-feed />
+        <div>
+            <client-only>
+                <teleport to="#left-dock">
+                    <widgets-site-news v-if="isMobile" style="margin: 20px 10px"/>
+                    <panel-dock title="News Source" type="news-filter"/>
+                    <panel-dock v-if="!isMobile" title="Official Links" type="links">
+                        <widgets-links :links="officialLinks"/>
+                    </panel-dock>
+                    <panel-dock v-if="!isMobile" title="Community Links" type="links">
+                        <widgets-links :links="communityLinks"/>
+                    </panel-dock>
+                </teleport>
+                <teleport to="#right-dock">
+                    <panel-dock v-if="isMobile" title="Official Links" type="links">
+                        <widgets-links :links="officialLinks"/>
+                    </panel-dock>
+                    <panel-dock v-if="isMobile" title="Community Links" type="links">
+                        <widgets-links :links="communityLinks"/>
+                    </panel-dock>
+                    <panel-dock title="Stats" type="stats">
+                        <widgets-stats />
+                    </panel-dock>
+                    <panel-dock title="Online" type="online">
+                        <widgets-online />
+                    </panel-dock>
+                </teleport>
+            </client-only>
 
-            <teleport to="#right-dock">
-                <panel-dock title="Test" type="test"/>
-            </teleport>
+            <widgets-site-news v-if="!isMobile" style="margin: 20px 0;"/>
+            <news-feed />
         </div>
-    </client-only>
 </template>
 
 <script setup>
-import { mainStore } from '~/stores/mainStore'
-const store = mainStore()
+const { $viewport } = useNuxtApp()
+
+const isMobile = computed({
+    get() {
+        return $viewport.isLessThan('tablet')
+    }
+})
 
 const officialLinks = [
     {name: "RSI Main Site", url: "https://robertsspaceindustries.com"},
@@ -36,11 +53,11 @@ const communityLinks = [
     {name: "SC Wiki", url: "https://starcitizen.tools"},
     {name: "Erkul fitting Calculator", url: "https://erkul.games/calculator"},
     {name: "Gallog Trade Tool", url: "https://gallog.co/trading/"},
-    {name: "Mining Yield Calculator", url: "https://robertsspaceindustries.com/community/citizen-spotlight/16649-Mining-Yield-Calculator"},
     {name: "Starship42 Ship Viewer", url: "https://www.starship42.com"},
     {name: "GameGlass", url: "https://gameglass.gg"},
     {name: "Bar Citizens", url: "https://barcitizen.sc"}
 ]
+
 </script>
 
 <style>

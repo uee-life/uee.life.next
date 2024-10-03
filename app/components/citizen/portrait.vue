@@ -1,38 +1,62 @@
 <template>
-    <div v-if="citizen" :class="portraitSize()">
-        <nuxt-link :to="citizenLink()">
-            <img class="image" :src="citizen.portrait" />
-            <img v-if="citizen.verified" class="verified" src="@/assets/verified.png" />
-        </nuxt-link>
-        <div v-if="showName" class="name">
-            {{ citizen.name }}
+    <div class="avatar">
+        <div v-if="citizen" :class="portraitSize()">
+            <nuxt-link :to="citizenLink()">
+                <div class="avatar">
+                    <!--img src="@/assets/portrait-bg.png" class="portrait-bg"/-->
+                    <img :class="imageShape()" :src="citizen.portrait" />
+                    <img v-if="citizen.verified" class="verified" src="@/assets/verified.png" />
+                    <template v-if="showStatus && citizen.verified && citizen.status">
+                        <img v-if="citizen.status.active == 'idle'" class="status" title="away" src="@/assets/status-away.png" />
+                        <img v-if="citizen.status.active == 'online'" class="status" title="online" src="@/assets/status-online.png" />
+                        <img v-if="citizen.status.active == 'offline'" class="status" title="offline" src="@/assets/status-offline.png" />
+                    </template>
+                </div>
+            </nuxt-link>
         </div>
-        <slot></slot>
+        <div v-if="showName" class="name">
+                {{ citizen.name }}
+            </div>
+            <slot></slot>
     </div>
 </template>
 
 <script setup>
-import { gsap } from 'gsap'
-
 const props = defineProps({
     citizen: {
-        type: Object
+        type: Object,
+        required: true
     },
     size: {
         type: String,
-        default: 'medium',
+        default: 'large',
         validator: function (value) {
-            return ['tiny', 'small', 'medium'].indexOf(value) !== -1
+            return ['tiny', 'x-small', 'small', 'medium', 'large'].indexOf(value) !== -1
+        }
+    },
+    shape: {
+        type: String,
+        default: 'square',
+        validator: function (value) {
+            return ['round', 'square'].indexOf(value) !== -1
         }
     },
     showName: {
         type: Boolean,
         default: false
+    },
+    showStatus: {
+        type: Boolean,
+        default: true
     }
 })
 
 function portraitSize() {
-    return `portrait ${props.size}`
+    return `portrait ${props.size} ${props.shape} ${props.citizen.verified ? 'verified' : ''}`
+}
+
+function imageShape() {
+    return `image ${props.shape}`
 }
 
 function citizenLink() {
@@ -41,39 +65,20 @@ function citizenLink() {
 </script>
 
 <style scoped>
-    .portrait {
-        box-sizing: border-box;
+
+    .avatar {
         position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
-
-    .portrait a {
-        width: 100%;
+    .portrait {
+        box-sizing: border-box;
+        position: relative;
     }
 
-    .portrait.medium {
-        width: 165px;
-        flex-basis: 165px;
-        height: fit-content;
-    }
-
-    .portrait.medium .image {
-        width: 165px;
-        height: 165px;
-    }
-
-    .portrait.small {
-        width: 100px;
-        min-height: 100px;
-        height: fit-content;
-    }
-
-    .portrait.tiny {
-        width: 40px;
-        min-height: 40px;
-        height: fit-content;
+    .portrait.round.verified {
+        background: url("@/assets/portrait-bg.png") top center / cover;
     }
 
     .portrait .image {
@@ -83,31 +88,141 @@ function citizenLink() {
         border: 1px solid #546f84;
     }
 
-    .portrait.medium .verified {
+    .portrait .image.round {
+        border-radius: 50%;
+    }
+
+    .portrait a {
+        width: 100%;
+    }
+
+    .status {
+        position: absolute;
+    } 
+
+    /* Large Image */
+
+    .portrait.large {
+        width: 165px;
+        flex-basis: 165px;
+        height: fit-content;
+    }
+
+    .portrait.large.round {
+        padding: 11px;
+    }
+
+    .portrait.large .image {
+        width: 165px;
+        height: 165px;
+    }
+
+    .portrait.large .verified {
         position: absolute;
         bottom: 0;
         right: 3px;
         top: 118px;
         width: 45px;
+        filter: drop-shadow(2px 2px 2px black);
+    }
+
+    .portrait.large .status {
+        width: 16px;
+        top: 5px;
+        left: 5px;
+    }
+
+    .portrait.large .name {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    /* Medium Image */
+
+    .portrait.medium {
+        width: 135px;
+        min-height: 135px;
+        height: fit-content;
+    }
+
+    .portrait.medium.round {
+        padding: 14px;
+    }
+
+    .portrait.medium .verified {
+        position: absolute;
+        top: 80px;
+        right: 5px;
+        width: 35px;
+        filter: drop-shadow(1px 1px 2px black);
+    }
+
+    .portrait.medium .name {
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .portrait.medium .status {
+        width: 13px;
+        top: 3px;
+        left: 3px;
+    }
+
+    /* Small Image */
+
+    .portrait.small {
+        width: 95px;
+        min-height: 95px;
+        height: fit-content;
+    }
+
+    .portrait.small.round {
+        padding: 10px;
     }
 
     .portrait.small .verified {
         position: absolute;
         top: 68px;
-        right: 0px;
-        width: 30px;
+        right: 2px;
+        width: 25px;
+        filter: drop-shadow(1px 1px 1px black);
+    }
+
+    .portrait.small.round .verified {
+        top: 58px;
+    }
+
+    .portrait.small .status {
+        top: 3px;
+        left: 3px;
+        width: 10px;
+    }
+
+    .portrait.small.round .status {
+        top: 5px;
+        left: 5px;
+    }
+
+
+    /* Tiny Image */
+
+    .portrait.tiny {
+        width: 40px;
+        min-height: 40px;
+        height: fit-content;
+    }
+
+    .portrait.tiny.round {
+        padding: 5px;
     }
 
     .portrait.tiny .verified {
         display: none;
     }
 
-    .portrait.medium .name {
-        font-size: 16px;
-        text-align: center;
-    }
-    .portrait.small .name {
-        font-size: 12px;
-        text-align: center;
+    .portrait.tiny .status {
+        top: 1px;
+        left: 1px;
+        width: 8px;
     }
 </style>

@@ -1,7 +1,14 @@
-export default defineEventHandler((event) => {
-    let user = "Anonymous"
+export default defineEventHandler(async (event) => {
+    let user = {handle: "Anonymous"}
+    const path = getRequestURL(event)
     if(event.context.user) {
-        user = event.context.user.id
+        // set active status for logged in users
+        user = await loadUser(event.context.user)
+        await setStatus(user.handle, 'active')
     }
-    console.log('[API REQUEST]' + `[${user}]` + getRequestURL(event))
+    if (path.pathname.startsWith('/api/')) {
+        logActivity('API-CALL', path + ` [${event.req.method}]`, user.handle)
+    } else {
+        logActivity('WEB-CALL', path, user.handle)
+    }
 })

@@ -1,11 +1,10 @@
-const cheerio = require('cheerio')
-const {convertToMarkdown } = require('./markdown')
+import cheerio from 'cheerio'
+import { isVerified } from './citizens'
 
-const config = require('~/config.json')
+const config = useRuntimeConfig()
 
 async function validCitizen(handle) {
     const res = await fetchCitizen(handle)
-    console.log(res)
     if (res) {
         return true
     } else {
@@ -13,47 +12,56 @@ async function validCitizen(handle) {
     }
 }
 
-async function fetchCitizen(handle) {
-    console.log('[srv] fetching citizen...', handle)
+export const fetchCitizen = defineCachedFunction(async (handle) => {
 
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle, {
-        headers: {
-            'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+        onRequest() {
+            logActivity('CACHE', `Caching RSI data for ${handle}`)
         }
+    }).catch(() => {
+        return null
     })
-    
-    try {
-        const $ = cheerio.load(response)
-        let info = {}
-        info.handle = handle
-        if($('p:contains("authenticated")').text()) {
-            console.error($('p:contains("authenticated")').text())
-        }
-        info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
-        info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
-        info.bio = $('span:contains("Bio")', '#public-profile').next().text()
-        info.enlisted = $("span:contains('Enlisted')", '#public-profile').next().text()
-        info.portrait = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
-        let image = $('div.thumb', '#public-profile').children()[0]
-        if (image && image.attribs.src) {
-            if(image.attribs.src.startsWith('https')) {
-                info.portrait = image.attribs.src
-            } else {
-                info.portrait = `${baseURI}${image.attribs.src}`
+
+    if (response) {
+        try {
+            const $ = cheerio.load(response)
+            let info = {}
+            info.handle = handle
+            if ($('p:contains("authenticated")').text()) {
+                console.error($('p:contains("authenticated")').text())
             }
+            info.id = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
+            info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
+            info.bio = $('span:contains("Bio")', '#public-profile').next().text()
+            info.enlisted = $("span:contains('Enlisted')", '#public-profile').next().text()
+            info.portrait = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
+            let image = $('div.thumb', '#public-profile').children()[0]
+            if (image && image.attribs.src) {
+                if (image.attribs.src.startsWith('https')) {
+                    info.portrait = image.attribs.src
+                } else {
+                    info.portrait = `${baseURI}${image.attribs.src}`
+                }
+            }
+            info.orgs = await fetchOrgList(handle)
+            info.website = $('span:contains("Website")', '#public-profile').next().attr('href') || ''
+            info.verified = 0
+            return info
+        } catch (error) {
+            return null
         }
-        info.orgs = await fetchOrgList(handle)
-        info.website = $('span:contains("Website")', '#public-profile').next().attr('href') || ''
-        info.verified = 0
-        return info
-    } catch (error) {
-        console.error(error)
+    } else {
         return null
     }
-}
+}, {
+    maxAge: 60 * 5,
+    name: 'rsi-fetchCitizen',
+    getKey: (handle) => handle
+})
 
-async function fetchOrg(org) {
+
+export const fetchOrg = defineCachedFunction(async (org) => {
     const baseURI = "https://robertsspaceindustries.com"
     const resp = await $fetch(`${baseURI}/orgs/${org}`)
 
@@ -61,8 +69,10 @@ async function fetchOrg(org) {
         const $ = cheerio.load(resp)
         let info = {}
         info.name = $('h1', '#organization').text().split("/")[0].trim()
-        info.banner = baseURI + $('div.banner', '#organization').find('img').attr('src')
-        info.logo = baseURI + $('div.logo', '#organization').find('img').attr('src')
+        const bannerImg = $('div.banner', '#organization').find('img').attr('src')
+        info.banner = bannerImg.startsWith('https://') ? bannerImg : baseURI + bannerImg
+        const logoImg = $('div.logo', '#organization').find('img').attr('src')
+        info.logo = logoImg.startsWith('https://') ? logoImg : baseURI + logoImg
         info.count = $('div.logo', '#organization').find('span').text().split(" ")[0]
         info.model = $('ul.tags', '#organization').find('li.model').text()
         info.roles = {}
@@ -73,51 +83,55 @@ async function fetchOrg(org) {
         info.manifesto = convertToMarkdown($('h2:contains("Manifesto")', '#organization').next().html())
         info.charter = convertToMarkdown($('h2:contains("Charter")', '#organization').next().html())
         info.founders = await fetchOrgFounders(org)
-        
-        info.tag = org
+
+        info.id = org
 
         return info
     } catch (error) {
         console.error(error)
         return null
     }
-}
+}, {
+    maxAge: 60 * 60,
+    name: 'rsi-fetchOrg',
+    getKey: (org) => org
+})
 
-async function fetchOrgList(handle) {
-    //TODO: Get logos here too
-    console.log('[srv] fetching citizen...', handle)
-
+// cache this
+export const fetchOrgList = defineCachedFunction(async (handle) => {
     const baseURI = 'https://robertsspaceindustries.com'
     const response = await $fetch(baseURI + '/citizens/' + handle + '/organizations', {
         headers: {
-            'Cookie': `_rsi_device=${config.RSI_DEVICE}; Rsi-XSRF=${config.RSI_XSRF}; Rsi-Token=${config.RSI_TOKEN}`
+            'Cookie': `_rsi_device=${config.external.RSI_DEVICE}; Rsi-XSRF=${config.external.RSI_XSRF}; Rsi-Token=${config.external.RSI_TOKEN}`
         }
     })
-    
+
     try {
         let orgs = {
             main: null,
             affiliated: []
         }
         const $ = cheerio.load(response)
-        
+
         const main = $('.main .info')[0]
         if (main) {
+            const logoImg = $('.main').find('.thumb').find('img').prop('src')
             orgs.main = {
-                tag: $(main).find('a').prop('href').split('/')[2],
+                id: $(main).find('a').prop('href').split('/')[2],
                 name: $(main).find('a').text(),
-                logo: baseURI + $('.main').find('.thumb').find('img').prop('src'),
+                logo: logoImg ? (logoImg.startsWith('https://') ? logoImg : baseURI + logoImg) : '',
                 model: $('.main').find('.right-col').find('span:contains("Archetype")').next().text(),
                 rank: {
                     title: $(main).find('.ranking').prev().find('strong').text(),
                     level: $(main).find('.ranking').find('.active').length
                 }
             }
-            const links = $('.affiliation').each( function (i, el) {
+            const links = $('.affiliation').each(function (i, el) {
+                const logo = $(el).find('.thumb').find('img').prop('src')
                 orgs.affiliated.push({
-                    tag: $(el).find('.info').find('a').prop('href').split('/')[2],
+                    id: $(el).find('.info').find('a').prop('href').split('/')[2],
                     name: $(el).find('.info').find('a').text(),
-                    logo: baseURI + $(el).find('.thumb').find('img').prop('src'),
+                    logo: logo.startsWith('https://') ? logo : baseURI + logo,
                     rank: {
                         title: $(el).find('.ranking').prev().find('strong').text(),
                         level: $(el).find('.ranking').find('.active').length,
@@ -131,7 +145,11 @@ async function fetchOrgList(handle) {
         console.error(error)
         return null
     }
-}
+}, {
+    maxAge: 60 * 5,
+    name: 'rsi-fetchOrgList',
+    getKey: (org) => org
+})
 
 
 //TODO: Can we deprecate this and just use the getOrgMembers function with rank=1?
@@ -159,25 +177,8 @@ async function fetchOrgFounders(org) {
         return founders
     } catch (error) {
         console.error(error)
-        return {error: "Org not found!"}
+        return { error: "Org not found!" }
     }
-}
-
-//TODO: remove this. temporary until we get user verification back in
-function getID(handle) {
-    return 0
-}
-
-async function checkCitizens(members) {
-    for(let i in members) {
-        if(members[i].handle !== 'Redacted') {
-            const id = await getID(members[i].handle)
-            if(id !== 0) {
-                members[i].verified = true
-            }
-        }
-    }
-    return members
 }
 
 function computeRank(stars) {
@@ -185,7 +186,7 @@ function computeRank(stars) {
 
     if (stars) {
         const starsize = parseInt(stars.match(/width\:\ (.*)\%/)[1])
-        if(starsize) {
+        if (starsize) {
             rank = starsize / 20
         }
 
@@ -196,15 +197,13 @@ function computeRank(stars) {
     return rank
 }
 
-async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
+export const fetchMembers = async (org, page = 1, isMain = true, rank = 0, handle = '') => {
 
     const url = "https://robertsspaceindustries.com/api/orgs/getOrgMembers"
     let i = 0
     const main = isMain ? "1" : "0"
     const orgRank = rank ? `, "rank": "${rank}"` : ""
     const data = `{"symbol": "${org}", "search":"", "pagesize": 32, "main_org": "${main}", "page": ${page}${orgRank}}`
-
-    console.log(data)
 
     const resp = await $fetch(url, {
         method: 'POST',
@@ -216,7 +215,7 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
 
     let members = []
     const totalMembers = resp.data.totalrows
-    
+
     const $ = cheerio.load(resp.data.html)
 
     $('li.member-item').each(function (i, el) {
@@ -225,8 +224,8 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
 
         let thumb = 'https://robertsspaceindustries.com/rsi/static/images/account/avatar_default_big.jpg'
         const thumbimg = $(el).find('span.thumb').find('img')[0]
-        if(thumbimg && thumbimg.attribs.src) {
-            if(thumbimg.attribs.src.startsWith('https')) {
+        if (thumbimg && thumbimg.attribs.src) {
+            if (thumbimg.attribs.src.startsWith('https')) {
                 thumb = thumbimg.attribs.src
             } else {
                 thumb = `https://robertsspaceindustries.com${thumbimg.attribs.src}`
@@ -236,7 +235,7 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
         const rank = computeRank($(el).find('span.stars').attr('style'))
         let stars = 0
 
-        if(handle.trim() != '') {
+        if (handle.trim() != '') {
             const member = {
                 name: name,
                 handle: handle,
@@ -247,8 +246,8 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
             members.push(member)
         } else {
             const member = {
-                name: 'Redacted',
-                handle: 'Redacted',
+                name: '[REDACTED]',
+                handle: '[REDACTED]',
                 rank: rank,
                 portrait: thumb,
                 verified: false
@@ -261,13 +260,13 @@ async function fetchMembers(org, page=1, isMain=true, rank=0, handle='') {
         count: totalMembers,
         members: members
     }
-    
-    result.members = await checkCitizens(result.members)
+
     return result
 }
 
+/*
 async function fetchOrgRank(org, handle) {
-    const res = await fetchMembers(org, undefined, undefined, handle=handle)
+    const res = await fetchMembers(org, undefined, undefined, handle = handle)
     const member = res.members[0]
 
     return parseInt(member.rank)
@@ -281,4 +280,4 @@ module.exports = {
     fetchOrgFounders,
     fetchMembers,
     fetchOrgRank
-}
+}*/

@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio'
-import { sub, isBefore, formatDistance } from 'date-fns'
+import { isBefore, formatDistance, subMonths, subWeeks, subDays, subHours, subMinutes, subSeconds, subYears } from 'date-fns'
 
+// public
 export default defineEventHandler(async (event) => {
     let data = {"channel": "","series":"","type":"","text":"","sort":"publish_new","page":1}
     const query = await getQuery(event)
@@ -10,15 +11,15 @@ export default defineEventHandler(async (event) => {
         }
     }
     
-    let news = await fetchNews(data)
-    //const earliest = news[news.length - 1].posted_date
+    let news = await rsiNews(data)
+    const earliest = news[news.length - 1].posted_date
 
-    /*const feeds = await getFeeds()
+    const feeds = await getFeeds()
     if (data.series === 'news-update') {
-        for (f in feeds) {
-            const feed = feeds[f]
+        for (const feed of feeds) {
             if (feed.type == 1) {
-                news = mergeNews(news, await getYTFeed(feed, earliest))
+                const yt = await ytFeed(feed, earliest)
+                news = mergeNews(news, yt)
             } else if (feed.type == 2) {
                 // placeholder. This should pass in the feed object for generic wordpress RSS feeds
                 news = mergeNews(news, await wpFeed(earliest))
@@ -26,11 +27,12 @@ export default defineEventHandler(async (event) => {
         }
     } else {
         return news
-    }*/
-    return news
+    }
+    return apiSuccess(news)
 })
 
-async function fetchNews(data) {
+// Cached
+const rsiNews = defineCachedFunction(async (data) => {
     try {
         const baseURI = "https://robertsspaceindustries.com"
         const response = await $fetch(baseURI + '/api/hub/getCommlinkItems', {
@@ -70,12 +72,17 @@ async function fetchNews(data) {
                 news.push(art)
             }
         })
+        logActivity('CACHE', 'Updating RSI news cache')
         return news
     } catch (error) {
         console.error(error)
         return []
     }
-}
+}, {
+    maxAge: 60 * 5,
+    name: 'rsi-News',
+    getKey: (data) => { return `${data.channel}-${data.series}-${data.page}`}
+})
 
 function computeDate(posted) {
     if(posted.startsWith('about')) {
@@ -84,19 +91,19 @@ function computeDate(posted) {
     const [count, unit] = posted.split(' ')
     let date = null
     if (unit.startsWith('second')) {
-        date = sub(new Date(), {seconds: count})
+        date = subSeconds(new Date(), count)
     } else if (unit.startsWith('minute')) {
-        date = sub(new Date(), {minutes: count})
+        date = subMinutes(new Date(), count)
     } else if (unit.startsWith('hour')) {
-        date = sub(new Date(), {hours: count})
+        date = subHours(new Date(), count)
     } else if (unit.startsWith('day')) {
-        date = sub(new Date(), {days: count})
+        date = subDays(new Date(), count)
     } else if (unit.startsWith('week')) {
-        date = sub(new Date(), {weeks: count})
+        date = subWeeks(new Date(), count)
     } else if (unit.startsWith('month')) {
-        date = sub(new Date(), {months: count})
+        date = subMonths(new Date(), count)
     } else if (unit.startsWith('year')) {
-        date = sub(new Date(), {years: count})
+        date = subYears(new Date(), count)
     }
     return date.toUTCString()
 }
@@ -105,8 +112,11 @@ function mergeNews(first, second) {
     let result = []
     while (first.length + second.length > 0) {
         if(first.length === 0) {
+            // we hit the oldest date, discard any additional items from the second set
+            // probably want to change this to store them to merge in "more news" situations
             second = []
         } else if (second.length === 0) {
+            // no more results from the second feed. Just add all the remaining items form the first
             result = result.concat(first)
             first = []
         } else if (isBefore(new Date(first[0].posted_date), new Date(second[0].posted_date))) {

@@ -11,6 +11,7 @@
     background: black;
     color: #39ced8;
     font: normal normal normal 1rem/1.6 -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, sans-serif;
+    overflow: hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -149,6 +150,7 @@
     display: flex;
     flex-direction: column;
     text-overflow: ellipsis;
+    min-height: calc(100% - 75px);
 }
 
   .hidden {
@@ -187,7 +189,7 @@
   
   select {
     color: #39ced8;
-    background: url('/images/fading-bars.png') repeat;
+    background: url('@/assets/fading-bars.png') repeat;
     border: 1px solid #546f84;
     margin: 2px;
   }
@@ -242,11 +244,11 @@
       margin-right: 0px;
       margin-bottom: 3px;
       overflow:hidden;
+      cursor: pointer;
   }
   .left-nav-button a {
     text-decoration: none;
     color: #39ced8;
-    cursor: pointer;
     font-family: 'Michroma';
     font-size: 12px;
   }
@@ -254,4 +256,28 @@
   .left-nav-button a:hover {
     color: #dbf3ff;
   }
-  
+
+  /* Scrollbar config */
+  /* width */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+    background: transparent; 
+    }
+    
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+    background: #546f84;
+    border-radius: 10px;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+    background: #39ced8; 
+    }
+
+  @import "hamburgers"

@@ -1,5 +1,4 @@
-import { readQuery, writeQuery } from "~/server/utils/neo4j"
-
+// Public
 export default defineEventHandler(async (event) => {
     const code = getRouterParam(event, 'loc')
     const orbitalQuery = "MATCH (loc:Location&(PLANET|MOON))-[:ORBITS]->{1,3}(s:Location {code: $code}) return loc"
@@ -12,10 +11,10 @@ export default defineEventHandler(async (event) => {
         pois: []
     }
     orbitals.forEach(record => {
-        locations.orbitals.push(record._fields[0].properties)
+        locations.orbitals.push(record.loc)
     })
     pois.forEach(record => {
-        locations.pois.push(record._fields[0].properties)
+        locations.pois.push(record.loc)
     })
-    return locations
+    return apiSuccess(locations)
 })

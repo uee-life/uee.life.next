@@ -2,7 +2,6 @@ import { OAuth2RequestError } from "arctic";
 import { DatabaseUser, generateId } from "lucia";
 
 export default defineEventHandler(async (event) => {
-    console.log('in auth/callback');
     const query = getQuery(event);
     const code = query.code?.toString() ?? null;
     const state = query.state?.toString() ?? null;
@@ -42,12 +41,12 @@ export default defineEventHandler(async (event) => {
             }
         });
         const resp = await auth0UserResponse.json()
-        console.log("auth response: " + resp)
+
         resp.handle = resp['https://uee.life/app_metadata'].handle
         resp.verified = resp['https://uee.life/app_metadata'].handle_verified
         const auth0user: Auth0User = resp;
 
-        const existingUser = db.prepare("SELECT * FROM user WHERE handle = ?").get(auth0user.handle) as
+        const existingUser = db.prepare("SELECT * FROM user WHERE user_id = ?").get(auth0user.sub) as
                 | DatabaseUser
                 | undefined;
         
@@ -60,13 +59,14 @@ export default defineEventHandler(async (event) => {
             //return sendRedirect(event, "/");
         }
 
-        const userId = generateId(15);
-        db.prepare("INSERT INTO user (id, handle, verified) VALUES (?, ?, ?)").run(
-            userId,
+        const luciaId = generateId(15);
+        db.prepare("INSERT INTO user (id, user_id, handle, verified) VALUES (?, ?, ?, ?)").run(
+            luciaId,
+            auth0user.sub,
             auth0user.handle,
             (auth0user.verified ? 1 : 0)
         );
-        const session = await lucia.createSession(userId, {});
+        const session = await lucia.createSession(luciaId, {});
         appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize());
         return {
             status: "success"

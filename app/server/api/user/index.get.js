@@ -1,16 +1,10 @@
-import { getCitizen } from "~/server/utils/citizen"
-import { loadUser } from "~/server/utils/user"
-
+// Public
 export default defineEventHandler(async (event) => {
-    let user = null
-    if (event.context.user) {
-        user = await loadUser(event.context.user)
-    }
+    let user = await loadUser(event.context.user)
 
     if(user) {
-        console.log('user found, getting citizen')
-        console.log(user)
-        user.info = await getCitizen(user, true)
+        user.info = await getCitizen(user.handle, true, user) ?? {}
     }
-    return user
+
+    return apiSuccess(user)
 })

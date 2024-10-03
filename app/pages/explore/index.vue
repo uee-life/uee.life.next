@@ -1,5 +1,5 @@
 <template>
-    <widgets-loading v-if="pending"/>
+    <widgets-loading v-if="status != 'success'"/>
     <div v-else class="system-list">
       <client-only>
             <teleport to="#left-dock">
@@ -8,24 +8,15 @@
                 </panel-dock>
             </teleport>
         </client-only>
-        <explore-location-summary v-for="sys in systems" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
+        <explore-location-summary v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
             <div><span class="data">{{ systemType(sys) }}</span></div>
+            <img class="icon" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
         </explore-location-summary>
     </div>
 </template>
   
 <script setup>
-const systems = ref([])
-
-const {pending} = await useFetch(`/api/explore/systems`, {
-key: 'getSystems',
-server: false,
-lazy: true,
-async onResponse(_ctx) {
-    console.log(_ctx.response._data)
-    systems.value = _ctx.response._data
-}
-})
+const {data: systems, status} = useAPI(`/api/explore/systems`)
 
 function systemImage(img) {
     if(img) {
@@ -62,9 +53,17 @@ function systemType(sys) {
     flex-basis: fit-content;
     margin-left: -5px;
     margin-right: -5px;
+    margin-top: 15px;
 }
 
 .data {
     color: #dbf3ff;
+}
+
+.icon {
+  position: absolute;
+  width: 30px;
+  right: 5px;
+  bottom: 5px;
 }
 </style>

@@ -1,33 +1,46 @@
+<script setup>
+const result = ref('')
+
+</script>
+
 <template>
     <div class="main">
-        <div class="content">
-          Admin Page
-          <ship-summary-model v-if="shipModels" v-for="ship in shipModels.ships" :ship="ship"/>
-        </div>
+        <client-only>
+            <teleport to="#left-dock">
+                <panel-dock class="actions" title="Pages">
+                    <div class="left-nav-button">
+                        <nuxt-link to="/admin/ships">Ship Admin</nuxt-link>
+                    </div>
+                    <div class="left-nav-button">
+                        <nuxt-link to="/admin/RSIData">RSI Admin</nuxt-link>
+                    </div>
+                    <div class="left-nav-button">
+                        <nuxt-link to="/admin/Cache">Cache Admin</nuxt-link>
+                    </div>
+                </panel-dock>
+                <panel-dock class="actions" title="Global Actions">
+                    
+                </panel-dock>
+            </teleport>
+        </client-only>
+        <panel title="Site Data" title-size="small">
+            Coming soon...
+        </panel>
+        <panel title="Action Output" titleSize="small">
+            {{ result }}
+        </panel>
     </div>
 </template>
 
-<script setup>
-const {data: shipModels} = await useFetch('/api/ship/models', {
-    key: 'getShipModels',
-    server: false,
-    lazy: true,
-})
-</script>
-
-<style>
+<style scoped>
 
 .main {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 2000px;
-  margin: auto;
-}
-
-.content {
-  margin: 0 10px;
-  flex-grow: 1;
-  flex-basis: 300px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding-top: 20px;
 }
  
 </style>

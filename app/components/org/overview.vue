@@ -1,6 +1,40 @@
+<script setup>
+const { $api } = useNuxtApp()
+
+const props = defineProps({
+    org: {
+        type: Object,
+        required: true
+    }
+})
+
+const founders = ref([])
+
+async function getFounder(handle) {
+    await $api(`/api/citizens/${handle}`, {
+        key: 'getFounder',
+        server: false,
+        lazy: true,
+        async onResponse(_ctx) {
+            const citizen = _ctx.response._data.data
+            founders.value.push(citizen)
+        }
+    })
+}
+
+async function loadFounders() {
+        for (let i in props.org.founders) {
+            await getFounder(props.org.founders[i].handle)
+        }
+}
+
+loadFounders()
+
+</script>
+
 <template>
     <div class="info">
-        <panel-main title="roles" class="info-panel">
+        <panel class="info-panel" title="roles" title-size="small">
             <div class="info-items">
                 <div class="labels">
                     <span>Primary Role:</span>
@@ -11,8 +45,8 @@
                     <span>{{ org.roles.secondary }}</span>
                 </div>
             </div>
-        </panel-main>
-        <panel-main title="headquarters" class="info-panel">
+        </panel>
+        <panel class="info-panel" title="headquarters" title-size="small">
             <div class="info-items">
                 <div class="labels">
                     <span>System:</span>
@@ -25,54 +59,22 @@
                     <span>Unknown</span>
                 </div>
             </div>
-        </panel-main>
-        <panel-main title="founders" class="info-panel">
+        </panel>
+        <panel class="info-panel" title="founders" title-size="small">
             <div class="founders">
                 <citizen-portrait class="founder" v-for="f in founders" :key="f.handle" :citizen="f" size="small" :showName="true" />
             </div>
-        </panel-main>
+        </panel>
     </div>
 </template>
 
-<script setup>
-
-const props = defineProps({
-    org: {
-        type: Object,
-        required: true
-    }
-})
-
-const founders = ref([])
-
-async function addFounder(handle) {
-    await $fetch(`/api/citizen/${handle}`, {
-        key: 'getFounder',
-        server: false,
-        lazy: true,
-        async onResponse(_ctx) {
-            const citizen = _ctx.response._data
-            founders.value.push(citizen)
-        }
-    })
-}
-
-async function loadFounders() {
-        for (let i in props.org.founders) {
-            await addFounder(props.org.founders[i].handle)
-        }
-}
-
-loadFounders()
-
-</script>
-
-<style>
+<style scoped>
 
 .info {
     display: flex;
     flex-wrap: wrap;
     width: calc(100% + 20px);
+    padding-top: 10px;
     margin-left: -10px;
     margin-right: -10px;
     opacity: 1;
@@ -120,7 +122,7 @@ ul.info-items {
     height: fit-content;
 }
 
-.founders .portrait {
+.founders .founder {
     margin: 5px 10px;
 }
 

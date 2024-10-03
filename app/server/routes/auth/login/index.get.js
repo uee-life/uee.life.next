@@ -6,6 +6,16 @@ export default defineEventHandler(async (event) => {
         scopes: ["profile", "email"]
     })
 
+    const returnPath = new URL(getHeader(event, 'referer')).pathname
+
+    setCookie(event, "auth0_return_path", returnPath, {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: false,
+        maxAge: 60 * 10,
+        sameSite: "lax"
+    })
+
     setCookie(event, "auth0_oauth_state", state, {
         path: "/",
         secure: process.env.NODE_ENV === "production",
@@ -13,5 +23,6 @@ export default defineEventHandler(async (event) => {
         maxAge: 60 * 10,
         sameSite: "lax"
     })
+
     return sendRedirect(event, url.toString())
 })
