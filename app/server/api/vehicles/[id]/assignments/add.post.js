@@ -1,3 +1,5 @@
+// Authenticated
+// Authorized: Vehicle owner (implicit)
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const shipId = getRouterParam(event, 'id')

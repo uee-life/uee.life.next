@@ -1,5 +1,5 @@
-import { addCommander } from "~/server/utils/vehicleGroups"
-
+// Authenticated
+// Authorized: Org Owners (rank 5)
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const id = getRouterParam(event, 'id')
@@ -7,8 +7,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
     if (user && user.verified) {
         const owners = await getOrgMembers(id, 5)
-        if(!!owners.find(item => item.handle === user.handle)) {
-            console.log('is owner!')
+        if(owners.some(item => item.handle === user.handle)) {
             const fleetID = await addFleet(fleet, id)
             if(fleet.cmdr) {
                 addCommander(await getCitizen(fleet.cmdr, true), fleetID)
@@ -16,12 +15,6 @@ export default defineAuthenticatedEventHandler(async (event) => {
         } else {
             accessDenied(event)
         }
-        /*const error = await addShipModel(ship, user.handle)
-        if (error) {
-            return apiError(event, `Something went wrong: ${error}`)
-        } else {
-            return apiSuccess("Ship Added!")
-        }*/
     } else {
         return apiError(event, "You must be verified to add ships to this account.")
     }

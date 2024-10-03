@@ -1,20 +1,24 @@
+// Authenticated
+// Authorized: Fleet admins
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)
 
-    if (user && user.verified) {
-        const error = await addVehicle(data.vehicleID, data.groupID)
+    const group = await getVehicleGroup(data.groupID)
+
+    if (user && user.verified && group.admins.some(e => e.handle == user.handle)) {
+        const error = await addVehicle(data.vehicleID, group)
         if (error) {
             return apiError(event, `Something went wrong: ${error}`)
         } else {
             return apiSuccess("Vehicle Added!")
         }
     } else {
-        return apiError(event, "You must be verified to add assignments.")
+        return accessDenied(event)
     }
 })
 
-const addVehicle = async (vehicleID, groupID) => {
+const addVehicle = async (vehicleID, group) => {
     // need to first add the vehicle to the vehicle group
     const addVehicle = 
         `MATCH (s:Vehicle {id: $vehicleID})-[:INSTANCE_OF]-(v:VehicleModel)
@@ -24,11 +28,10 @@ const addVehicle = async (vehicleID, groupID) => {
                 v as vehicle`
 
     // then we need to create a new crew assignment for that vehicle, owned by the org
-    const group = await getVehicleGroup(groupID)
 
     const { result, error } = await writeQuery(addVehicle, {
         vehicleID: vehicleID,
-        groupID: groupID
+        groupID: group.info.id
     })
 
     if(result[0]) {

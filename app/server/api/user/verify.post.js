@@ -1,5 +1,7 @@
 import { fetchCitizen } from "~/server/utils/rsi"
 
+// Authenticated
+// Authorized: Current user
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const account = await getAccount(user.user_id)

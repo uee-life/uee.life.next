@@ -1,5 +1,6 @@
 import { readQuery, writeQuery } from "./neo4j"
 import * as rsi from "./rsi"
+import { parseStatus } from "./status"
 
 export const getOrganization = async (tag, create = false) => {
 
@@ -97,9 +98,9 @@ export const orgAddFounder = async (handle, orgID) => {
 
 export const getOrgMembers = async (orgID, rank=0) => {
     const query = 
-        `MATCH (c:Citizen)-[r:MEMBER_OF]->(o:Organization {id: $orgID})
+        `MATCH (:Status {type: 'active'})<-[s:HAS_STATUS]-(c:Citizen)-[r:MEMBER_OF]->(o:Organization {id: $orgID})
          WHERE r.rank >= $rank
-         RETURN c as member, r.rank as rank`
+         RETURN c as member, r.rank as rank, s.updated as status`
     const { result, error } = await readQuery(query, {orgID: orgID, rank: rank})
 
     const members = []
@@ -111,9 +112,10 @@ export const getOrgMembers = async (orgID, rank=0) => {
             rank: res.rank,
             portrait: res.member.portrait,
             verified: res.member.verified,
-            status: await getStatus(res.member.handle)
+            status: parseStatus(res.status)
         }
         members.push(member)
     }
+
     return members
 }

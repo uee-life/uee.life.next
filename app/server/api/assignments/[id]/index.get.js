@@ -1,5 +1,3 @@
-import { getAssignment } from "~/server/utils/assignments"
-
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
 

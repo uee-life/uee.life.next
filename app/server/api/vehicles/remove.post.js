@@ -1,6 +1,5 @@
-import { clearAllAssignments } from "~/server/utils/assignments"
-
-
+// Authenticated
+// Authorized: Vehicle Owner (implicit)
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const vehicle = await readBody(event)
