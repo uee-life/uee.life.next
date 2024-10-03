@@ -1,13 +1,10 @@
 import { getOrgMembers } from "~/server/utils/orgs"
 import * as rsi from "../../../utils/rsi"
 
+// Public
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
     const query = await getQuery(event)
-
-    // update this to pull an initial set of members, 
-    // with their online status, from the DB, the merge it 
-    // with the data pulled from RSI
 
     const ueeMembers = await getOrgMembers(id)
 

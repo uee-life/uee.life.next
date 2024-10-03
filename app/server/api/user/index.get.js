@@ -1,3 +1,4 @@
+// Public
 export default defineEventHandler(async (event) => {
     let user = await loadUser(event.context.user)
 

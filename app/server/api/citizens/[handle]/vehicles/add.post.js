@@ -1,3 +1,5 @@
+// Authenticated
+// Authorized: Logged in verified user
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const vehicle = await readBody(event)
@@ -34,10 +36,7 @@ const addVehicle = async (vehicle, handle) => {
     const { error, result } = await writeQuery(query, params)
 
     if (result) {
-        console.log('result')
-        console.log(result[0].model)
         const crewAssignment = await createAssignment(result[0].vehicle, handle, 'Crew', result[0].model.max_crew)
-        console.log(crewAssignment)
     }
 
     if (error) {

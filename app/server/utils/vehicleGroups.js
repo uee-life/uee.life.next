@@ -1,6 +1,5 @@
 
-export const getVehicleGroup = async (identifier) => {
-    console.log('getting vehicle group:', identifier)
+export const getVehicleGroup = async (identifier, subgroups=true) => {
     const query =
         `MATCH (g:VehicleGroup {id: $id})-[:PART_OF]->{0,10}(f:VehicleGroup)-[:BELONGS_TO]->(o:Organization)
          RETURN g as info,
@@ -18,18 +17,20 @@ export const getVehicleGroup = async (identifier) => {
             admins: await getGroupAdmins(identifier, result[0].org.id),
             fleet: result[0].fleet,
             info: result[0].info,
-            cmdr: result[0].info.cmdr ? await getCitizen(result[0].info.cmdr) : '',
-            groups: []
+            cmdr: result[0].info.cmdr ? await getCitizen(result[0].info.cmdr) : ''
         }
-        for (const grp of result[0].groups) {
-            group.groups.push(await getVehicleGroup(grp))
-        }
+        if(subgroups) {
+            console.info('adding subgroups')
+            group.groups = []
+            for (const grp of result[0].groups) {
+                group.groups.push(await getVehicleGroup(grp))
+            }
+        }  
         return group
     } else {
         return null
     }
 }
-
 
 
 export const getParentGroup = async (identifier) => {
@@ -40,23 +41,21 @@ export const getParentGroup = async (identifier) => {
             f as fleet,
             o as org,
             COLLECT {
-                MATCH (sg:VehicleGroup)-[:PART_OF]->(g)
-                return sg.id
-            } as groups`
+                MATCH (c:Citizen)-[:ASSIGNED_TO]->(a:Assignment {type: 'Leader'})-[:ATTACHED_TO]->(parent) return c
+            } as commanders`
 
     const { result } = await readQuery(query, {id: identifier})
 
     if (result[0]) {
+        const commanders = []
+        for (const cmdr of result[0].commanders) {
+            commanders.push(cmdr.properties)
+        }
         const group = {
             org: result[0].org,
-            admins: await getGroupAdmins(result[0].info.id, result[0].org.id),
+            admins: commanders.concat(await getOrgMembers(result[0].org.id, 5)),
             fleet: result[0].fleet,
-            info: result[0].info,
-            cmdr: result[0].info.cmdr ? await getCitizen(result[0].info.cmdr) : '',
-            groups: []
-        }
-        for (const grp of result[0].groups) {
-            group.groups.push(await getVehicleGroup(grp))
+            info: result[0].info
         }
         return group
     } else {

@@ -1,6 +1,7 @@
 import { readQuery, writeQuery } from "./neo4j"
 import { getOrganization, orgAddMember, orgAddFounder } from "./orgs"
 import * as rsi from "./rsi"
+import { parseStatus } from "./status"
 
 export const getCitizen = async (handle, create = false, user = null) => {
     // try to load citizen from neo4j
@@ -22,7 +23,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
         }
     } else {
         //TODO: Transition this to using the graph, rather than polling RSI every time.
-        citizen.orgs = await rsi.fetchOrgList(handle)
+        citizen.orgs = await getCitizenOrgs(handle)
         // check and update verification
         if (user && user.verified == 1 && citizen.verified == false) {
             citizen.verified = true
@@ -35,16 +36,14 @@ export const getCitizen = async (handle, create = false, user = null) => {
         }
     }
 
-    citizen.status = await getStatus(citizen.handle, 'online')
-
     return citizen
 }
 
 async function loadCitizen(handle) {
     const query = 
-        `MATCH (c:Citizen) 
+        `MATCH (c:Citizen)-[s:HAS_STATUS]->(:Status {type: 'active'})
          WHERE c.handle =~ $handle
-         return c as citizen`
+         return c as citizen, s.updated as status`
     const params = {
         handle: '(?i)' + handle
     }
@@ -56,10 +55,49 @@ async function loadCitizen(handle) {
     }
 
     let citizen = {}
-    if(result) {
+    if(result[0]) {
         citizen = result[0].citizen
+        citizen.status = parseStatus(result[0].status)
     }
     return citizen
+}
+
+//TODO: combine this query above
+const getCitizenOrgs = async (handle) => {
+    const query = `
+        MATCH (o:Organization)<-[m:MEMBER_OF]-(c:Citizen)
+        WHERE c.handle =~ $handle
+        return o as org, m as membership, type(m) as type
+    `
+    const { result, error } = await readQuery(query, {
+        handle: handle
+    })
+
+    const orgs = {
+        main: [],
+        affiliated: []
+    }
+
+    if (error) {
+        return orgs
+    }
+    for (const res of result) {
+        const org = {
+            id: res.org.id,
+            name: res.org.name,
+            logo: res.org.logo,
+            rank: {
+                title: res.membership.title,
+                level: res.membership.rank
+            }
+        }
+        if (res.type == 'MEMBER_OF') {
+            orgs.main.push(org)
+        } else {
+            orgs.affiliated.push(org)
+        }
+    }
+    return orgs
 }
 
 async function createCitizen(citizen) {

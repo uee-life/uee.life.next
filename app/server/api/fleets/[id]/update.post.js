@@ -1,22 +1,24 @@
+// Authenticated
+// Authorized: fleet group admin
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const groupID = getRouterParam(event, 'id')
-    const group = await readBody(event)
-    console.log(group)
+    const groupData = await readBody(event)
 
-    // TODO: add a check here to authorize creation of the subgroup 
-    // (parent cmdr, or org director)
-
-    // get citizen info, and create the entity if it doesn't exist yet
-    if (group) {
-        const newGroup = await updateGroup(groupID, group)
-        clearCommander(groupID)
-        if (group.cmdr) {
-            console.log('GOT CMDR: ' + group.cmdr)
-            const cmdr = await getCitizen(group.cmdr, true)
-            await addCommander(cmdr, groupID)
+    if (groupData) {
+        const group = await getVehicleGroup(groupID, false)
+        if (user && user.verified && group.admins.some(e => e.handle == user.handle)) {
+            const newGroup = await updateGroup(groupID, groupData)
+            clearCommander(groupID)
+            if (group.cmdr) {
+                console.log('GOT CMDR: ' + group.cmdr)
+                const cmdr = await getCitizen(group.cmdr, true)
+                await addCommander(cmdr, groupID)
+            }
+            return apiSuccess("Group updated")        
+        } else {
+            return accessDenied(event)
         }
-        return apiSuccess("Group updated")
     } else {
         return apiError(event, 400)
     }

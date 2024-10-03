@@ -1,7 +1,7 @@
-
+// Public
 export default defineEventHandler(async (event) => {
     const handle = getRouterParam(event, 'handle')
-    console.log('getting Citizen')
+
     const citizen = await getCitizen(handle)
 
     if (citizen) {

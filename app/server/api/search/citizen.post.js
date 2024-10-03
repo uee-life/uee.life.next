@@ -1,5 +1,5 @@
 
-
+// Public
 export default defineEventHandler(async (event) => {
     let data = {
         "community_id": "",

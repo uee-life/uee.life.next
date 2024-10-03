@@ -1,16 +1,12 @@
-import { getParentGroup } from "~/server/utils/vehicleGroups"
-
+// Authenticated
+// Authorized: parent group admins
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const groupID = getRouterParam(event, 'id')
 
-    // TODO: add a check here to authorize deletion of the subgroup 
-    // (parent cmdr, or org director)
-
-    // get citizen info, and create the entity if it doesn't exist yet
     if (groupID) {
         const parentVG = await getParentGroup(groupID)
-        if (parentVG.admins.some(e => e.handle == user.handle)) {
+        if (user && user.verified && parentVG.admins.some(e => e.handle == user.handle)) {
             const error = await removeGroup(groupID)
             if (error) {
                 return apiError(`Couldn't remove group`, 400)
