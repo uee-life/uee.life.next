@@ -40,6 +40,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
 }
 
 async function loadCitizen(handle) {
+    console.log('loading citizen: ' + handle)
     const query = 
         `MATCH (c:Citizen)-[s:HAS_STATUS]->(:Status {type: 'active'})
          WHERE c.handle =~ $handle
@@ -55,6 +56,7 @@ async function loadCitizen(handle) {
     }
 
     let citizen = {}
+    console.log(result)
     if(result[0]) {
         citizen = result[0].citizen
         citizen.status = parseStatus(result[0].status)

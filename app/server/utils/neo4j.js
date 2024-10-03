@@ -40,7 +40,6 @@ export const readQuery = async (query, params={}) => {
     try {
         // Moved to non-transactional reads, for performance gains.
         const result = await session.run(query, params, { database: 'neo4j' })
-        console.info(`query performance: ${end - start}`)
 
         records = result.records;
     } catch (err) {
