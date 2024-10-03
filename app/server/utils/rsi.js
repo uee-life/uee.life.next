@@ -119,7 +119,7 @@ export const fetchOrgList = defineCachedFunction(async (handle) => {
             orgs.main = {
                 id: $(main).find('a').prop('href').split('/')[2],
                 name: $(main).find('a').text(),
-                logo: logoImg.startsWith('https://') ? logoImg : baseURI + logoImg,
+                logo: logoImg ? (logoImg.startsWith('https://') ? logoImg : baseURI + logoImg) : '',
                 model: $('.main').find('.right-col').find('span:contains("Archetype")').next().text(),
                 rank: {
                     title: $(main).find('.ranking').prev().find('strong').text(),
