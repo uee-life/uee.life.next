@@ -14,18 +14,18 @@
   
 <script setup>
 const props = defineProps({
-org: {
-    type: Object,
-    required: true
-},
-affiliate: {
-  type: Boolean,
-  default: false
-},
-title: {
-  type: String,
-  default: ''
-}
+  org: {
+      type: Object,
+      required: true
+  },
+  affiliate: {
+    type: Boolean,
+    default: false
+  },
+  title: {
+    type: String,
+    default: ''
+  }
 })
 
 //todo: make this a generic logo

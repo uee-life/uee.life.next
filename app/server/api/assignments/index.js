@@ -10,9 +10,8 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const getCitizenAssignments = async (handle) => {
     const query = `
-        MATCH (Citizen {handle: $handle})-[r:ASSIGNED_TO]->(a:Assignment)
-        return a as assignment,
-            r as role
+        MATCH (Citizen {handle: $handle})-[:ASSIGNED_TO]->(a:Assignment)
+        return a as assignment
     `
 
     const { result } = await readQuery(query, {

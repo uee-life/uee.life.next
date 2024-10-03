@@ -44,7 +44,7 @@ function navigate() {
 
 <template>
     <panel class="vehicle-summary" :title="vehicle.name" titleSize="small">
-        <img :src="vehicleImage" />
+        <img class="vehicle-image" :src="vehicleImage" />
         <img class="manufacturer" :src="manufacturerImage" />
         <div class="vehicle-info">
             <h5></h5>
@@ -127,6 +127,11 @@ function navigate() {
 
     .vehicle-info>h5 {
         font-size: 14px;
+    }
+
+    .vehicle-image {
+        box-sizing: border-box;
+        border: 1px solid #546f84;
     }
 
     .manufacturer {
