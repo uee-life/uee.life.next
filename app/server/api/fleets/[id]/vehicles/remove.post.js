@@ -1,8 +1,12 @@
+// Authenticated
+// Authorized: fleet group admin
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)
 
-    if (user && user.verified) {
+    const group = await getVehicleGroup(data.groupID)
+
+    if (user && user.verified && group.admins.some(e => e.handle == user.handle)) {
         const error = await removeVehicle(data.vehicleID, data.groupID)
         if (error) {
             return apiError(event, `Something went wrong: ${error}`)
@@ -10,7 +14,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
             return apiSuccess("Assignment Removed")
         }
     } else {
-        return apiError(event, "You must be verified to add vehicles to this account.")
+        return accessDenied(event)
     }
 })
 

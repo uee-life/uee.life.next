@@ -1,6 +1,3 @@
-import { getParentGroup } from "./vehicleGroups"
-import { getVehicle } from "./vehicles"
-
 export const checkAssignmentPerms = async (target, user, data=null) => {
     const assignment = await getAssignment(target)
     switch (assignment.owner.type) {
@@ -64,6 +61,7 @@ export const removeAssignment = async (assignmentID, ownerID) => {
     return error
 }
 
+//TODO: Merge this query
 const getAssignmentMeta = async (assignee, assignment) => {
     const query = `
         MATCH (assignee:Citizen)-[r:ASSIGNED_TO]->(assignment)
@@ -90,6 +88,7 @@ const getAssignmentMeta = async (assignee, assignment) => {
     }
 }
 
+// This is SLOW (3s)
 export const getAssignment = async (assignmentID) => {
     const query = `
         MATCH (owner)<-[:OWNED_BY]-(assignment:Assignment)-[:ATTACHED_TO]->(target)
@@ -185,7 +184,6 @@ export const getAssignments = async (targetID, ownerID) => {
     })
     const assignments = []
     for (const res of result) {
-        console.log(res)
         assignments.push(await getAssignment(res.assignment))
     }
     return assignments

@@ -1,3 +1,5 @@
+// Authenticated
+// Authorized: [Admin:all]
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const model = await readBody(event)

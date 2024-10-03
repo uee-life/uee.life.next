@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio'
 import { isBefore, formatDistance, subMonths, subWeeks, subDays, subHours, subMinutes, subSeconds, subYears } from 'date-fns'
-import { ytFeed } from '~/server/utils/news'
 
+// public
 export default defineEventHandler(async (event) => {
     let data = {"channel": "","series":"","type":"","text":"","sort":"publish_new","page":1}
     const query = await getQuery(event)

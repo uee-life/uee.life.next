@@ -1,3 +1,5 @@
+// Authenticated
+// Authorized: Current user
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const status = await getStatus(user.handle, 'active')

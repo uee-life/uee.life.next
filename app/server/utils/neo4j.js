@@ -4,6 +4,7 @@ import {uri, user, password}  from '../config/db_config'
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password), { disableLosslessIntegers: true })
 
 export const writeQuery = async (query, params) => {
+    logActivity('NEO4J-Write', `${query.trimStart().slice(0, 50).replace(/[\r\n]+/g, '')}...`)
     const session = driver.session({ database: 'neo4j' });
     let records = []
     let error = null
@@ -31,13 +32,15 @@ export const writeQuery = async (query, params) => {
 
 // return the full record set?
 export const readQuery = async (query, params={}) => {
+    logActivity('NEO4J-Read', `${query.trimStart().slice(0, 50).replace(/[\r\n]+/g, '')}...`)
     const session = driver.session({ database: 'neo4j' });
+
     let records = [];
     let error = null;
     try {
-        const result = await session.executeRead(tx =>
-            tx.run(query, params)
-        );
+        // Moved to non-transactional reads, for performance gains.
+        const result = await session.run(query, params, { database: 'neo4j' })
+        console.info(`query performance: ${end - start}`)
 
         records = result.records;
     } catch (err) {

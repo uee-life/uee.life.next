@@ -1,14 +1,13 @@
-import { getVehicleGroup } from "~/server/utils/vehicleGroups"
-
+// Public
 export default defineEventHandler(async (event) => {
     const groupID = getRouterParam(event, 'id')
 
-
-    return apiSuccess(await getVehicleList(groupID))
+    return apiSuccess(await perfMon(getVehicleList, groupID))
 })
 
+//TODO: Optimize this (too many DB calls)
 const getVehicleList = async (id) => {
-    const group = await getVehicleGroup(id)
+    const group = await getVehicleGroup(id, false)
 
     const vehicles = []
 

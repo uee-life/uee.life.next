@@ -1,5 +1,5 @@
-import { updateHandle } from "~/server/utils/auth0"
-
+// Authenticated
+// Authorized: Current user
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const body = await readBody(event)

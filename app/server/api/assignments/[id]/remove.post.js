@@ -1,3 +1,5 @@
+// Authenticated
+// Assignment verified owner
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)

@@ -1,5 +1,7 @@
 import { checkAssignmentPerms, getAssignment } from "~/server/utils/assignments"
 
+// Authenticated
+// Authorized: verified assignment owner
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)

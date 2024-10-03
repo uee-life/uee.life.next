@@ -1,5 +1,4 @@
-import { fleetCount, shipCount } from "~/server/utils/stats"
-
+// Public
 export default defineEventHandler(async (event) => {
     const stats = {
         online: (await onlineCount()).count,
