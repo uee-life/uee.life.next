@@ -25,6 +25,13 @@ const auth = useAuthStore()
                             size="small"></citizen-org>
                     </div>     
                 </panel-section>
+                <panel-section v-if="assignment.fleet" title="Group" title-size="small">
+                    <div class="fleet">
+                        <img src="@/assets/fleet.png" />
+                        {{ assignment.fleet.name }}
+                    </div>
+                    
+                </panel-section>
             </div>
             <div class="info">
                 <template v-if="assignment.class == 'Vehicle'">
@@ -57,11 +64,24 @@ const auth = useAuthStore()
 <style scoped>
 .assignment-summary {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .owner {
     min-width: 125px;
     padding: 5px;
+}
+
+.fleet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 13px 0 5px;
+    color: #dbf3ff;
+}
+
+.fleet img {
+    width: fit-content;
 }
 
 .summary {

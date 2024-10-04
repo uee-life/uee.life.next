@@ -120,7 +120,7 @@ watch(
         display: flex;
         flex-wrap: wrap;
         opacity: 1;
-        margin: 0 -5px;
+        column-gap: 10px;
     }
     .display-style {
         cursor: pointer;
