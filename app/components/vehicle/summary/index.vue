@@ -19,6 +19,10 @@ const props = defineProps({
 
 const emit = defineEmits(['remove'])
 
+const modals = ref({
+    confirm: false
+})
+
 const vehicleImage = computed({
     get() {
         return `/images/ships/small/${props.vehicle.identifier}.jpg`
@@ -36,6 +40,11 @@ const citizenLink = computed({
         return `/citizens/${props.vehicle.owner.handle}`
     }
 })
+
+const removeVehicle = () => {
+    modals.value.confirm = false
+    emit('remove', props.vehicle)
+}
 
 function navigate() {
     if (props.assignment) {
@@ -70,7 +79,8 @@ function navigate() {
             </div>
         </div>
         <div class="mask" @click="navigate"></div>
-        <img v-if="isAdmin" title="Remove Vehicle" class="delete" @click="$emit('remove', vehicle)" src="@/assets/delete.png">
+        <img v-if="isAdmin" title="Remove Vehicle" class="delete" @click="modals.confirm = true" src="@/assets/delete.png">
+        <modal-confirm v-if="modals.confirm" @confirm="removeVehicle" @cancel="modals.confirm = false"></modal-confirm>
     </panel>
 </template>
 
