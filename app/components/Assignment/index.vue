@@ -22,7 +22,7 @@ const props = defineProps({
 })
 
 const add = async (data) => {
-    console.log('assigning crew:', data)
+    console.log('assigning citizen:', data)
     // check there's room for another assignee
     if (props.assignment.assignees.filter(e => e != null).length >= props.maxAssignees) {
         console.log(props.assignment.assignees)
@@ -54,7 +54,7 @@ const remove = async (data) => {
 </script>
 
 <template>
-    <div v-if="assignment.class == 'Vehicle'">
+    <div v-if="assignment.class == 'Vehicle' || assignment.class == 'VehicleGroup'">
         <panel :title="`${assignment.type} Assigned`" title-size="medium">
             <assignment-member-list
                 :assignees="assignment.assignees" 

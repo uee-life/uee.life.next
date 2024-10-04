@@ -142,8 +142,9 @@ export const getAssignment = async (assignmentID) => {
                 assignment.target = await getVehicle(assignment.target.id)
             }
             if (assignment.class == 'VehicleGroup') {
-                //const group = await getVehicleGroup(assignment.target.id)
-                //assignment.fleet = group.fleet
+                const group = await getVehicleGroup(assignment.target.id)
+                assignment.fleet = group.fleet
+                assignment.admins = group.admins
             }
         }
 

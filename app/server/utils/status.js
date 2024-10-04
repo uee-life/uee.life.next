@@ -35,7 +35,8 @@ export const setStatus = async (handle, status) => {
     console.log(`setting status for ${handle} - ${status}`)
     const query = `
         MATCH (c:Citizen {handle: $handle})
-        MERGE (c)-[s:HAS_STATUS]->(:Status {type: $status})
+        MERGE (status:Status {type: $status})
+        MERGE (c)-[s:HAS_STATUS]->(status)
         SET s.updated = datetime()
         `
 
