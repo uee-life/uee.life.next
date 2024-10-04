@@ -1,4 +1,5 @@
 <script setup>
+const { $viewport } = useNuxtApp()
 import { gsap } from "gsap"
 
 const props = defineProps({
@@ -10,9 +11,9 @@ const props = defineProps({
     }
 })
 
-computed({
-    componentClass() {
-        if(this.isMobile) {
+const componentClass = computed({
+    get() {
+        if($viewport.isLessThan('tablet')) {
             return 'citizen-info mobile'
         } else {
             return 'citizen-info'
@@ -28,7 +29,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div id="citizen-info" class="citizen-info">
+    <div id="citizen-info" :class="componentClass">
         <panel id="portrait">
             <citizen-portrait :citizen="citizen" />
         </panel>

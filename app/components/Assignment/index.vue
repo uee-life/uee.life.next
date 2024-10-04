@@ -18,6 +18,10 @@ const props = defineProps({
     defaultRole: {
         type: String,
         default: ''
+    },
+    showSummary: {
+        type: Boolean,
+        default: true
     }
 })
 
@@ -54,21 +58,7 @@ const remove = async (data) => {
 </script>
 
 <template>
-    <div v-if="assignment.class == 'Vehicle' || assignment.class == 'VehicleGroup'">
-        <panel :title="`${assignment.type} Assigned`" title-size="medium">
-            <assignment-member-list
-                :assignees="assignment.assignees" 
-                :max-assigned="maxAssignees"
-                :edit="owner"
-                :default-role="defaultRole"
-                @refresh="$emit('refresh')"
-                @add="add"
-                @remove="remove" />
-        </panel>
-    </div>
-    <div v-else>
-        {{ assignment }}
-    </div>
+    <assignment-summary :assignment="assignment" />
 </template>
 
 <style scoped>

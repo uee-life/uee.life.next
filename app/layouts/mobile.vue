@@ -1,14 +1,38 @@
+<script setup>
+  const auth = useAuthStore()
+  const config = useRuntimeConfig();
+</script>
+
 <template>
   <div class="app">
     <div class="main" id="page-wrap">
       <layout-navbar-mobile />
+      <layout-notifications />
+      <layout-banner-dock name="banner-full" />
       <layout-dock name="left-dock" />
       <div class="content">
+        <layout-banner-dock name="banner-content" />
         <slot />
       </div>
       <layout-dock name="right-dock" />
     </div>
     <layout-footer />
+    <client-only>
+        <teleport to="#notifications">
+            <widgets-notification
+                messageType="warning" 
+                messageText="Test Version - Data May Not Persist" 
+                :modality="false" 
+                v-if="config.public.test_env"></widgets-notification>
+            <widgets-notification 
+                messageType="info" 
+                messageText="Account not verified - Click to open settings" 
+                :modality="false" 
+                v-if="auth.isAuthenticated && !auth.user.verified"
+                @click="navigateTo('/settings')" 
+                style="cursor: pointer" />
+        </teleport>
+    </client-only>
   </div>
 </template>
 
@@ -55,7 +79,7 @@
 }
 
 .content {
-  margin: 0 10px;
+  margin: 0 5px 0 10px;
   flex-grow: 1;
   flex-basis: 300px;
 }

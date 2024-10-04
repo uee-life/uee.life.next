@@ -1,5 +1,5 @@
 <script setup>
-const {$swal, $api} = useNuxtApp()
+const {$swal, $api, $viewport} = useNuxtApp()
 
 const auth = useAuthStore()
 
@@ -136,7 +136,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         <template v-else-if="citizen.status == 'success'">
             <client-only>
                 <teleport to="#left-dock">
-                    <panel-dock :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                    <panel-dock v-if="$viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
                         <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
                     </panel-dock>
                     <panel-dock title="Navigation" class="left-nav">
@@ -148,11 +148,17 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                             <div class="left-nav-button"><a :href="link.url" target="_blank">{{linkDomain(link.url)}}</a></div>
                         </div>
                     </panel-dock>
-                    <panel-dock v-if="isOwner" title="Tools">
+                    <panel-dock v-if="isOwner && $viewport.isGreaterOrEquals('tablet')" title="Tools">
                         <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
                     </panel-dock>
                 </teleport>
                 <teleport to="#right-dock">
+                    <panel-dock v-if="isOwner && $viewport.isLessThan('tablet')" title="Tools">
+                        <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
+                    </panel-dock>
+                    <panel-dock v-if="$viewport.isLessThan('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                        <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
+                    </panel-dock>
                     <!--citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/-->
                     <!--citizen-org v-if="citizen.info.orgs && citizen.info.orgs.affiliated" v-for="org in citizen.info.orgs.affiliated" :org="org" :affiliate="true"/-->
                 </teleport>

@@ -37,6 +37,6 @@ const divClass = computed({
         margin: 10px;
     }
     .dock-item.mobile {
-        width: calc(100vw - 37px);
+        width: calc(100vw - 20px);
     }
 </style>
