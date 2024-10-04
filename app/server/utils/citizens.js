@@ -56,7 +56,6 @@ async function loadCitizen(handle) {
     }
 
     let citizen = {}
-    console.log(result)
     if(result[0]) {
         citizen = result[0].citizen
         citizen.status = parseStatus(result[0].status)
@@ -76,7 +75,7 @@ const getCitizenOrgs = async (handle) => {
     })
 
     const orgs = {
-        main: [],
+        main: {},
         affiliated: []
     }
 
@@ -94,7 +93,7 @@ const getCitizenOrgs = async (handle) => {
             }
         }
         if (res.type == 'MEMBER_OF') {
-            orgs.main.push(org)
+            orgs.main = org
         } else {
             orgs.affiliated.push(org)
         }

@@ -136,7 +136,9 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         <template v-else-if="citizen.status == 'success'">
             <client-only>
                 <teleport to="#left-dock">
-                    <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
+                    <panel-dock :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                        <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
+                    </panel-dock>
                     <panel-dock title="Navigation" class="left-nav">
                         <div class="left-nav-button"><router-link to="/citizens">Search Citizens</router-link></div>
                         <div class="left-nav-button"><a :href="dossierLink" target="_blank">Official Dossier</a></div>

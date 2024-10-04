@@ -7,6 +7,10 @@ const props = defineProps({
             return {}
         }
     },
+    assignment: {
+        type: String,
+        default: ''
+    },
     isAdmin: {
         type: Boolean,
         default: false
@@ -34,7 +38,9 @@ const citizenLink = computed({
 })
 
 function navigate() {
-    if (props.vehicle.assignments[0]) {
+    if (props.assignment) {
+        navigateTo(`/assignments/${props.assignment}`)
+    } else if (props.vehicle.assignments && props.vehicle.assignments[0]) {
         navigateTo(`/assignments/${props.vehicle.assignments[0].id}`)
     } else {
         navigateTo(`/vehicles/${props.vehicle.id}`)
@@ -84,7 +90,7 @@ function navigate() {
 
     .vehicle-summary {
         display: flex;
-        flex-basis: 400px;
+        /*flex-basis: 400px;*/
         flex-grow: 1;
         max-width: 100vh;
         border-left: 1px solid #546f84;
