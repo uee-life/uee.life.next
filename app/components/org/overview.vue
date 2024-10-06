@@ -34,37 +34,26 @@ loadFounders()
 
 <template>
     <div class="info">
-        <panel class="info-panel" title="roles" title-size="small">
-            <div class="info-items">
-                <div class="labels">
-                    <span>Primary Role:</span>
-                    <span>Secondary Role:</span>
+        <client-only>
+            <panel class="info-panel" title="roles" title-size="small">
+                <layout-info :items='{
+                    "Primary Role": org.roles.primary,
+                    "Secondary Role": org.roles.secondary
+                    }'/>
+            </panel>
+            <panel class="info-panel" title="headquarters" title-size="small">
+                <layout-info :items='{
+                    "System": "Unknown",
+                    "Planet": "Unknown",
+                    "Location": "Unknown"
+                    }'/>
+            </panel>
+            <panel class="info-panel" title="founders" title-size="small">
+                <div class="founders">
+                    <citizen-portrait class="founder" v-for="f in founders" :key="f.handle" :citizen="f" size="small" :showName="true" />
                 </div>
-                <div class="data">
-                    <span>{{ org.roles.primary }}</span>
-                    <span>{{ org.roles.secondary }}</span>
-                </div>
-            </div>
-        </panel>
-        <panel class="info-panel" title="headquarters" title-size="small">
-            <div class="info-items">
-                <div class="labels">
-                    <span>System:</span>
-                    <span>Planet:</span>
-                    <span>Location:</span>
-                </div>
-                <div class="data">
-                    <span>Unknown</span>
-                    <span>Unknown</span>
-                    <span>Unknown</span>
-                </div>
-            </div>
-        </panel>
-        <panel class="info-panel" title="founders" title-size="small">
-            <div class="founders">
-                <citizen-portrait class="founder" v-for="f in founders" :key="f.handle" :citizen="f" size="small" :showName="true" />
-            </div>
-        </panel>
+            </panel>
+        </client-only>
     </div>
 </template>
 
@@ -85,35 +74,6 @@ loadFounders()
     margin-left: 10px;
     margin-right: 10px;
     flex-grow: 1;
-}
-
-ul.info-items {
-    padding-left: 0;
-    margin: 0 20px 0 20px;
-}
-
-.info-items {
-    display: flex;
-    font-size: 14px;
-    text-transform: uppercase;
-}
-
-.info-items .labels {
-    display: flex;
-    flex-direction: column;
-}
-.info-items .data {
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-    color: #dbf3ff;
-}
-
-.info .line-item {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding-left: 0px;
 }
 
 .founders {
