@@ -34,20 +34,12 @@ onMounted(() => {
             <citizen-portrait :citizen="citizen" />
         </panel>
         <div class="info">
-            <div class="citizen-data">
-                <div class="labels">
-                    <span>UEE Record: </span>
-                    <span>Name: </span>
-                    <span>Handle: </span>
-                    <span>Enlisted: </span>
-                </div>
-                <div class="data">
-                    <span>{{ citizen.id }}</span>
-                    <span>{{ citizen.name }}</span>
-                    <span>{{ citizen.handle }}</span>
-                    <span>{{ citizen.enlisted }}</span>
-                </div>
-            </div>
+            <layout-info :items='{
+                    "UEE Record": citizen.record,
+                    "Name": citizen.name,
+                    "Handle": citizen.handle,
+                    "Enlisted": citizen.enlisted
+                    }'/>
         </div>
   </div>
 </template>
@@ -58,7 +50,7 @@ onMounted(() => {
         flex-wrap: wrap;
         width: 100%;
         height: fit-content;
-        margin-top: 20px;
+        margin-top: 10px;
     }
 
     .citizen-info.mobile {
@@ -69,30 +61,9 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         flex-basis: 250px;
-        flex-grow: 1;
         max-width: 350px;
         margin-left: 20px;
         margin-bottom: 20px;
         opacity: 0;
-    }
-
-    .citizen-data {
-        display: flex;
-    }
-
-    .citizen-data .labels {
-        display: flex;
-        flex-direction: column;
-        font-family: 'Michroma';
-        font-size: 12px;
-        text-transform: uppercase;
-    }
-    .citizen-data .data {
-        display: flex;
-        flex-direction: column;
-        font-size: 14px;
-        line-height: 19px;
-        margin-left: 10px;
-        color: #dbf3ff;
     }
 </style>
