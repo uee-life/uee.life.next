@@ -1,6 +1,13 @@
 <script setup>
+const { $api } = useNuxtApp()
 const result = ref('')
 
+const testCreateAccount = async () => {
+    const result = await $api(`/api/admin/user/create`, {
+        method: 'POST',
+        body: {}
+    })
+}
 </script>
 
 <template>
@@ -19,7 +26,7 @@ const result = ref('')
                     </div>
                 </panel-dock>
                 <panel-dock class="actions" title="Global Actions">
-                    
+                    <button @click="testCreateAccount">Test Account Creation</button>
                 </panel-dock>
             </teleport>
         </client-only>

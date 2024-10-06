@@ -26,7 +26,7 @@ const getToken = defineCachedFunction(async () => {
     return token
 }, {
     maxAge: 60 * 60 * 23,
-    name: 'auth0Token',
+    name: 'auth0Token2',
     getKey: () => { return 'token'}
 })
 
@@ -126,10 +126,8 @@ export const verifyUser = async (userId, handle) => {
 }
 
 export const updateHandle = async (userId, handle) => {
-    console.debug("updating: ", handle)
     const account = await getAccount(userId)
     // delete old citizen record, plus anything directly linked to it, if a verified account existed.
-    console.debug(account)
     if (account.app_metadata.handle_verified) {
         await removeCitizen(account.app_metadata.handle)
     }
@@ -201,6 +199,51 @@ export const updateAppMetadata = async (userID, metadata) => {
         body: body
     })
     return result
+}
+
+export const createAccount = async (username, email, handle) => {
+    const token = await getToken()
+    console.info(token)
+    const data = {
+        email: email,
+        //"phone_number": "string",
+        user_metadata: {
+            handle: handle
+        },
+        //blocked: false,
+        email_verified: false,
+        //"phone_verified": false,
+        /*app_metadata: {
+            handle: handle,
+            handle_verified: false
+        },*/
+        //"given_name": "string",
+        //"family_name": "string",
+        //"name": "string",
+        //"nickname": "username",
+        //"picture": "string",
+        //"user_id": "string",
+        connection: "Username-Password-Authentication",
+        password: (Math.random() + 1).toString(36).substring(2) + '!',
+        verify_email: false,
+        username: username
+    }
+    console.log(data)
+
+    const result = await $fetch(`https://ueelife.auth0.com/api/v2/users`, {
+        method: 'post',
+        headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: data,
+        onResponse({ response }) {
+            console.info(response._data)
+        }
+    })
+    console.log('result: ', result)
+    
 }
 
 export class ManagementClient {
