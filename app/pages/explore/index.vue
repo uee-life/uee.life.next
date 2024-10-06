@@ -6,17 +6,49 @@
                 <panel-dock title="nav">
                     <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
                 </panel-dock>
+                <panel-dock title="find location" class="search-box">
+                    <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Location Name"/>
+                </panel-dock>
             </teleport>
         </client-only>
-        <explore-location-summary v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
+        <explore-location-summary v-if="result" v-for="sys in result.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
             <div><span class="data">{{ systemType(sys) }}</span></div>
-            <img class="icon" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
+            <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
         </explore-location-summary>
+        <explore-location-summary v-else v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}"></explore-location-summary>
     </div>
 </template>
   
 <script setup>
+const {$api} = useNuxtApp()
 const {data: systems, status} = useAPI(`/api/explore/systems`)
+
+const result = ref(null)
+const input = ref("")
+
+
+async function autoGetResults() {
+    if(input.value.length >= 3) {
+//        pending.value = true
+        getResults()
+    } else {
+        result.value = null
+    }
+}
+
+async function getResults() {
+    const data = {
+        search: input.value
+    }
+    result.value = await $api(`/api/search/location`, {
+        method: 'POST',
+        body: data,
+        onResponse(_ctx) {
+//            pending.value = false
+        }
+    })
+    console.log(result)
+}
 
 function systemImage(img) {
     if(img) {
@@ -27,11 +59,13 @@ function systemImage(img) {
 }
 
 function systemType(sys) {
-  if(sys.type == "BINARY") {
-    return "Binary Star System"
-  } else {
-    return "Star System"
-  }
+    if(sys.type == "BINARY") {
+        return "Binary Star System"
+    } else if (sys.type == "SYSTEM") {
+        return "Star System"
+    } else {
+      return sys.type
+    }
 }
 </script>
 
