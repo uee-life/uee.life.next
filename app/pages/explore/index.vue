@@ -15,7 +15,9 @@
             <div><span class="data">{{ systemType(sys) }}</span></div>
             <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
         </explore-location-summary>
-        <explore-location-summary v-else v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}"></explore-location-summary>
+        <explore-location-summary v-else v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
+            <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
+        </explore-location-summary>
     </div>
 </template>
   
