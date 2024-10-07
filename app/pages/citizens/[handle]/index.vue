@@ -122,6 +122,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         lazy: true,
         async onResponse({ response }) {
             const data = response._data
+            console.log(data)
             if(data.website) {
                 links.value.push({text: 'Website', url: data.website})
             }
@@ -136,7 +137,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         <template v-else-if="citizen.status == 'success'">
             <client-only>
                 <teleport to="#left-dock">
-                    <panel-dock v-if="$viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                    <panel-dock v-if="citizen.data.orgs.main && $viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
                         <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
                     </panel-dock>
                     <panel-dock title="Navigation" class="left-nav">
@@ -156,7 +157,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                     <panel-dock v-if="isOwner && $viewport.isLessThan('tablet')" title="Tools">
                         <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
                     </panel-dock>
-                    <panel-dock v-if="$viewport.isLessThan('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                    <panel-dock v-if="citizen.data.orgs.main && $viewport.isLessThan('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
                         <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
                     </panel-dock>
                     <!--citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/-->
