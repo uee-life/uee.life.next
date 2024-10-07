@@ -122,7 +122,6 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         lazy: true,
         async onResponse({ response }) {
             const data = response._data
-            console.log(data)
             if(data.website) {
                 links.value.push({text: 'Website', url: data.website})
             }
@@ -135,6 +134,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
     <div class='citizen'>
         <widgets-loading v-if="status != 'success'" />
         <template v-else-if="citizen.status == 'success'">
+            {{  citizen }}
             <client-only>
                 <teleport to="#left-dock">
                     <panel-dock v-if="citizen.data.orgs.main && $viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
