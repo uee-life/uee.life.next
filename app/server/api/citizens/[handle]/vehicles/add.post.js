@@ -18,7 +18,8 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const addVehicle = async (vehicle, handle) => {
     const query = 
-        `MATCH (c:Citizen {handle: $handle})
+        `MATCH (c:Citizen)
+         WHERE c.id =~ $handle
          MATCH (m:VehicleModel {identifier: $id})
          MERGE (m)<-[:INSTANCE_OF]-(s:Vehicle {
             id: left(randomUUID(), 8),
@@ -29,7 +30,7 @@ const addVehicle = async (vehicle, handle) => {
             m as model`
 
     const params = {
-        handle: handle,
+        handle: '(?i)'+handle,
         id: vehicle.id,
         name: vehicle.name
     }

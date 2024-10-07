@@ -74,8 +74,8 @@ const getAssignmentMeta = async (assignee, assignment) => {
             r.assigned as assigned
     `
     const { result } = await readQuery(query, {
-        assignee: assignee,
-        assignment: assignment
+        assignee: '(?i)'+assignee,
+        assignment: '(?i)'+assignment
     })
 
     if (result[0]) {
