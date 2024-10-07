@@ -10,12 +10,13 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const getCitizenAssignments = async (handle) => {
     const query = `
-        MATCH (Citizen {handle: $handle})-[:ASSIGNED_TO]->(a:Assignment)
+        MATCH (c:Citizen)-[:ASSIGNED_TO]->(a:Assignment)
+        WHERE c.id =~ $handle
         return a as assignment
     `
 
     const { result } = await readQuery(query, {
-        handle: handle
+        handle: '(?i)' + handle
     })
 
     const assignments = []
