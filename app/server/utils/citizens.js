@@ -70,7 +70,7 @@ const getCitizenOrgs = async (handle) => {
         return o as org, m as membership, type(m) as type
     `
     const { result, error } = await readQuery(query, {
-        handle: handle
+        handle: '(?i)'+handle
     })
 
     const orgs = {
@@ -145,7 +145,8 @@ async function createCitizen(citizen) {
 
 export const updateCitizen = async (citizen) => {
     const query = 
-        `MATCH (c:Citizen {id: $handle})
+        `MATCH (c:Citizen)
+         WHERE c.id =~ $handle
          SET c += {
             name: $name,
             verified: $verified,
@@ -155,7 +156,7 @@ export const updateCitizen = async (citizen) => {
          return c`
     
     const params = {
-        handle: citizen.handle,
+        handle: '(?i)'+citizen.handle,
         name: citizen.name,
         verified: citizen.verified,
         bio: citizen.bio,

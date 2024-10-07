@@ -108,7 +108,8 @@ export const addCommander = async (citizen, groupID) => {
     // add new commander
     const addQuery = `
         MATCH (g:VehicleGroup {id: $id})
-        MATCH (c:Citizen {handle: $handle})
+        MATCH (c:Citizen)
+        WHERE c.id =~ $handle
         WITH c, g
         MERGE (c)-[:ASSIGNED_TO {role: 'Commander', assigned: datetime()}]->(a:Assignment)-[:ATTACHED_TO]->(g)
         SET a = {
@@ -125,7 +126,7 @@ export const addCommander = async (citizen, groupID) => {
 
     const { error } = await writeQuery(addQuery, {
         id: groupID,
-        handle: citizen.handle
+        handle: '(?i)'+citizen.handle
     })
     if (error) {
         return null

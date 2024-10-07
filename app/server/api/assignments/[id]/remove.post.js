@@ -25,7 +25,7 @@ const removeCitizen = async (data, target) => {
     `
 
     const { error } = await writeQuery(query, {
-        handle: data.handle,
+        handle: '(?i)'+data.handle,
         target: target
     })
 

@@ -7,11 +7,12 @@ export const getStatus = async (handle) => {
     // load status from the graph
     // TODO: Do some kind of group by here to pull all status types mapped to the given citizen
     const query = `
-        MATCH (c:Citizen {handle: $handle})
+        MATCH (c:Citizen)
+        WHERE c.id =~ $handle
         MATCH (c)-[s:HAS_STATUS]->(:Status {type: $status})
         RETURN s.updated as updated`
 
-    const { result } = await readQuery(query, { handle: handle, status: 'active' })
+    const { result } = await readQuery(query, { handle: '(?i)'+handle, status: 'active' })
 
     if (result[0]) {
         const status = parseStatus(result[0].updated)
@@ -34,13 +35,14 @@ export const setStatus = async (handle, status) => {
 
     console.log(`setting status for ${handle} - ${status}`)
     const query = `
-        MATCH (c:Citizen {handle: $handle})
+        MATCH (c:Citizen)
+        WHERE c.id =~ $handle
         MERGE (status:Status {type: $status})
         MERGE (c)-[s:HAS_STATUS]->(status)
         SET s.updated = datetime()
         `
 
-    const { error } = await writeQuery(query, { handle: handle, status: status })
+    const { error } = await writeQuery(query, { handle: '(?i)'+handle, status: status })
     if ( error ) {
         return error
     }
