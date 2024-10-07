@@ -13,11 +13,11 @@ export default defineEventHandler(async (event) => {
 
 const onlineCount = async () => {
     const query = 
-        `MATCH (c:Citizen)-[r:HAS_STATUS]->(s:Status)
+        `MATCH (c:Citizen)-[r:HAS_STATUS]->(s:Status {type: 'active'})
             WHERE r.updated > datetime() - duration('PT30M')
             RETURN count(c) as count`
     const { result } = await readQuery(query)
-    return result
+    return result[0]
 }
 
 /*

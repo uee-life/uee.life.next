@@ -5,11 +5,12 @@ export default defineEventHandler(async (event) => {
 
 const onlineUsers = async () => {
     const query = 
-        `MATCH (c:Citizen)-[r:HAS_STATUS]->(s:Status)
+        `MATCH (c:Citizen)-[r:HAS_STATUS]->(s:Status {type: 'active'})
             WHERE r.updated > datetime() - duration('PT30M')
-            RETURN c as online`
+            RETURN count(c) as count, c as online`
     const { result } = await readQuery(query)
     const online = []
+
     for (const res of result) {
         online.push(await getCitizen(res.online.handle))
     }

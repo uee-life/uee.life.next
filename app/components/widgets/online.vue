@@ -2,6 +2,7 @@
 import { isAfter, formatDistance } from 'date-fns'
 
 const online = ref([])
+const count = ref(0)
 
 const last_seen = (last) => {
     const seen = formatDistance(new Date(last), new Date())
