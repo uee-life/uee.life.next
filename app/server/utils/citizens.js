@@ -12,7 +12,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
         citizen = await rsi.fetchCitizen(handle)
         console.log('got citizen:', citizen)
         // added a check for random citizens without a record number. Not sure why they exist.
-        if (citizen && citizen.id.startsWith("#") && create) {
+        if (citizen && citizen.record.startsWith("#") && create) {
             if(user && user.verified == 1) {
                 citizen.verified = true
             } else {
@@ -43,7 +43,7 @@ async function loadCitizen(handle) {
     console.log('loading citizen: ' + handle)
     const query = 
         `MATCH (c:Citizen)-[s:HAS_STATUS]->(:Status {type: 'active'})
-         WHERE c.handle =~ $handle
+         WHERE c.id =~ $handle
          return c as citizen, s.updated as status`
     const params = {
         handle: '(?i)' + handle
@@ -67,7 +67,7 @@ async function loadCitizen(handle) {
 const getCitizenOrgs = async (handle) => {
     const query = `
         MATCH (o:Organization)<-[m:MEMBER_OF]-(c:Citizen)
-        WHERE c.handle =~ $handle
+        WHERE c.id =~ $handle
         return o as org, m as membership, type(m) as type
     `
     const { result, error } = await readQuery(query, {
@@ -109,20 +109,24 @@ async function createCitizen(citizen) {
             handle: $handle,
             id: $id,
             name: $name,
+            record: $record,
             enlisted: $enlisted,
             verified: $verified,
             portrait: $portrait,
-            bio: $bio
+            bio: $bio,
+            website: $website
         })`
 
     const params = {
         handle: citizen.handle,
-        id: citizen.id,
+        id: citizen.handle,
         name: citizen.name,
+        record: citizen.record,
         enlisted: citizen.enlisted,
         verified: citizen.verified,
         portrait: citizen.portrait,
-        bio: citizen.bio
+        bio: citizen.bio,
+        website: citizen.website
     }
     await writeQuery(query, params)
 
@@ -142,11 +146,12 @@ async function createCitizen(citizen) {
 
 export const updateCitizen = async (citizen) => {
     const query = 
-        `MATCH (c:Citizen {handle: $handle})
+        `MATCH (c:Citizen {id: $handle})
          SET c += {
             name: $name,
             verified: $verified,
-            bio: $bio
+            bio: $bio,
+            website: $website
          }
          return c`
     
@@ -154,7 +159,8 @@ export const updateCitizen = async (citizen) => {
         handle: citizen.handle,
         name: citizen.name,
         verified: citizen.verified,
-        bio: citizen.bio
+        bio: citizen.bio,
+        website: citizen.website
     }
 
     await writeQuery(query, params)
@@ -166,7 +172,7 @@ export const removeCitizen = async (handle) => {
     // remove citizen plus child nodes, if they exist.
     const query =
         `MATCH (c:Citizen)<--{0,1}(a)
-         WHERE c.handle =~ $handle
+         WHERE c.id =~ $handle
          DETACH DELETE c,a`
 
     const params = {
@@ -179,7 +185,7 @@ export const removeCitizen = async (handle) => {
 export const isVerified = async (handle) => {
     const query = 
         `MATCH (c:Citizen)
-         WHERE c.handle =~ $handle
+         WHERE c.id =~ $handle
          RETURN c as citizen`
 
          const params = {
