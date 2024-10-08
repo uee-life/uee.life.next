@@ -89,8 +89,8 @@
             <label for="cargo">Cargo:</label>
             <input type="number" v-model="vehicleModel.cargo" id="cargo">
         </span>
-        <label for="description">Description</label>
-        <textarea v-model="vehicleModel.description" id="description" rows="10"></textarea>
+        <label for="description">Description</label><br>
+        <textarea v-model="vehicleModel.description" id="description" rows="10"></textarea><br>
         <input type="submit" value="OK" />
     </form>
 </template>
