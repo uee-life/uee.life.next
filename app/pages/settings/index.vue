@@ -29,7 +29,7 @@ const { data: account, status, refresh } = useAPI(`/api/user/account`)
             <panel class="settings-panel" title="Settings" title-size="small">More coming soon...</panel>
         </template>
         <div v-if="debug" class="debug">
-            <pre>{{ JSON.stringify(account, null, 2) }}</pre>
+            <!--- <pre>{{ JSON.stringify(account, null, 2) }}</pre> -->
         </div>
     </div>
 </template>
