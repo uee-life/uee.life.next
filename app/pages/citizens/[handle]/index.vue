@@ -121,7 +121,8 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         server: false,
         lazy: true,
         async onResponse({ response }) {
-            const data = response._data
+            const data = response._data.data
+            console.log(data)
             if(data.website) {
                 links.value.push({text: 'Website', url: data.website})
             }
