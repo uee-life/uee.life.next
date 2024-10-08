@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     }
     
     let news = await rsiNews(data)
-    console.log(news)
+
     const earliest = news[news.length - 1].posted_date
 
     if (data.series === 'news-update') {
