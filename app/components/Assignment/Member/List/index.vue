@@ -78,7 +78,7 @@ const updateMember = async (member, role) => {
                 <citizen-portrait :citizen="c.citizen" size="small" :showName="true">
                     <div class="mask"  @click="showAssignee(c)"></div>
                     <img v-if="edit" @click="showAssignee(c)" class="edit" src="@/assets/edit.png">
-                    <img v-else-if="isSelf(c.citizen.handle)" @click="removeCrew(c.citizen)" class="edit" src="@/assets/delete.png">
+                    <img v-else-if="isSelf(c.citizen.handle)" @click="removeMember(c.citizen)" class="edit" src="@/assets/delete.png">
                 </citizen-portrait>
             </div>
             <div v-else class="unassigned">

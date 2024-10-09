@@ -47,7 +47,7 @@ const removeCitizen = (data) => {
                 <template v-if="assignment.class == 'Vehicle'">
                     <vehicle-summary :vehicle="assignment.target" :assignment="assignment.id"></vehicle-summary>
                     <panel-section class="assignees" title="Assignees" title-size="small">
-                        <assignment-member-list 
+                        <assignment-member-list-small 
                             :assignees="assignment.assignees"
                             :max-assigned="assignment.target.max_crew"
                             @remove="removeCitizen"/>
@@ -62,7 +62,7 @@ const removeCitizen = (data) => {
                     </panel-section>
                     
                     <panel-section class="assignees" title="Assignees" title-size="small">
-                        <assignment-member-list 
+                        <assignment-member-list-small 
                             :assignees="assignment.assignees"
                             :max-assigned="assignment.target.max_crew"
                             @remove="removeCitizen"/>
