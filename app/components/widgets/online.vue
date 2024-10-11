@@ -1,7 +1,12 @@
 <script setup>
 import { isAfter, formatDistance } from 'date-fns'
 
-const online = ref([])
+const online = ref({
+    org: {
+        name: '',
+        citizens: []
+    }
+})
 const count = ref(0)
 
 const last_seen = (last) => {
@@ -28,7 +33,9 @@ onBeforeUnmount(() => {
 
 const { data, status, refresh } = useAPI(`/api/online`, {
     onResponse({ response }) {
-        online.value = sortItems(response._data.data)
+        console.log(response._data.data.org)
+        online.value.org.name = response._data.data.org.name.name
+        online.value.org.citizens = sortItems(response._data.data.org.citizens)
     }
 })
 
@@ -36,7 +43,8 @@ const { data, status, refresh } = useAPI(`/api/online`, {
 
 <template>
     <div class="online-list">
-        <div class="online-item" v-for="citizen of online" @click="navigateTo(`/citizens/${citizen.handle}`)">
+        <div class="collapsible">- {{ online.org.name }} ----</div>
+        <div class="online-item" v-for="citizen of online.org.citizens" @click="navigateTo(`/citizens/${citizen.handle}`)">
             <span><citizen-portrait :citizen="citizen" shape="round" size="tiny"/></span>
             <span><div class="name">{{ citizen.name }}</div><div class="seen">{{ last_seen(citizen.status.last) }}</div></span>
         </div>
@@ -48,6 +56,8 @@ const { data, status, refresh } = useAPI(`/api/online`, {
     display: flex;
     flex-direction: column;
     cursor: pointer;
+    max-height: 350px;
+    overflow: scroll;
 }
 
 .online-item {
