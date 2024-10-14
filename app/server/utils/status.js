@@ -55,20 +55,25 @@ export const parseStatus = (updated) => {
         active: 'offline',
         last: ''
     }
-    const last = new Date(updated)
-    status.last = last
-    const now = new Date()
-    const elapsed = now - last
+    if (updated) {
+        const last = new Date(updated)
+        status.last = last
+        const now = new Date()
+        const elapsed = now - last
 
-    if (elapsed > 1800000) {
-        // if the status is older than 30 minutes, set the status to offline
-        status.active = 'offline'
-        // TODO: Should we delete the status relationship here? 
-    } else if (elapsed > 300000) {
-        // if the status is older than 5 minutes, but less than 30 minutes, mark the status as "idle"
-        status.active = 'idle'
+        if (elapsed > 1800000) {
+            // if the status is older than 30 minutes, set the status to offline
+            status.active = 'offline'
+            // TODO: Should we delete the status relationship here? 
+        } else if (elapsed > 300000) {
+            // if the status is older than 5 minutes, but less than 30 minutes, mark the status as "idle"
+            status.active = 'idle'
+        } else {
+            status.active = 'online'
+        }
+        return status
     } else {
-        status.active = 'online'
+        return status
     }
-    return status
+    
 }

@@ -1,16 +1,17 @@
 <script setup>
 import { isAfter, formatDistance } from 'date-fns'
-
-const online = ref({
+const props = defineProps({
     org: {
-        name: '',
-        citizens: []
+        type: Object,
+        required: true
     }
 })
+
+const online = ref([])
 const count = ref(0)
 
 const last_seen = (last) => {
-    if (last) {
+    if (last && last.split('-')[0] != '1979') {
         const seen = formatDistance(new Date(last), new Date())
         if (seen.startsWith('less')) {
             return `Online`
@@ -36,11 +37,10 @@ onBeforeUnmount(() => {
     clearInterval(update)
 })
 
-const { data, status, refresh } = useAPI(`/api/online`, {
+const { data, status, refresh } = useAPI(`/api/orgs/${props.org.id}/online`, {
     onResponse({ response }) {
-        console.log(response._data.data.org)
-        online.value.org.name = response._data.data.org.name.name
-        online.value.org.citizens = sortItems(response._data.data.org.citizens)
+        console.log(response._data.data)
+        online.value = sortItems(response._data.data)
     }
 })
 
@@ -48,14 +48,7 @@ const { data, status, refresh } = useAPI(`/api/online`, {
 
 <template>
     <div class="online-list">
-        <div class="collapsible">- Friends ---------------</div>
-        <div class="online-item" v-if="online.friends" v-for="citizen of online.friends" @click="navigateTo(`/citizens/${citizen.handle}`)">
-            <span><citizen-portrait :citizen="citizen" shape="round" size="tiny"/></span>
-            <span><div class="name">{{  citizen.name  }}</div><div class="seen">{{  last_seen(citizen.status.last) }}</div></span>
-        </div>
-        <div class="online-item"><i>No friends online</i></div>
-        <div class="collapsible">- {{ online.org.name }} ----</div>
-        <div class="online-item" v-for="citizen of online.org.citizens" @click="navigateTo(`/citizens/${citizen.handle}`)">
+        <div class="online-item" v-for="citizen of online" @click="navigateTo(`/citizens/${citizen.handle}`)">
             <span><citizen-portrait :citizen="citizen" shape="round" size="tiny"/></span>
             <span><div class="name">{{ citizen.name }}</div><div class="seen">{{ last_seen(citizen.status.last) }}</div></span>
         </div>
