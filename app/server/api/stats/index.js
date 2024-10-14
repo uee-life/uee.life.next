@@ -2,9 +2,9 @@
 export default defineEventHandler(async (event) => {
     const stats = {
         online: (await onlineCount()).count,
-        verified: (await verifiedCount()).count,
-        ships: (await shipCount()).count,
-        fleets: (await fleetCount()).count
+        //verified: (await verifiedCount()).count,
+        //ships: (await shipCount()).count,
+        //fleets: (await fleetCount()).count
         //latest: await latestUser()
     }
     return apiSuccess(stats)
@@ -17,6 +17,7 @@ const onlineCount = async () => {
             WHERE r.updated > datetime() - duration('PT30M')
             RETURN count(c) as count`
     const { result } = await readQuery(query)
+    console.log(result)
     return result[0]
 }
 

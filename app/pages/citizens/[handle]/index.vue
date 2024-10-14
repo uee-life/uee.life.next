@@ -116,6 +116,17 @@ async function getVehicles() {
     })
 }
 
+const requestFriend = async () => {
+    console.log('sending friend request to', route.params.handle)
+    await $api(`/api/friends/request`, {
+        key: 'requestFriend',
+        method: 'POST',
+        body: {
+            friend: route.params.handle
+        }
+    })
+}
+
 const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
@@ -151,6 +162,16 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                     </panel-dock>
                     <panel-dock v-if="isOwner && $viewport.isGreaterOrEquals('tablet')" title="Tools">
                         <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
+                    </panel-dock>
+                    <panel-dock v-if="isOwner" title="Friends" >
+                        <widgets-friends/>
+                    </panel-dock>
+                    
+                    <panel-dock v-if="auth.isAuthenticated && !isOwner">
+                        <div v-if="citizen.data.friendship == null" class="left-nav-button" @click="requestFriend">Send friend request</div>
+                        <div v-else-if="citizen.data.friendship == 'confirmed'" class="left-nav-button">You are friends!</div>
+                        <div v-else-if="citizen.data.friendship == 'requested'" class="left-nav-button">Request Sent!</div>
+                        <div v-else-if="citizen.data.friendship == 'received'" class="left-nav-button">Incoming Request!</div>
                     </panel-dock>
                 </teleport>
                 <teleport to="#right-dock">

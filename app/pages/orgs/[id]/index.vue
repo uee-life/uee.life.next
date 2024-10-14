@@ -51,6 +51,13 @@ const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
             <img src="@/assets/loading.gif" >
         </div>
         <template v-else-if="org.data">
+            <client-only>
+                <teleport to="#left-dock">
+                    <panel-dock title="Online Members" >
+                        <org-online :org="org.data"/>
+                    </panel-dock>
+                </teleport>
+            </client-only>
             <layout-banner 
                 :name="org.data.name"
                 :tag="org.data.id"

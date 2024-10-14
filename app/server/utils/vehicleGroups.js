@@ -9,7 +9,7 @@ export const getVehicleGroup = async (identifier, subgroups=true) => {
                     MATCH (sg:VehicleGroup)-[:PART_OF]->(g)
                     return sg.id
                 } as groups`
-    const { result } = await readQuery(query, {id: identifier})
+    const { result } = await readQuery(query, {id: identifier.toUpperCase()})
 
     if (result[0]) {
         const group = {
@@ -113,7 +113,7 @@ export const addCommander = async (citizen, groupID) => {
         WITH c, g
         MERGE (c)-[:ASSIGNED_TO {role: 'Commander', assigned: datetime()}]->(a:Assignment)-[:ATTACHED_TO]->(g)
         SET a = {
-            id: left(randomUUID(), 8),
+            id: toUpper(left(randomUUID(), 8)),
             type: 'Leader',
             desription: 'Group Leadership',
             max_assigned: 1
