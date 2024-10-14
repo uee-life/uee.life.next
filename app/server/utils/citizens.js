@@ -8,31 +8,36 @@ export const getCitizen = async (handle, create = false, user = null) => {
     let citizen = await loadCitizen(handle, user)
 
     // if citizen isn't created yet, fetch the data from rsi and create it
-    if(Object.keys(citizen).length === 0) {
+    if(citizen && Object.keys(citizen).length === 0) {
         citizen = await rsi.fetchCitizen(handle)
         // added a check for random citizens without a record number. Not sure why they exist.
         if (citizen && citizen.record.startsWith("#") && create) {
-            if(user && user.verified == 1 && user.handle == citizen.handle) {
+            if(user && user.verified == 1 && user.handle.toUpperCase() == citizen.handle.toUpperCase()) {
                 citizen.verified = true
             } else {
                 citizen.verified = false
             }
-            logActivity('NEO4J', `Creating Citizen: ${citizen.handle}`, user ? user.handle : 'Anonymous')
+            logActivity('API', `Creating Citizen: ${citizen.handle}`, user ? user.handle : 'Anonymous')
             await createCitizen(citizen)
         }
     } else {
         //TODO: Transition this to using the graph, rather than polling RSI every time.
         citizen.orgs = await getCitizenOrgs(handle)
-        // check and update verification
-        if (user && user.verified == 1 && citizen.verified == false) {
-            citizen.verified = true
-            logActivity('NEO4J', `Updating Citizen: ${citizen.handle}`, user.handle)
-            updateCitizen(citizen)
-        } else if (user && user.verified == 0 && citizen.verified == true) {
-            citizen.verified = false
-            logActivity('NEO4J', `Updating Citizen: ${citizen.handle}`, user.handle)
-            updateCitizen(citizen)
+        // check and update verification, but only if this is our own citizen record
+        if (user && user.handle.toUpperCase() == citizen.handle.toUpperCase()) {
+            console.log('checking/fixing verification status', user)
+            console.log(citizen.verified)
+            if (user && user.verified == 1 && citizen.verified == false) {
+                citizen.verified = true
+                logActivity('API-ACTION', `Updating Citizen: ${citizen.handle}`, user.handle)
+                updateCitizen(citizen)
+            } else if (user && user.verified == 0 && citizen.verified == true) {
+                citizen.verified = false
+                logActivity('API-ACTION', `Updating Citizen: ${citizen.handle}`, user.handle)
+                updateCitizen(citizen)
+            }
         }
+        
     }
 
     return citizen
@@ -74,7 +79,6 @@ async function loadCitizen(handle, user) {
 
     let citizen = {}
     if(result[0]) {
-        console.log('foo', result[0])
         citizen = result[0].citizen
         citizen.status = parseStatus(result[0].status)
         if (result[0].sent != null) {
@@ -84,7 +88,7 @@ async function loadCitizen(handle, user) {
                 citizen.friendship = 'requested'
             }
         } else if (result[0].received != null) {
-            if (result[0].sent) {
+            if (result[0].received) {
                 citizen.friendship = 'confirmed'
             } else {
                 citizen.friendship = 'received'
@@ -158,7 +162,7 @@ async function createCitizen(citizen) {
         verified: citizen.verified,
         portrait: citizen.portrait,
         bio: citizen.bio,
-        website: citizen.website
+        website: citizen.website ?? ''
     }
     await writeQuery(query, params)
 
@@ -177,6 +181,8 @@ async function createCitizen(citizen) {
 }
 
 export const updateCitizen = async (citizen) => {
+    console.log('UPDATING citizen')
+    console.log(citizen)
     const query = 
         `MATCH (c:Citizen)
          WHERE c.id =~ $handle
@@ -193,10 +199,16 @@ export const updateCitizen = async (citizen) => {
         name: citizen.name,
         verified: citizen.verified,
         bio: citizen.bio,
-        website: citizen.website
+        website: citizen.website ?? ''
     }
 
-    await writeQuery(query, params)
+    console.log('params')
+    console.log(params)
+
+    const { error } = await writeQuery(query, params)
+    if (error) {
+        console.error(error)
+    }
 }
 
 export const removeCitizen = async (handle) => {

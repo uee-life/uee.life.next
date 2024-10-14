@@ -59,6 +59,7 @@ const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
                 </teleport>
             </client-only>
             <layout-banner 
+                display="full"
                 :name="org.data.name"
                 :tag="org.data.id"
                 :type="org.data.model.toUpperCase()"

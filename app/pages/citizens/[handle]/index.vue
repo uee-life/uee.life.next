@@ -11,7 +11,8 @@ const vehicles = ref([])
 const links = ref([])
 
 const modals = ref({
-    vehicle: false
+    vehicle: false,
+    friend_confirm: false
 })
 
 const isOwner = computed({
@@ -127,6 +128,20 @@ const requestFriend = async () => {
     })
 }
 
+const confirmFriend = async () => {
+    modals.value.friend_confirm = false
+    await $api(`/api/friends/confirm`, {
+        method: 'POST',
+        body: {
+            friend: route.params.handle
+        }
+    })
+}
+
+const cancelFriend = async () => {
+    modals.value.friend_confirm = false
+}
+
 const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
@@ -167,11 +182,11 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                         <widgets-friends/>
                     </panel-dock>
                     
-                    <panel-dock v-if="auth.isAuthenticated && !isOwner">
-                        <div v-if="citizen.data.friendship == null" class="left-nav-button" @click="requestFriend">Send friend request</div>
-                        <div v-else-if="citizen.data.friendship == 'confirmed'" class="left-nav-button">You are friends!</div>
-                        <div v-else-if="citizen.data.friendship == 'requested'" class="left-nav-button">Request Sent!</div>
-                        <div v-else-if="citizen.data.friendship == 'received'" class="left-nav-button">Incoming Request!</div>
+                    <panel-dock v-if="auth.isAuthenticated && !isOwner" title="Add Friend">
+                        <div v-if="citizen.data.friendship == null" class="add-friend interact" @click="requestFriend">Send friend request</div>
+                        <div v-else-if="citizen.data.friendship == 'confirmed'" class="add-friend">You are friends!</div>
+                        <div v-else-if="citizen.data.friendship == 'requested'" class="add-friend">Request Sent!</div>
+                        <div v-else-if="citizen.data.friendship == 'received'" class="add-friend interact" @click="modals.friend_confirm = true">Accept Request</div>
                     </panel-dock>
                 </teleport>
                 <teleport to="#right-dock">
@@ -216,6 +231,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
             <layout-modal v-if="modals.vehicle" title="Add Vehicle" @close="modals.vehicle = false">
                 <forms-vehicle @add="addVehicle" />
             </layout-modal>
+            <modal-confirm v-if="modals.friend_confirm" text="Accept Friend Request?" @confirm="confirmFriend" @cancel="cancelFriend"></modal-confirm>
         </template>
         <widgets-no-result text="Citizen Not Found" v-else />
     </div>
@@ -228,5 +244,16 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
 
 .citizen-tabs {
     margin-top: 20px;
+}
+
+.add-friend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+}
+
+.add-friend.interact {
+    cursor: pointer;
 }
 </style>

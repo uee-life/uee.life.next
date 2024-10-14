@@ -42,7 +42,6 @@ const getFriends = async (user) => {
     })
 
     for (const res of result) {
-        console.log("result", res)
         const citizen = await getCitizen(res.friend.handle, false, user)
         friends.push({
             ...citizen,

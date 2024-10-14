@@ -1,8 +1,15 @@
-<script setup></script>
+<script setup>
+const props = defineProps({
+    text: {
+        type: String,
+        default: 'This cannot be undone!'
+    }
+})
+</script>
 
 <template>
     <layout-modal title="Are you sure?" :show-close="false">
-        <div class="message">This cannot be undone!</div>
+        <div class="message">{{ text }}</div>
         <div class="confirm">
             <img class="button" src="@/assets/tick.png" @click="$emit('confirm')">
             <img class="button" src="@/assets/delete.png"  @click="$emit('cancel')">
