@@ -1,5 +1,5 @@
 <template>
-    <widgets-loading v-if="status != 'success'"/>
+    <widgets-loading v-if="vehicleStatus != 'success'"/>
     <div v-else class="system-list">
       <client-only>
             <teleport to="#left-dock">
@@ -7,7 +7,10 @@
                     <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
                 </panel-dock>
                 <panel-dock title="find location" class="search-box">
-                    <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Location Name"/>
+                    <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults('poi')" v-model="input_poi" placeholder="Location Name"/>
+                </panel-dock>
+                <panel-dock title="find vehicle" class="search-box">
+                    <input class="search-input" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
                 </panel-dock>
             </teleport>
         </client-only>
@@ -15,32 +18,81 @@
             <div><span class="data">{{ systemType(sys) }}</span></div>
             <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
         </explore-location-summary>
-        <explore-location-summary v-else v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
-            <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
-        </explore-location-summary>
+        <panel 
+            v-for="vehicle in filteredVehicles"
+            class="ship-model">
+            <img :src="vehicleImage(vehicle.identifier)"  class="ship-image"/>
+            <div class="ship-info">
+                <div>{{ `${vehicle.manufacturer} ${vehicle.model}` }}</div>
+                <div>{{ `${vehicle.career} - ${vehicle.role}`}}</div>
+                <div>{{ `Cargo: ${vehicle.cargo}` }}</div>
+                <div>{{ `Crew: ${vehicle.max_crew}` }}</div>
+            </div>
+            <div class="mask"></div>
+        </panel>
     </div>
 </template>
   
 <script setup>
 const {$api} = useNuxtApp()
-const {data: systems, status} = useAPI(`/api/explore/systems`)
+
+
+const {data: systems, status: poiStatus} = useAPI(`/api/explore/systems`, {
+    key: 'getPOIs'
+})
+
+const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/models`, {
+    key: 'getVehicle'
+})
 
 const result = ref(null)
-const input = ref("")
+const input_poi = ref("")
+const input_vehicle = ref("")
 
+const vehicleImage = (id) => {
+    console.log(`vehicle: ${id}`)
+    return `/images/ships/small/${id}.jpg`
+}
 
-async function autoGetResults() {
-    if(input.value.length >= 3) {
-//        pending.value = true
-        getResults()
+async function autoGetResults(searchType) {
+
+    if (searchType == 'poi' ) {
+        input_vehicle.value = ""
+
+        if (input_poi.value.length >= 3) {
+            // pending.value = true
+            getPOIResults()
+        }
+    } else if (searchType == 'vehicle') {
+        input_poi.value = ""
+
+        if (input_vehicle.value.length >= 3) {
+            // pending.value = true
+            getVehicleResults()
+        }
     } else {
         result.value = null
     }
 }
 
-async function getResults() {
+const filteredVehicles = computed({
+    get() {
+        if ( input_vehicle.length < 3 ){
+            return null
+        }
+
+        return vehicles.value.data.models.filter(model => {
+            console.log(model)
+            return model.identifier.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                    model.manufacturer.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                    model.model.toLowerCase().includes(input_vehicle.value.toLowerCase())
+        })
+    }
+})
+
+async function getPOIResults() {
     const data = {
-        search: input.value
+        search: input_poi.value
     }
     result.value = await $api(`/api/search/location`, {
         method: 'POST',
