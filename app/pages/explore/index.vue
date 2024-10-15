@@ -1,14 +1,13 @@
 <template>
     <widgets-loading v-if="poiStatus != 'success' || vehicleStatus != 'success'"/>
     <div v-else class="system-list">
-        {{ filteredVehicles }}
       <client-only>
             <teleport to="#left-dock">
                 <panel-dock title="nav">
                     <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
                 </panel-dock>
                 <panel-dock title="find location" class="search-box">
-                    <input class="search-input" v-model="input_poi" placeholder="Location Name"/>
+                    <input class="search-input" @input="clearInput('poi')" v-model="input_poi" placeholder="Location Name"/>
                 </panel-dock>
                 <panel-dock title="find vehicle" class="search-box">
                     <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
@@ -17,10 +16,10 @@
         </client-only>
 
         <panel 
-            v-for="vehicle in filteredVehicles"
+            v-for="vehicle in filteredVehicles" :link="`/vehicle/${vehicle.code}`"
             class="vehicle-model">
-            <img :src="vehicleImage(vehicle.identifier)"  class="ship-image"/>
-            <div class="ship-info">
+            <img :src="vehicleImage(vehicle.identifier)"  class="vehicle-image"/>
+            <div class="vehicle-info">
                 <div>{{ `${vehicle.manufacturer} ${vehicle.model}` }}</div>
                 <div>{{ `${vehicle.career} - ${vehicle.role}`}}</div>
                 <div>{{ `Cargo: ${vehicle.cargo}` }}</div>
@@ -33,6 +32,7 @@
             <div><span class="data">{{ systemType(poi) }}</span></div>
             <img class="icon" v-if="poi.affiliation != 'None'" :src="`/images/factions/icon-${poi.affiliation}.png`"/>
         </explore-location-summary>
+        <div class="mask"></div>
     </div>
 </template>
   
@@ -44,8 +44,12 @@ const {data: pois, status: poiStatus} = useAPI(`/api/explore/systems`, {
     key: 'getPOIs'
 })
 
+const {data: pois_extra, status: poiExtraStatus} = useAPI(`/api/explore/locations`, {
+    key: 'getPOIs'
+})
+
 const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/models`, {
-    key: 'getVehicle'
+    key: 'getVehicles'
 })
 
 const result = ref(null)
@@ -68,13 +72,12 @@ function clearInput(inputType) {
 
 const filteredVehicles = computed({
     get() {
-        if (vehicleStatus == 'success') {
-
-            if (input_vehicle.length < 3) {
+        if (vehicleStatus.value == 'success') {
+            if (input_vehicle.value.length < 3) {
                 return null
             }
 
-            return vehicles.data.models.filter(model => {
+            return vehicles.value.data.models.filter(model => {
                 return model.identifier.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
                         model.manufacturer.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
                         model.model.toLowerCase().includes(input_vehicle.value.toLowerCase())
@@ -87,15 +90,12 @@ const filteredVehicles = computed({
 
 const filteredPOIs = computed({
     get() {
-        if (poiStatus == 'success') {
-            if (input_poi.length < 3) {
+        if (poiStatus.value == 'success') {
+            if (input_poi.value.length < 3) {
                 return null
             }
 
-            console.log(poiStatus)
-
             return pois.value.data.filter(data => {
-                //console.log(model)
                 return data.code.toLowerCase().includes(input_poi.value.toLowerCase()) ||
                         data.name.toLowerCase().includes(input_poi.value.toLowerCase())
             })
@@ -103,22 +103,6 @@ const filteredPOIs = computed({
         return null
     }
 })
-
-/*
-async function getPOIResults() {
-    const data = {
-        search: input_poi.value
-    }
-    result.value = await $api(`/api/search/location`, {
-        method: 'POST',
-        body: data,
-        onResponse(_ctx) {
-//            pending.value = false
-        }
-    })
-    console.log(result)
-}
-*/
 
 function systemImage(img) {
     if(img) {
