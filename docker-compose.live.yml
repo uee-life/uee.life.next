@@ -33,7 +33,7 @@ services:
         image: nginx
         container_name: uee-life-nginx
         ports:
-            - "8090:80"
+            - "8000:80"
         volumes:
             - ./nginx/nginx.conf:/etc/nginx/nginx.conf
         depends_on:
