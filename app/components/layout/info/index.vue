@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
     <table class="info-table">
         <tr v-for="(k, v) in items" key="k" class="item">
-            <td class="label">{{ v }}:</td>
+            <td class="label">{{ v.replace('_', ' ') }}:</td>
             <td class="value">{{ k }}</td>
         </tr>
     </table>
@@ -26,6 +26,7 @@ const props = defineProps({
     font-family: 'Michroma';
     font-size: 12px;
     padding-right: 10px;
+    vertical-align: top;
 }
 
 .item>.value {

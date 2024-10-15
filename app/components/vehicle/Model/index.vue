@@ -21,45 +21,19 @@ const name = ref(props.vehicle.name)
 <template>
     <div>
         <div class="vehicle-info">
-            <panel title="Registration" titleSize="small" class="info-panel">
-                <div class="info-items">
-                    <div class="labels">
-                        <span>Ship ID:</span>
-                        <span>Name:</span>
-                    </div>
-                    <div class="data">
-                        <span>{{ '#'+vehicle.id }}</span>
-                        <span>{{ vehicle.model.name }}</span>
-                    </div>
-                </div>
-            </panel>
             <panel title="Hull Info" titleSize="small" class="info-panel">
-                <div class="info-items">
-                    <div class="labels">
-                        <span>Manufacturer:</span>
-                        <span>Model:</span>
-                        <span>Size:</span>
-                        <span>Role:</span>
-                    </div>
-                    <div class="data">
-                        <span>{{ vehicle.manufacturer }}</span>
-                        <span>{{ vehicle.model }}</span>
-                        <span>{{ vehicle.size }}</span>
-                        <span>{{ `${vehicle.career} - ${vehicle.role}` }}</span>
-                    </div>
-                </div>
+                <layout-info :items="{
+                    Manufacturer: vehicle.manufacturer,
+                    model: vehicle.model,
+                    size: vehicle.size,
+                    role: `${vehicle.career} - ${vehicle.role}`
+                }" />
             </panel>
             <panel title="Metrics" titleSize="small" class="info-panel">
-                <div class="info-items">
-                    <div class="labels">
-                        <span>Max Crew:</span>
-                        <span>Max Cargo:</span>
-                    </div>
-                    <div class="data">
-                        <span>{{ vehicle.max_crew }}</span>
-                        <span>{{ vehicle.cargo }}</span>
-                    </div>
-                </div>
+                <layout-info :items="{
+                    max_crew: vehicle.max_crew,
+                    max_cargo: vehicle.cargo
+                }" />
             </panel>
         </div>
     </div>
