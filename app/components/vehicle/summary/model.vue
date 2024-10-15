@@ -12,6 +12,7 @@
         </div>
         <img class="vehicle" @click="selected" :src="vehicleImage" />
         <img class="manufacturer" :src="manufacturerImage" />
+        <slot></slot>
         <div class="mask" @click="$emit('selected', vehicle.id)"></div>
         <template v-if="isAdmin">
             <img title="Edit Vehicle" class="button edit" @click="edit" src="@/assets/edit.png" />
