@@ -29,7 +29,7 @@ const name = ref(props.vehicle.name)
                     </div>
                     <div class="data">
                         <span>{{ '#'+vehicle.id }}</span>
-                        <span>{{ vehicle.name }}</span>
+                        <span>{{ vehicle.model.name }}</span>
                     </div>
                 </div>
             </panel>

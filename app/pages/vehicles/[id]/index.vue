@@ -35,8 +35,8 @@ const {status, data: response, refresh} = useAPI(`/api/vehicles/${route.params.i
             :owner="isOwner"
             default-role="Crewmember"
             @refresh="refresh" /-->
-
-            {{ response.data }}
+        <panel title="model info" title-size="small"><layout-info :items="response.data.model" /></panel>
+        <panel title="manufacturer info" title-size="small"><layout-info :items="response.data.manufacturer" /></panel>
     </div>
     <widgets-no-result v-else text="Vehicle not found" />
 </template>
