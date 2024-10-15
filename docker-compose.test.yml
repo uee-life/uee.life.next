@@ -3,7 +3,7 @@ version: "3"
 services:
     neo4j-test:
         image: neo4j:latest
-        container_name: neo4j-db-test
+        container_name: neo4j-db
         restart: unless-stopped
         environment:
             - NEO4J_AUTH=${NEO4J_AUTH}
@@ -18,7 +18,7 @@ services:
 
     app-test:
         build: ./
-        container_name: uee-life-test
+        container_name: uee-life
         restart: unless-stopped
         command:
             "npm run start"
@@ -31,7 +31,7 @@ services:
     
     nginx-test:
         image: nginx
-        container_name: uee-life-test-nginx
+        container_name: uee-life-nginx
         ports:
             - "8090:80"
         volumes:
