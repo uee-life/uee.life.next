@@ -2,7 +2,7 @@ import cheerio from "cheerio"
 import { isAfter, formatDistance } from 'date-fns'
 
 export const getFeeds = async (earliest) => {
-    return []/*
+    return [
         {
             type: 1,
             id: 'PLeBcPM4MDA6SAUOgx7ZPZRqBRPGoeQD0i',
@@ -21,7 +21,7 @@ export const getFeeds = async (earliest) => {
             source: 'Hubwire Galactic',
             image: '/images/zarkmedia.png'
         }
-    ]*/
+    ]
 }
 
 export const ytFeed = async (feed, earliest) => {
