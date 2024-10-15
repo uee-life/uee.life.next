@@ -1,17 +1,17 @@
 <template>
-    <widgets-loading v-if="poiStatus != 'success'"/>
+    <widgets-loading v-if="poiStatus != 'success' || vehicleStatus != 'success'"/>
     <div v-else class="system-list">
-        
+        {{ filteredVehicles }}
       <client-only>
             <teleport to="#left-dock">
                 <panel-dock title="nav">
                     <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
                 </panel-dock>
                 <panel-dock title="find location" class="search-box">
-                    <input class="search-input" v-model="input_poi" @input="clearInput('poi')" placeholder="Location Name"/>
+                    <input class="search-input" v-model="input_poi" placeholder="Location Name"/>
                 </panel-dock>
                 <panel-dock title="find vehicle" class="search-box">
-                    <input class="search-input" v-model="input_vehicle" @input="clearInput('vehicle')" placeholder="Manufacturer/Vehicle"/>
+                    <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
                 </panel-dock>
             </teleport>
         </client-only>
@@ -57,7 +57,7 @@ const vehicleImage = (id) => {
     return `/images/ships/small/${id}.jpg`
 }
 
-async function clearInput(inputType) {
+function clearInput(inputType) {
 
     if (inputType == 'poi' ) {
         input_vehicle.value = ""
@@ -68,31 +68,39 @@ async function clearInput(inputType) {
 
 const filteredVehicles = computed({
     get() {
-        if ( input_vehicle.length < 3 ){
-            return null
-        }
+        if (vehicleStatus == 'success') {
 
-        return vehicles.value.data.model.filter(model => {
-            console.log(model)
-            return model.identifier.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
-                    model.manufacturer.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
-                    model.model.toLowerCase().includes(input_vehicle.value.toLowerCase())
-        })
+            if (input_vehicle.length < 3) {
+                return null
+            }
+
+            return vehicles.data.models.filter(model => {
+                return model.identifier.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                        model.manufacturer.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                        model.model.toLowerCase().includes(input_vehicle.value.toLowerCase())
+            })
+        }
+        return null
     }
 })
 
 
 const filteredPOIs = computed({
     get() {
-        if ( input_poi.length < 3 ){
-            return null
-        }
+        if (poiStatus == 'success') {
+            if (input_poi.length < 3) {
+                return null
+            }
 
-        return pois.value.data.filter(system => {
-            //console.log(model)
-            return system.code.toLowerCase().includes(input_poi.value.toLowerCase()) ||
-                    system.name.toLowerCase().includes(input_poi.value.toLowerCase())
-        })
+            console.log(poiStatus)
+
+            return pois.value.data.filter(data => {
+                //console.log(model)
+                return data.code.toLowerCase().includes(input_poi.value.toLowerCase()) ||
+                        data.name.toLowerCase().includes(input_poi.value.toLowerCase())
+            })
+        }
+        return null
     }
 })
 
