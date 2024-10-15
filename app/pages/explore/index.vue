@@ -1,5 +1,5 @@
 <template>
-    <widgets-loading v-if="poiStatus != 'success' || vehicleStatus != 'success'"/>
+    <widgets-loading v-if="locationStatus != 'success' || vehicleStatus != 'success'"/>
     <div v-else class="system-list">
       <client-only>
             <teleport to="#left-dock">
@@ -7,7 +7,7 @@
                     <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
                 </panel-dock>
                 <panel-dock title="find location" class="search-box">
-                    <input class="search-input" @input="clearInput('poi')" v-model="input_poi" placeholder="Location Name"/>
+                    <input class="search-input" @input="clearInput('location')" v-model="input_location" placeholder="Location Name"/>
                 </panel-dock>
                 <panel-dock title="find vehicle" class="search-box">
                     <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
@@ -18,9 +18,9 @@
         <vehicle-summary-model v-for="vehicle in filteredVehicles" :vehicle="vehicle" class="vehicle-model-summary"></vehicle-summary-model>
 
         <explore-location-summary 
-            v-for="poi in filteredPOIs" :link="`/explore/${poi.code}`" :loc="{thumbnail: systemImage(poi.image_url), name: poi.name}">
-            <div><span class="data">{{ systemType(poi) }}</span></div>
-            <img class="icon" v-if="poi.affiliation != 'None'" :src="`/images/factions/icon-${poi.affiliation}.png`"/>
+            v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
+            <div><span class="data">{{ systemType(location) }}</span></div>
+            <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
         </explore-location-summary>
         <div class="mask"></div>
     </div>
@@ -29,13 +29,8 @@
 <script setup>
 const {$api} = useNuxtApp()
 
-
-const {data: pois, status: poiStatus} = useAPI(`/api/explore/systems`, {
-    key: 'getPOIs'
-})
-
-const {data: pois_extra, status: poiExtraStatus} = useAPI(`/api/explore/locations`, {
-    key: 'getPOIs'
+const {data: locations, status: locationStatus} = useAPI(`/api/explore/locations`, {
+    key: 'getLocations'
 })
 
 const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/models`, {
@@ -43,20 +38,20 @@ const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/m
 })
 
 const result = ref(null)
-const input_poi = ref("")
+const input_location = ref("")
 const input_vehicle = ref("")
-
+/*
 const vehicleImage = (id) => {
     console.log(`vehicle: ${id}`)
     return `/images/ships/small/${id}.jpg`
 }
-
+*/
 function clearInput(inputType) {
 
-    if (inputType == 'poi' ) {
+    if (inputType == 'location' ) {
         input_vehicle.value = ""
     } else if (inputType == 'vehicle') {
-        input_poi.value = ""
+        input_location.value = ""
     }
 }
 
@@ -78,16 +73,16 @@ const filteredVehicles = computed({
 })
 
 
-const filteredPOIs = computed({
+const filteredLocations = computed({
     get() {
-        if (poiStatus.value == 'success') {
-            if (input_poi.value.length < 3) {
+        if (locationStatus.value == 'success') {
+            if (input_location.value.length < 3) {
                 return null
             }
 
-            return pois.value.data.filter(data => {
-                return data.code.toLowerCase().includes(input_poi.value.toLowerCase()) ||
-                        data.name.toLowerCase().includes(input_poi.value.toLowerCase())
+            return locations.value.data.filter(loc => {
+                return loc.code.toLowerCase().includes(input_location.value.toLowerCase()) ||
+                        loc.name.toLowerCase().includes(input_location.value.toLowerCase())
             })
         }
         return null

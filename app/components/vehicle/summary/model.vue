@@ -10,7 +10,7 @@
                 <div class="line-item"><span class="data">{{ vehicle.description }}</span></div>
             </div>
         </div>
-        <img  @click="selected" :src="vehicleImage" />
+        <img class="vehicle" @click="selected" :src="vehicleImage" />
         <img class="manufacturer" :src="manufacturerImage" />
         <div class="mask" @click="$emit('selected', vehicle.id)"></div>
         <template v-if="isAdmin">
@@ -37,7 +37,7 @@ const props = defineProps({
 
 const vehicleImage = computed({
     get() {
-        return `/images/ships/${props.vehicle.identifier}.jpg`
+        return `/images/ships/small/${props.vehicle.identifier}.jpg`
     }
 })
 
@@ -59,7 +59,7 @@ const vehicleSize = computed({
         max-width: 170px;
         flex-basis: 90%;
         flex-grow: 1;
-        align-self: flex-start;
+        align-self: relative-right;
     }
 
     .vehicle-summary {
@@ -72,6 +72,7 @@ const vehicleSize = computed({
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         border-left: 1px solid #546f84;
         border-right: 1px solid #546f84;
+        min-height: 150px;
     }
 
     .vehicle-summary .mask {
@@ -89,6 +90,7 @@ const vehicleSize = computed({
         margin-left: 10px;
         z-index: 2;
         flex-grow: 1;
+        padding-right: 200px;
     }
 
     .vehicle-info .info {
@@ -126,6 +128,13 @@ const vehicleSize = computed({
         right: 0;
         bottom: 0;
         width: 100px;
+        opacity: 0.8;
+    }
+
+    .vehicle {
+        position: absolute;
+        right: 10px;
+        top: 10px;
         opacity: 0.8;
     }
 
