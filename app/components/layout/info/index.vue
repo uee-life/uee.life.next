@@ -8,12 +8,14 @@ const props = defineProps({
 </script>
 
 <template>
+    <ClientOnly>
     <table class="info-table">
         <tr v-for="(k, v) in items" key="k" class="item">
             <td class="label">{{ v.replace('_', ' ') }}:</td>
             <td class="value">{{ k }}</td>
         </tr>
     </table>
+    </ClientOnly>
 </template>
 
 <style scoped>
