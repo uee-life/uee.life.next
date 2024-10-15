@@ -35,6 +35,6 @@ services:
         ports:
             - "8090:80"
         volumes:
-            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/nginx-test.conf:/etc/nginx/nginx.conf
         depends_on:
             - app-test
