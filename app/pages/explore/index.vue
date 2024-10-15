@@ -1,26 +1,24 @@
 <template>
-    <widgets-loading v-if="vehicleStatus != 'success'"/>
+    <widgets-loading v-if="poiStatus != 'success'"/>
     <div v-else class="system-list">
+        
       <client-only>
             <teleport to="#left-dock">
                 <panel-dock title="nav">
                     <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
                 </panel-dock>
                 <panel-dock title="find location" class="search-box">
-                    <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults('poi')" v-model="input_poi" placeholder="Location Name"/>
+                    <input class="search-input" v-model="input_poi" @input="clearInput('poi')" placeholder="Location Name"/>
                 </panel-dock>
                 <panel-dock title="find vehicle" class="search-box">
-                    <input class="search-input" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
+                    <input class="search-input" v-model="input_vehicle" @input="clearInput('vehicle')" placeholder="Manufacturer/Vehicle"/>
                 </panel-dock>
             </teleport>
         </client-only>
-        <explore-location-summary v-if="result" v-for="sys in result.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
-            <div><span class="data">{{ systemType(sys) }}</span></div>
-            <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
-        </explore-location-summary>
+
         <panel 
             v-for="vehicle in filteredVehicles"
-            class="ship-model">
+            class="vehicle-model">
             <img :src="vehicleImage(vehicle.identifier)"  class="ship-image"/>
             <div class="ship-info">
                 <div>{{ `${vehicle.manufacturer} ${vehicle.model}` }}</div>
@@ -30,6 +28,11 @@
             </div>
             <div class="mask"></div>
         </panel>
+        <explore-location-summary 
+            v-for="poi in filteredPOIs" :link="`/explore/${poi.code}`" :loc="{thumbnail: systemImage(poi.image_url), name: poi.name}">
+            <div><span class="data">{{ systemType(poi) }}</span></div>
+            <img class="icon" v-if="poi.affiliation != 'None'" :src="`/images/factions/icon-${poi.affiliation}.png`"/>
+        </explore-location-summary>
     </div>
 </template>
   
@@ -37,7 +40,7 @@
 const {$api} = useNuxtApp()
 
 
-const {data: systems, status: poiStatus} = useAPI(`/api/explore/systems`, {
+const {data: pois, status: poiStatus} = useAPI(`/api/explore/systems`, {
     key: 'getPOIs'
 })
 
@@ -54,24 +57,12 @@ const vehicleImage = (id) => {
     return `/images/ships/small/${id}.jpg`
 }
 
-async function autoGetResults(searchType) {
+async function clearInput(inputType) {
 
-    if (searchType == 'poi' ) {
+    if (inputType == 'poi' ) {
         input_vehicle.value = ""
-
-        if (input_poi.value.length >= 3) {
-            // pending.value = true
-            getPOIResults()
-        }
-    } else if (searchType == 'vehicle') {
+    } else if (inputType == 'vehicle') {
         input_poi.value = ""
-
-        if (input_vehicle.value.length >= 3) {
-            // pending.value = true
-            getVehicleResults()
-        }
-    } else {
-        result.value = null
     }
 }
 
@@ -81,7 +72,7 @@ const filteredVehicles = computed({
             return null
         }
 
-        return vehicles.value.data.models.filter(model => {
+        return vehicles.value.data.model.filter(model => {
             console.log(model)
             return model.identifier.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
                     model.manufacturer.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
@@ -90,6 +81,22 @@ const filteredVehicles = computed({
     }
 })
 
+
+const filteredPOIs = computed({
+    get() {
+        if ( input_poi.length < 3 ){
+            return null
+        }
+
+        return pois.value.data.filter(system => {
+            //console.log(model)
+            return system.code.toLowerCase().includes(input_poi.value.toLowerCase()) ||
+                    system.name.toLowerCase().includes(input_poi.value.toLowerCase())
+        })
+    }
+})
+
+/*
 async function getPOIResults() {
     const data = {
         search: input_poi.value
@@ -103,6 +110,7 @@ async function getPOIResults() {
     })
     console.log(result)
 }
+*/
 
 function systemImage(img) {
     if(img) {
