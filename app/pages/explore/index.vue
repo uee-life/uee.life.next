@@ -15,18 +15,8 @@
             </teleport>
         </client-only>
 
-        <panel 
-            v-for="vehicle in filteredVehicles" :link="`/vehicle/${vehicle.code}`"
-            class="vehicle-model">
-            <img :src="vehicleImage(vehicle.identifier)"  class="vehicle-image"/>
-            <div class="vehicle-info">
-                <div>{{ `${vehicle.manufacturer} ${vehicle.model}` }}</div>
-                <div>{{ `${vehicle.career} - ${vehicle.role}`}}</div>
-                <div>{{ `Cargo: ${vehicle.cargo}` }}</div>
-                <div>{{ `Crew: ${vehicle.max_crew}` }}</div>
-            </div>
-            <div class="mask"></div>
-        </panel>
+        <vehicle-summary-model v-for="vehicle in filteredVehicles" :vehicle="vehicle" class="vehicle-model-summary"></vehicle-summary-model>
+
         <explore-location-summary 
             v-for="poi in filteredPOIs" :link="`/explore/${poi.code}`" :loc="{thumbnail: systemImage(poi.image_url), name: poi.name}">
             <div><span class="data">{{ systemType(poi) }}</span></div>
