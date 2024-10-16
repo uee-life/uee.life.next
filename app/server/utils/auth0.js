@@ -201,36 +201,25 @@ export const updateAppMetadata = async (userID, metadata) => {
     return result
 }
 
-export const createAccount = async (username, email, handle) => {
+export const createAccount = async (handle, email) => {
+    console.log('creating account')
     const token = await getToken()
     console.info(token)
     const data = {
         email: email,
-        //"phone_number": "string",
         user_metadata: {
             handle: handle
         },
-        //blocked: false,
         email_verified: false,
-        //"phone_verified": false,
-        /*app_metadata: {
-            handle: handle,
-            handle_verified: false
-        },*/
-        //"given_name": "string",
-        //"family_name": "string",
-        //"name": "string",
-        //"nickname": "username",
-        //"picture": "string",
-        //"user_id": "string",
         connection: "Username-Password-Authentication",
-        password: (Math.random() + 1).toString(36).substring(2) + '!',
+        password: (Math.random() + 1).toString(36).substring(2) + 'aB!',
         verify_email: false,
-        username: username
+        username: handle
     }
-    console.log(data)
 
-    const result = await $fetch(`https://ueelife.auth0.com/api/v2/users`, {
+    console.log('creating account')
+
+    const account = await $fetch(`https://ueelife.auth0.com/api/v2/users`, {
         method: 'post',
         headers: {
             'content-type': 'application/json',
@@ -241,9 +230,63 @@ export const createAccount = async (username, email, handle) => {
         onResponse({ response }) {
             console.info(response._data)
         }
+    }).catch(err => {
+        console.error(err)
     })
-    console.log('result: ', result)
-    
+
+    console.log('getting reset token')
+
+    // get password reset token
+    const result = await $fetch(`https://ueelife.auth0.com/api/v2/tickets/password-change`, {
+        method: 'post',
+        headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: {
+            //result_url: 'www.uee.com/test',
+            user_id: account.user_id,
+            client_id: config.auth0_m2m.client_id,
+            //organization_id: '',
+            //connection_id: '',
+            //email: account.email,
+            ttl_sec: 0,
+            mark_email_as_verified: false,
+            includeEmailInRedirect: false
+        },
+        onResponse({request, response, error}) {
+            console.log(response._data)
+        }
+    })
+
+    console.log('Updating metadata')
+
+    await updateAppMetadata(account.user_id, {
+        reset_ticket: result.ticket
+    })
+
+    console.log('Sending verification email')
+
+    // trigger a verification email
+    const mailresult = await $fetch(`https://ueelife.auth0.com/api/v2/jobs/verification-email`, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: {
+            user_id: account.user_id,
+            client_id: config.auth0_m2m.client_id,
+        },
+        onResponse({ response }) {
+            console.log(response._data)
+        }
+     })
+
+    console.log('email send result', result)
+    return true
 }
 
 export class ManagementClient {
