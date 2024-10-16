@@ -30,14 +30,17 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const assignCrew = async (ship, crew, owner) => {
     const query = 
-        `MATCH (c:Citizen {handle: $handle})
-         MATCH (s:Ship {id: $id})-[:OWNED_BY]->(Citizen {handle: $owner})
-         MERGE (c)-[:CREW_OF {role: $role}]->(s)`
+        `MATCH (c:Citizen)
+         WHERE c.id =~ $handle
+         MATCH (s:Ship {id: $id})-[:OWNED_BY]->(o:Citizen)
+         WHERE o.id =~ $owner
+         with s as ship, c as crew
+         MERGE (crew)-[:CREW_OF {role: $role}]->(ship)`
 
     const params = {
         id: ship,
-        handle: crew.handle,
-        owner: owner,
+        handle: '(?i)'+crew.handle,
+        owner: '(?i)'+owner,
         role: crew.role
     }
     console.log(query, params)

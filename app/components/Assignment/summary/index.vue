@@ -7,6 +7,16 @@ const props = defineProps({
 })
 
 const auth = useAuthStore()
+
+const removeCitizen = (data) => {
+    switch(props.assignment.type) {
+        case 'Crew':
+            console.log('trying to remove crew: ', data.handle)
+            break;
+        case 'Leader':
+            console.log('trying to remove Commander: ', data.handle)
+    }
+}
 </script>
 
 <template>
@@ -26,7 +36,7 @@ const auth = useAuthStore()
                     </div>     
                 </panel-section>
                 <panel-section v-if="assignment.fleet" title="Group" title-size="small">
-                    <div class="fleet">
+                    <div class="fleet" @click="navigateTo(`/fleets/${assignment.fleet.id}`)">
                         <img src="@/assets/fleet.png" />
                         {{ assignment.fleet.name }}
                     </div>
@@ -39,7 +49,8 @@ const auth = useAuthStore()
                     <panel-section class="assignees" title="Assignees" title-size="small">
                         <assignment-member-list 
                             :assignees="assignment.assignees"
-                            :max-assigned="assignment.target.max_crew"/>
+                            :max-assigned="assignment.target.max_crew"
+                            @remove="removeCitizen"/>
                     </panel-section>
                 </template>
                 <template v-if="assignment.class == 'VehicleGroup'">
@@ -53,7 +64,8 @@ const auth = useAuthStore()
                     <panel-section class="assignees" title="Assignees" title-size="small">
                         <assignment-member-list 
                             :assignees="assignment.assignees"
-                            :max-assigned="assignment.target.max_crew"/>
+                            :max-assigned="assignment.target.max_crew"
+                            @remove="removeCitizen"/>
                     </panel-section>
                 </template>
             </div>
@@ -78,6 +90,7 @@ const auth = useAuthStore()
     align-items: center;
     margin: 13px 0 5px;
     color: #dbf3ff;
+    cursor: pointer;
 }
 
 .fleet img {

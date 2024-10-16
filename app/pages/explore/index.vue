@@ -1,22 +1,65 @@
-<template>
-    <widgets-loading v-if="status != 'success'"/>
-    <div v-else class="system-list">
-      <client-only>
-            <teleport to="#left-dock">
-                <panel-dock title="nav">
-                    <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
-                </panel-dock>
-            </teleport>
-        </client-only>
-        <explore-location-summary v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
-            <div><span class="data">{{ systemType(sys) }}</span></div>
-            <img class="icon" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
-        </explore-location-summary>
-    </div>
-</template>
-  
 <script setup>
-const {data: systems, status} = useAPI(`/api/explore/systems`)
+const {$api} = useNuxtApp()
+
+const {data: locations, status: locationStatus} = useAPI(`/api/explore/locations`, {
+    key: 'getLocations'
+})
+
+const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/models`, {
+    key: 'getVehicles'
+})
+
+const result = ref(null)
+const input_location = ref("")
+const input_vehicle = ref("")
+
+const noResultText = computed({
+    get() {
+        if (input.value.length >=3) {
+            if(pending.value) {
+                return "Searching..."
+            } else {
+                return "No Results"
+            }
+        } else {
+            return "Search Locations/Vehicles"
+        }
+    }
+})
+
+const filteredVehicles = computed({
+    get() {
+        if (vehicleStatus.value == 'success') {
+            if (input_vehicle.value.length < 3) {
+                return null
+            }
+
+            return vehicles.value.data.models.filter(model => {
+                return model.identifier.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                        model.manufacturer.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                        model.model.toLowerCase().includes(input_vehicle.value.toLowerCase())
+            })
+        }
+        return null
+    }
+})
+
+
+const filteredLocations = computed({
+    get() {
+        if (locationStatus.value == 'success') {
+            if (input_location.value.length < 3) {
+                return null
+            }
+
+            return locations.value.data.filter(loc => {
+                return loc.code.toLowerCase().includes(input_location.value.toLowerCase()) ||
+                        loc.name.toLowerCase().includes(input_location.value.toLowerCase())
+            })
+        }
+        return null
+    }
+})
 
 function systemImage(img) {
     if(img) {
@@ -27,15 +70,60 @@ function systemImage(img) {
 }
 
 function systemType(sys) {
-  if(sys.type == "BINARY") {
-    return "Binary Star System"
-  } else {
-    return "Star System"
-  }
+    if(sys.type == "BINARY") {
+        return "Binary Star System"
+    } else if (sys.type == "SYSTEM") {
+        return "Star System"
+    } else {
+      return sys.type
+    }
+}
+
+const clearInput = (box) => {
+    if (box == 'location') {
+        input_vehicle.value = ''
+    } else {
+        input_location.value = ''
+    }
+}
+
+const goToVehicle = (id) => {
+    navigateTo(`/vehicles/${id}`)
 }
 </script>
 
-<style>
+<template>
+    <widgets-loading v-if="locationStatus != 'success' || vehicleStatus != 'success'"/>
+
+    <div v-else class="system-list">
+      <client-only>
+            <teleport to="#left-dock">
+                <panel-dock title="nav">
+                    <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
+                </panel-dock>
+                <panel-dock title="find location" class="search-box">
+                    <input class="search-input" @input="clearInput('location')" v-model="input_location" placeholder="Location Name"/>
+                </panel-dock>
+                <panel-dock title="find vehicle" class="search-box">
+                    <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
+                </panel-dock>
+            </teleport>
+        </client-only>
+
+        <vehicle-summary-model v-for="vehicle in filteredVehicles" class="vehicle-model-summary"
+            :vehicle="vehicle" 
+            @selected="goToVehicle"></vehicle-summary-model>
+
+        <explore-location-summary 
+            v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
+            <div><span class="data">{{ systemType(location) }}</span></div>
+            <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
+        </explore-location-summary>
+        <div class="mask"></div>
+    </div>
+</template>
+
+<style scoped>
 .layout-enter-active,
 .layout-leave-active {
     transition-property: opacity;

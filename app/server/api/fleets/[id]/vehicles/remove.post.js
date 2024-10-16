@@ -28,7 +28,7 @@ const removeVehicle = async (vehicleID, groupID) => {
          DELETE r`
 
     const params = {
-        vehicleID: vehicleID,
+        vehicleID: vehicleID.toUpperCase(),
         groupID: groupID
     }
 

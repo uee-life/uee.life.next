@@ -9,10 +9,14 @@ but this is here if that ever changes!
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     if (user && user.verified) {
-        let citizen = await rsi.fetchCitizen(user.handle)
-        await updateCitizen(citizen)
         // invalidate the cache for the citizen
         await useStorage('cache').removeItem(`nitro:functions:rsi-fetchCitizen:${user.handle}.json`)
+
+        // refetch data
+        let citizen = await rsi.fetchCitizen(user.handle)
+        console.log(citizen)
+        await updateCitizen(citizen)
+
         return apiSuccess('Sync Successful!')
     } else {
         return apiError(event, 401, 'Sync error')

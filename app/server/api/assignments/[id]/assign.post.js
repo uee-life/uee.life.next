@@ -28,7 +28,7 @@ const assignCitizen = async (data, target) => {
     `
 
     const { error } = await writeQuery(query, {
-        handle: data.handle,
+        handle: '(?i)'+data.handle,
         role: data.role,
         target: target
     })

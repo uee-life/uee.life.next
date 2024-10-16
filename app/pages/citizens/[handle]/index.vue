@@ -11,7 +11,8 @@ const vehicles = ref([])
 const links = ref([])
 
 const modals = ref({
-    vehicle: false
+    vehicle: false,
+    friend_confirm: false
 })
 
 const isOwner = computed({
@@ -116,12 +117,38 @@ async function getVehicles() {
     })
 }
 
+const requestFriend = async () => {
+    console.log('sending friend request to', route.params.handle)
+    await $api(`/api/friends/request`, {
+        key: 'requestFriend',
+        method: 'POST',
+        body: {
+            friend: route.params.handle
+        }
+    })
+}
+
+const confirmFriend = async () => {
+    modals.value.friend_confirm = false
+    await $api(`/api/friends/confirm`, {
+        method: 'POST',
+        body: {
+            friend: route.params.handle
+        }
+    })
+}
+
+const cancelFriend = async () => {
+    modals.value.friend_confirm = false
+}
+
 const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.handle}`, {
         key: 'getCitizen',
         server: false,
         lazy: true,
         async onResponse({ response }) {
-            const data = response._data
+            const data = response._data.data
+            console.log(data)
             if(data.website) {
                 links.value.push({text: 'Website', url: data.website})
             }
@@ -136,7 +163,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         <template v-else-if="citizen.status == 'success'">
             <client-only>
                 <teleport to="#left-dock">
-                    <panel-dock v-if="$viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                    <panel-dock v-if="citizen.data.orgs.main && $viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
                         <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
                     </panel-dock>
                     <panel-dock title="Navigation" class="left-nav">
@@ -151,12 +178,22 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                     <panel-dock v-if="isOwner && $viewport.isGreaterOrEquals('tablet')" title="Tools">
                         <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
                     </panel-dock>
+                    <panel-dock v-if="isOwner" title="Friends" >
+                        <widgets-friends/>
+                    </panel-dock>
+                    
+                    <panel-dock v-if="auth.isAuthenticated && !isOwner" title="Add Friend">
+                        <div v-if="citizen.data.friendship == null" class="add-friend interact" @click="requestFriend">Send friend request</div>
+                        <div v-else-if="citizen.data.friendship == 'confirmed'" class="add-friend">You are friends!</div>
+                        <div v-else-if="citizen.data.friendship == 'requested'" class="add-friend">Request Sent!</div>
+                        <div v-else-if="citizen.data.friendship == 'received'" class="add-friend interact" @click="modals.friend_confirm = true">Accept Request</div>
+                    </panel-dock>
                 </teleport>
                 <teleport to="#right-dock">
                     <panel-dock v-if="isOwner && $viewport.isLessThan('tablet')" title="Tools">
                         <div class="left-nav-button" @click="sync"><a @click.stop="sync">Sync Profile</a></div>
                     </panel-dock>
-                    <panel-dock v-if="$viewport.isLessThan('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                    <panel-dock v-if="citizen.data.orgs.main && $viewport.isLessThan('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
                         <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
                     </panel-dock>
                     <!--citizen-org v-if="citizen.orgs && citizen.orgs.main" :org="citizen.orgs.main"/-->
@@ -194,6 +231,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
             <layout-modal v-if="modals.vehicle" title="Add Vehicle" @close="modals.vehicle = false">
                 <forms-vehicle @add="addVehicle" />
             </layout-modal>
+            <modal-confirm v-if="modals.friend_confirm" text="Accept Friend Request?" @confirm="confirmFriend" @cancel="cancelFriend"></modal-confirm>
         </template>
         <widgets-no-result text="Citizen Not Found" v-else />
     </div>
@@ -206,5 +244,16 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
 
 .citizen-tabs {
     margin-top: 20px;
+}
+
+.add-friend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+}
+
+.add-friend.interact {
+    cursor: pointer;
 }
 </style>

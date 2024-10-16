@@ -30,7 +30,7 @@ const addVehicle = async (vehicleID, group) => {
     // then we need to create a new crew assignment for that vehicle, owned by the org
 
     const { result, error } = await writeQuery(addVehicle, {
-        vehicleID: vehicleID,
+        vehicleID: vehicleID.toUpperCase(),
         groupID: group.info.id
     })
 

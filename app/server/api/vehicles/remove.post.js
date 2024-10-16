@@ -19,9 +19,11 @@ const removeVehicle = async (ship, handle) => {
     await clearAllAssignments(ship.id)
     
     const query = 
-        `MATCH (s:Vehicle {id: $id})-[:OWNED_BY]->(c:Citizen {handle: $handle}) DETACH DELETE s`
+        `MATCH (s:Vehicle {id: $id})-[:OWNED_BY]->(c:Citizen) 
+        WHERE c.id =~ $handle
+        DETACH DELETE s`
     
-    const { error } = await writeQuery(query, {id: ship.id, handle: handle})
+    const { error } = await writeQuery(query, {id: ship.id, handle: '(?i)'+handle})
     if (error) {
         return error
     }

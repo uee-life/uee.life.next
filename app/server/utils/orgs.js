@@ -54,7 +54,7 @@ export const createOrganization = async (org, official = false) => {
         })`
 
     const params = {
-        id: org.id,
+        id: org.id.toUpperCase(),
         name: org.name,
         type: org.model,
         logo: org.logo,
