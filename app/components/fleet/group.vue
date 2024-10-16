@@ -59,7 +59,8 @@ const modals = ref({
     commander: false,
     vehicle: false,
     edit: false,
-    confirm: false
+    confirm: false,
+    confirmCmdr: false
 })
 
 const canEdit = computed({
@@ -111,6 +112,7 @@ const addCmdr = async (cmdr) => {
 }
 
 const removeCmdr = async () => {
+    modals.value.confirmCmdr = false
     const grp = group.value.info
     grp.cmdr = ''
     const result = await updateGroup(grp)
@@ -189,7 +191,7 @@ watch(
                         <h5>Group Commander</h5>
                         <citizen-portrait :citizen="group.cmdr" :show-name="true">
                             <div class="mask"></div>
-                            <img v-if="canEdit" @click="removeCmdr" class="edit" src="@/assets/delete.png">
+                            <img v-if="canEdit" @click="modals.confirmCmdr = true" class="edit" src="@/assets/delete.png">
                         </citizen-portrait>
                     </div>
                     <div v-else class="unassigned">
@@ -227,12 +229,14 @@ watch(
         <layout-modal v-if="modals.edit" title="Edit Subgroup" @close="modals.edit = false">
             <forms-fleet :group="group.info" @submit="updateGroup" />
         </layout-modal>
-        <layout-modal v-if="modals.confirm" title="Are you sure?" @close="modals.confirm = false" :show-close="false">
+        <modal-confirm v-if="modals.confirm" @confirm="removeGroup" @cancel="modals.confirm = false"></modal-confirm>
+        <modal-confirm v-if="modals.confirmCmdr" @confirm="removeCmdr" @cancel="modals.confirmCmdr = false"></modal-confirm>
+        <!--layout-modal v-if="modals.confirm" title="Are you sure?" @close="modals.confirm = false" :show-close="false">
             <div class="confirm">
                 <img class="button" src="@/assets/tick.png" @click="removeGroup">
                 <img class="button" src="@/assets/delete.png"  @click="modals.confirm = false">
             </div>
-        </layout-modal>
+        </layout-modal-->
         <layout-modal v-if="modals.commander" title="Add Commander" @close="modals.commander = false">
             <forms-commander @submit="addCmdr" />
         </layout-modal>

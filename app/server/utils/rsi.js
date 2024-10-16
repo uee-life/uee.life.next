@@ -31,7 +31,7 @@ export const fetchCitizen = defineCachedFunction(async (handle) => {
             if ($('p:contains("authenticated")').text()) {
                 console.error($('p:contains("authenticated")').text())
             }
-            info.id = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
+            info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
             info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
             info.bio = $('span:contains("Bio")', '#public-profile').next().text()
             info.enlisted = $("span:contains('Enlisted')", '#public-profile').next().text()

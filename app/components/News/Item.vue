@@ -35,10 +35,9 @@ const style = computed({
 
 <style>
 .article-image {
-    width: 170px;
-    max-width: 170px;
-    height: fit-content;
-    flex-basis: 90%;
+    max-width: 30vw;
+    height: 100%;
+    flex-basis: content;
     flex-grow: 0;
     z-index: 2;
     border: 2px solid black;
@@ -65,7 +64,7 @@ const style = computed({
     position: relative;
     opacity: 1;
     flex-grow: 1;
-    max-width: 100vw !important;
+    max-width: calc(100vw - 20px) !important;
     max-height: 100vh !important;
 }
 
@@ -75,6 +74,7 @@ const style = computed({
 }
 
 .news-item-info {
+    flex-basis: 400%;
     margin-left: 10px;
     text-decoration: none;
     color: #dbf3ff;

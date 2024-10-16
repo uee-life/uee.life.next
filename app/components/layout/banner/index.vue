@@ -1,7 +1,7 @@
 <template>
     <ClientOnly>
         <teleport :to="`#banner-${display}`">
-            <panel-banner :class="`banner ${display}`"
+            <panel-banner :class="bannerClass"
                 :name="name"
                 :tag="tag"
                 :type="type"
@@ -17,6 +17,8 @@
 </template>
 
 <script setup>
+const { $viewport } = useNuxtApp()
+
 const props = defineProps({
     name: {
         type: String,
@@ -41,6 +43,16 @@ const props = defineProps({
     display: {
         type: String,
         default: 'content'
+    }
+})
+
+const bannerClass = computed({
+    get() {
+        if ($viewport.isLessThan('tablet')) {
+            return `banner mobile ${props.display}`
+        } else {
+            return `banner ${props.display}`
+        }
     }
 })
 </script>

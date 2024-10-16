@@ -9,7 +9,7 @@ const modal = ref({
 const selected = ref(null)
 
 const updateVehicles = async () => {
-    result.value = await $api(`/api/admin/vehicleModels/import`)
+    result.value = await $api(`/api/admin/vehicles/import`)
     .catch((error) => {
         console.error(error)
     })
@@ -26,7 +26,7 @@ const filteredVehicles = computed({
     }
 })
 
-const shipImage = (id) => {
+const vehicleImage = (id) => {
     console.log(`vehicle: ${id}`)
     return `/images/ships/small/${id}.jpg`
 }
@@ -39,7 +39,7 @@ const editVehicleModel = (s) => {
 
 async function addVehicle(ship) {
     modal.value.add = false
-    await $api('/api/admin/vehicleModels/add', {
+    await $api('/api/admin/vehicles/add', {
         method: 'POST',
         body: ship
     })
@@ -47,7 +47,7 @@ async function addVehicle(ship) {
 
 async function editVehicle(ship) {
     modal.value.edit = false
-    await $api('/api/admin/vehicleModels/add', {
+    await $api('/api/admin/vehicles/add', {
         method: 'POST',
         body: ship
     })
@@ -66,8 +66,8 @@ const {data: vehicleModels, status} = useAPI('/api/vehicles/models', {
         <client-only>
             <teleport to="#left-dock">
                 <panel-dock class="actions" title="action">
-                    <div class="left-nav-button" @click="modal.add = true">Add Ship Model</div>
-                    <div class="left-nav-button" @click="updateShips">
+                    <div class="left-nav-button" @click="modal.add = true">Add New Vehicle</div>
+                    <div class="left-nav-button" @click="updateVehicles">
                         Sync with Erkul
                     </div>
                 </panel-dock>
@@ -94,13 +94,13 @@ const {data: vehicleModels, status} = useAPI('/api/vehicles/models', {
         
         <layout-modal v-if="modal.edit" title="Edit vehicle model" @close = "modal.edit = false">
             <forms-vehicle-model 
-                :data="shipModels.data"
-                :ship-info="selected"
+                :data="vehicleModels.data"
+                :vehicle-info="selected"
                 @submit="editVehicle"/>
         </layout-modal>
         <layout-modal v-if="modal.add" title="Add a vehicle model" @close = "modal.add = false">
             <forms-vehicle-model
-                :data="shipModels.data"
+                :data="vehicleModels.data"
                 @submit="addVehicle"
                 />
         </layout-modal>

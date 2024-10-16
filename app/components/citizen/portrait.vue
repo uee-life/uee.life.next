@@ -31,7 +31,7 @@ const props = defineProps({
         type: String,
         default: 'large',
         validator: function (value) {
-            return ['tiny', 'x-small', 'small', 'medium', 'large'].indexOf(value) !== -1
+            return ['tiny', 'small', 'medium', 'large'].indexOf(value) !== -1
         }
     },
     shape: {

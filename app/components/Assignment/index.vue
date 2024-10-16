@@ -18,11 +18,15 @@ const props = defineProps({
     defaultRole: {
         type: String,
         default: ''
+    },
+    showSummary: {
+        type: Boolean,
+        default: true
     }
 })
 
 const add = async (data) => {
-    console.log('assigning crew:', data)
+    console.log('assigning citizen:', data)
     // check there's room for another assignee
     if (props.assignment.assignees.filter(e => e != null).length >= props.maxAssignees) {
         console.log(props.assignment.assignees)
@@ -54,21 +58,7 @@ const remove = async (data) => {
 </script>
 
 <template>
-    <div v-if="assignment.class == 'Vehicle'">
-        <panel :title="`${assignment.type} Assigned`" title-size="medium">
-            <assignment-member-list
-                :assignees="assignment.assignees" 
-                :max-assigned="maxAssignees"
-                :edit="owner"
-                :default-role="defaultRole"
-                @refresh="$emit('refresh')"
-                @add="add"
-                @remove="remove" />
-        </panel>
-    </div>
-    <div v-else>
-        {{ assignment }}
-    </div>
+    <assignment-summary :assignment="assignment" />
 </template>
 
 <style scoped>

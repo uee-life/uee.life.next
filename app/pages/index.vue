@@ -10,6 +10,9 @@
                     <panel-dock v-if="!isMobile" title="Community Links" type="links">
                         <widgets-links :links="communityLinks"/>
                     </panel-dock>
+                    <panel-dock title="Stats" type="stats">
+                        <widgets-stats />
+                    </panel-dock>
                 </teleport>
                 <teleport to="#right-dock">
                     <panel-dock v-if="isMobile" title="Official Links" type="links">
@@ -18,22 +21,25 @@
                     <panel-dock v-if="isMobile" title="Community Links" type="links">
                         <widgets-links :links="communityLinks"/>
                     </panel-dock>
-                    <panel-dock title="Stats" type="stats">
-                        <widgets-stats />
+                    
+                    <panel-dock title="Events" type="online">
+                        <event-panel />
                     </panel-dock>
-                    <panel-dock title="Online" type="online">
-                        <widgets-online />
+                    <panel-dock v-if="auth.isAuthenticated" title="Friends">
+                        <widgets-friends />
                     </panel-dock>
                 </teleport>
             </client-only>
 
-            <widgets-site-news v-if="!isMobile" style="margin: 20px 0;"/>
+            <widgets-site-news v-if="!isMobile"/>
             <news-feed />
         </div>
 </template>
 
 <script setup>
 const { $viewport } = useNuxtApp()
+
+const auth = useAuthStore()
 
 const isMobile = computed({
     get() {

@@ -8,7 +8,7 @@ export const verifiedCount = async () => {
 
 export const shipCount = async () => {
     const query = `
-        MATCH (s:Ship)
+        MATCH (s:Vehicle)
         RETURN count(s) as count`
     const { result } = await readQuery(query)
     return result[0]

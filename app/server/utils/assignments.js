@@ -27,11 +27,12 @@ export const checkAssignmentPerms = async (target, user, data=null) => {
 
 export const createAssignment = async (targetID, ownerID, type, max='0') => {
     const query = `
-        MATCH (owner {id: $ownerID})
+        MATCH (owner)
+        WHERE owner.id =~ $ownerID
         MATCH (target {id: $targetID})
         MERGE (owner)<-[:OWNED_BY]-(a:Assignment)-[:ATTACHED_TO]->(target)
         SET a = {
-            id: left(randomUUID(), 8),
+            id: toUpper(left(randomUUID(), 8)),
             type: $type,
             max_assigned: $max
         }
@@ -40,7 +41,7 @@ export const createAssignment = async (targetID, ownerID, type, max='0') => {
     console.log("assigning", targetID, ownerID, type, max)
 
     const { result } = await writeQuery(query, {
-        ownerID: ownerID,
+        ownerID: '(?i)' + ownerID,
         targetID: targetID,
         type: type,
         max: max
@@ -74,8 +75,8 @@ const getAssignmentMeta = async (assignee, assignment) => {
             r.assigned as assigned
     `
     const { result } = await readQuery(query, {
-        assignee: assignee,
-        assignment: assignment
+        assignee: '(?i)'+assignee,
+        assignment: '(?i)'+assignment
     })
 
     if (result[0]) {
@@ -142,8 +143,9 @@ export const getAssignment = async (assignmentID) => {
                 assignment.target = await getVehicle(assignment.target.id)
             }
             if (assignment.class == 'VehicleGroup') {
-                //const group = await getVehicleGroup(assignment.target.id)
-                //assignment.fleet = group.fleet
+                const group = await getVehicleGroup(assignment.target.id)
+                assignment.fleet = group.fleet
+                assignment.admins = group.admins
             }
         }
 

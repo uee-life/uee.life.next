@@ -89,7 +89,7 @@ const config = useRuntimeConfig();
 }
 
 .content {
-  margin: 0 10px;
+  margin: 0 5px 0 10px;
   flex-grow: 1;
   flex-basis: 300px;
 }

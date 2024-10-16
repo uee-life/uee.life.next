@@ -12,10 +12,11 @@ export default defineEventHandler(async (event) => {
     }
     
     let news = await rsiNews(data)
+
     const earliest = news[news.length - 1].posted_date
 
-    const feeds = await getFeeds()
     if (data.series === 'news-update') {
+        const feeds = await getFeeds()
         for (const feed of feeds) {
             if (feed.type == 1) {
                 const yt = await ytFeed(feed, earliest)
@@ -25,9 +26,8 @@ export default defineEventHandler(async (event) => {
                 news = mergeNews(news, await wpFeed(earliest))
             }
         }
-    } else {
-        return news
-    }
+    } 
+    
     return apiSuccess(news)
 })
 

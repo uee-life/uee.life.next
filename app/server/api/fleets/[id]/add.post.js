@@ -37,9 +37,9 @@ const addGroup = async (parentID, group) => {
     const query = `
         MATCH (parent:VehicleGroup {id: $id})
         MERGE (g:VehicleGroup {name: $name})
-        MERGE (g)-[:BELONGS_TO]->(parent)
+        MERGE (g)-[:PART_OF]->(parent)
         SET g = {
-            id: left(randomUUID(), 8),
+            id: toUpper(left(randomUUID(), 8)),
             name: $name,
             purpose: $purpose,
             cmdr: $cmdr

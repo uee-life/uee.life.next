@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 const getVehicleList = async (handle) => {
     const query =
         `MATCH (c:Citizen)<-[:OWNED_BY]-(s:Vehicle)-[:INSTANCE_OF]->(m:VehicleModel)
-         WHERE c.handle =~ $handle
+         WHERE c.id =~ $handle
          RETURN s as vehicle,
                 m as vehicleData,
                 c as owner`

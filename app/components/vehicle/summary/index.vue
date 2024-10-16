@@ -7,6 +7,10 @@ const props = defineProps({
             return {}
         }
     },
+    assignment: {
+        type: String,
+        default: ''
+    },
     isAdmin: {
         type: Boolean,
         default: false
@@ -14,6 +18,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['remove'])
+
+const modals = ref({
+    confirm: false
+})
 
 const vehicleImage = computed({
     get() {
@@ -33,8 +41,15 @@ const citizenLink = computed({
     }
 })
 
+const removeVehicle = () => {
+    modals.value.confirm = false
+    emit('remove', props.vehicle)
+}
+
 function navigate() {
-    if (props.vehicle.assignments[0]) {
+    if (props.assignment) {
+        navigateTo(`/assignments/${props.assignment}`)
+    } else if (props.vehicle.assignments && props.vehicle.assignments[0]) {
         navigateTo(`/assignments/${props.vehicle.assignments[0].id}`)
     } else {
         navigateTo(`/vehicles/${props.vehicle.id}`)
@@ -64,7 +79,8 @@ function navigate() {
             </div>
         </div>
         <div class="mask" @click="navigate"></div>
-        <img v-if="isAdmin" title="Remove Vehicle" class="delete" @click="$emit('remove', vehicle)" src="@/assets/delete.png">
+        <img v-if="isAdmin" title="Remove Vehicle" class="delete" @click="modals.confirm = true" src="@/assets/delete.png">
+        <modal-confirm v-if="modals.confirm" @confirm="removeVehicle" @cancel="modals.confirm = false"></modal-confirm>
     </panel>
 </template>
 
@@ -75,21 +91,13 @@ function navigate() {
 </style>
 
 <style scoped>
-    .vehicle-summary img {
-        max-width: 170px;
-        flex-basis: 90%;
-        flex-grow: 1;
-        align-self: flex-start;
-    }
-
     .vehicle-summary {
         display: flex;
-        flex-basis: 400px;
+        /*flex-basis: 400px;*/
         flex-grow: 1;
-        max-width: 100vh;
+        max-width: calc(100vw - 20px);
         border-left: 1px solid #546f84;
         border-right: 1px solid #546f84;
-        margin: 10px 5px;
     }
 
     .vehicle-summary .mask {
@@ -104,6 +112,7 @@ function navigate() {
 
     .vehicle-info {
         display: flex;
+        flex-basis: 400%;
         margin-left: 10px;
     }
 
@@ -132,6 +141,11 @@ function navigate() {
     .vehicle-image {
         box-sizing: border-box;
         border: 1px solid #546f84;
+        width: 170px;
+        max-width: 25vw;
+        flex-basis: content;
+        flex-grow: 1;
+        align-self: flex-start;
     }
 
     .manufacturer {

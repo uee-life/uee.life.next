@@ -1,3 +1,26 @@
+# v0.2.0 Fleet Feature Test Release
+*Updated: 4 October 2954*
+
+This was a lot of work under the covers to get to, so apologies it's taken a while, but I think the work is worth it! I build a whole assignments system under the cover which manages Vehicle Groups and commanders, ships with independent fleet crews per group (separate from personal crews), and strong support for some super cool features in the future! (such as job/tasks boards and more!)
+
+Now is a great time to jump in and start testing, so we can find and fix any major bugs before official re-release in time for Citizencon 2954!
+
+On which note, if you will be there, look out for us there! We will be walking the venue, and may have something special for anyone who finds us and says hello!
+
+# Content
+- Added the Org Fleet management feature! Build a fleet hierarchy, add ships from your org, assign commanders and prepare for fleet operations! (check out this old video covering how fleets work: [Org Fleet Intro](https://youtu.be/nnfFEGjxf9g?si=gspyzAqt0KNPKb3n))
+- Added an assignments system under the cover to support fleet assignments and more. Visit the assignments page to view everything you are assigned to!
+- Added online status! See who is online now! (This will become restricted soon to only viewing friends/org members)
+
+# Fixes
+- Too many to list. Seriously. I overhauled a *lot*
+
+## &#x1F50E; Testing Focus
+- New account flow
+- Account verification
+- Ship & Crew Management
+- Org Fleet Management
+
 # v0.1.2 Minor Feature Update
 *Updated: 30 July 2954*
 

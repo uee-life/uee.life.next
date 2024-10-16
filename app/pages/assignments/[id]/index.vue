@@ -121,6 +121,13 @@ const { data: response, refresh, status } = useAPI(`/api/assignments/${route.par
                 :owner="isAdmin"
                 @refresh="refresh"></assignment>
         </template>
+        <template v-if="response.data.class == 'VehicleGroup'">
+            <assignment
+                :assignment="response.data"
+                :max-assignees="1"
+                :owner="isAdmin"
+                @refresh="refresh"></assignment>
+        </template>
     </div>
     <widgets-no-result v-else text="Assignment not found" />
 </template>

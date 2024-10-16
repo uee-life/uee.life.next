@@ -72,7 +72,7 @@ const {data: location, status} = useAPI(`/api/explore/locations/${route.params.c
         <client-only>
             <teleport to="#left-dock">
                 <panel-dock title="nav">
-                    <div class="left-nav-button"><router-link to="/explore">System List</router-link></div>
+                    <div class="left-nav-button"><router-link to="/explore">Return to Search</router-link></div>
                     <div v-if="location.data.system" class="left-nav-button"><router-link :to="systemLink">Back to System</router-link></div>
                     <div class="left-nav-button"><a target="_blank" :href="starmapLink">Open in Starmap</a></div>
                 </panel-dock>

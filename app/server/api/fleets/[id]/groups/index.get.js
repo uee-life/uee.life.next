@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 export const getFleetGroups = async (identifier) => {
     // get ship instance
     const query =
-        `MATCH (f:VehicleGroup)-[:BELONGS_TO]->(p:VehicleGroup {id: $id})
+        `MATCH (f:VehicleGroup)-[:PART_OF]->(p:VehicleGroup {id: $id})
          RETURN f as info`
     const { result, error } = await readQuery(query, {id: identifier})
     // TODO: Check this actually returns a ship, else return an empty result.

@@ -89,6 +89,7 @@
       .banner.full {
           margin: 10px;
       }
+
   
       .banner .mask {
           top: 0;
@@ -113,6 +114,10 @@
         background-position: center center;
         z-index: -1;
       }
+
+      .banner.mobile .banner-img {
+        height: 130px;
+      }
   
       .banner-logo{
           width: 136px;
@@ -127,6 +132,10 @@
         padding: 5px;
         margin-top: 177px;
         display: flex;
+      }
+
+      .banner.mobile .banner-bottom {
+        margin-top: 57px;
       }
   
       .banner h1 {

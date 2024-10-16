@@ -46,7 +46,7 @@ onMounted(() => {
     nextTick(() => {
         const tl = gsap.timeline()
         tl.to('.panel', {duration: 0.5, opacity: 1})
-        tl.to('.panel', {duration: 0.8, "max-width": "100vw", ease: "power2.in"})
+        tl.to('.panel', {duration: 0.8, "max-width": "calc(100vw - 20px)", ease: "power2.in"})
         tl.to('.panel', {delay: -0.5, duration: 0.8, "max-height": '9000px', ease: "power2.in"})
         if(props.title){
             tl.to('.panel-title', {delay: -0.6, duration: 0.5, opacity: 1})

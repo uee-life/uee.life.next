@@ -1,15 +1,15 @@
 <template>
-    <panel-dock class="citizen-org" :title="affiliate ? 'Affiliation' : orgModel" title-size="small">
+    <div class="citizen-org" :title="affiliate ? 'Affiliation' : orgModel" title-size="small">
         <nuxt-link class="org-link" :to="orgLink">
-          <img class="logo" :src="orgLogo" />
+          <img :src="orgLogo" :class="logoSize"/>
         </nuxt-link>
-        <div class="org-name">
+        <div :class="nameSize">
           {{ org.name }}
         </div>
         <div v-if="org.rank" class="org-title">
           Title: {{ org.rank.title }}
         </div>
-    </panel-dock>
+    </div>
 </template>
   
 <script setup>
@@ -25,6 +25,13 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
+  },
+  size: {
+    type: String,
+    default: 'large',
+    validator: function (value) {
+      return ['small', 'medium', 'large'].indexOf(value) !== -1
+    }
   }
 })
 
@@ -56,22 +63,44 @@ const orgModel = computed({
     }
   }
 })
+
+const logoSize = computed({
+  get() {
+    return `logo ${props.size}`
+  }
+})
+
+const nameSize = computed({
+    get() {
+        return `org-name ${props.size}`
+    }
+})
 </script>
   
 <style>
-.citizen-org {
-  position: relative;
-  height: 'auto';
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+
+.citizen-org .log {
+  align-self: center;
 }
-.citizen-org .logo {
+.logo.large {
   width: 165px;
   height: 165px; 
-  align-self: center;
   margin: 10px;
 }
+
+.logo.medium {
+  width: 135px;
+  height: 135px; 
+  margin: 10px;
+}
+
+.logo.small {
+  width: 95px;
+  height: 95px; 
+  margin: 10px;
+}
+
+
 .citizen-org .org-name {
   align-self: center;
   text-align: center;
@@ -83,6 +112,14 @@ const orgModel = computed({
   margin-bottom: 15px;
   text-align: center;
   color: #dbf3ff;
+}
+
+.org-name.medium {
+    font-size: 12px;
+}
+
+.org-name.small {
+    font-size: 11px;
 }
 
 .org-link {

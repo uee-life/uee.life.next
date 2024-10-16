@@ -100,13 +100,13 @@ async function updateName() {
 .vehicle-info {
     display: flex;
     flex-wrap: wrap;
-    margin: 0px -10px;
+    max-width: calc(100vw - 20px);
+    column-gap: 20px;
 }
 
 .info-panel {
     flex-basis: 250px;
     flex-grow: 1;
-    margin: 0 10px;
     padding-left: 15px;
     margin-bottom: 20px;
 }
