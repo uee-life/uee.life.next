@@ -18,7 +18,8 @@ const props = defineProps({
     <table class="info-table">
         <tr v-for="(v, k) in items" key="k" class="item">
             <td class="icon"><img v-if="icons[k]" :src="`/images/icons/${icons[k]}.png`"/></td>
-            <td class="label">{{ k.replace('_', ' ') }} :</td>
+            <td class="label">{{ k.replace('_', ' ') }}</td>
+
             <td class="value">{{ v }}</td>
         </tr>
     </table>

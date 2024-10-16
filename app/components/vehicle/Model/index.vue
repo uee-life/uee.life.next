@@ -17,6 +17,7 @@ const edit = ref({
 const name = ref(props.vehicle.name)
 
 const model = ref(props.vehicle)
+const hardpoints = JSON.parse(props.vehicle.hardpoints)
 
 const parseSlots = (data) => {
     let slots = ""
@@ -49,15 +50,15 @@ const parseSlots = (data) => {
                 }" />
                 <layout-info :items="{
                     crew: vehicle.max_crew,
-                    seats: vehicle.hardpoints.seats,
-                    escape_pods: vehicle.hardpoints.escape_pods,
+                    seats: hardpoints.seats,
+                    escape_pods: hardpoints.escape_pods,
                     cargo: vehicle.cargo
                 }" />
             </panel>
             <panel title="Engineering" title-size="small" class="info-panel small">
                 <layout-info 
                     :items="{
-                        speed: `${vehicle.speed_scm}m/s (${vehicle.speed_max}m/s)`,
+                        speed: `${vehicle.speed_scm}m/s (${vehicle.speed_max}m/s max)`,
                         h_fuel: vehicle.fuel_hydro,
                     }"
                     :icons="{
@@ -66,7 +67,7 @@ const parseSlots = (data) => {
                     }" />
                 <layout-info 
                     :items="{
-                        q_drive: parseSlots(vehicle.hardpoints.qdrives),
+                        q_drive: parseSlots(hardpoints.qdrives),
                         q_fuel: vehicle.fuel_quant
                     }"
                     :icons="{
@@ -75,8 +76,8 @@ const parseSlots = (data) => {
                     }" />
                 <layout-info 
                     :items="{
-                        power: parseSlots(vehicle.hardpoints.powerplants),
-                        cooling: parseSlots(vehicle.hardpoints.coolers)
+                        power: parseSlots(hardpoints.powerplants),
+                        cooling: parseSlots(hardpoints.coolers)
                     }"
                     :icons="{
                         power: 'power',
@@ -92,12 +93,12 @@ const parseSlots = (data) => {
                         extinguisers: 'empty'
                     }"/-->
             </panel>
-            <panel title="Protection" title-size="small" class="info-panel">
+            <panel title="Tactical" title-size="small" class="info-panel">
                 <layout-info :items="{
-                    weapons: parseSlots(vehicle.hardpoints.weapons),
-                    turrets: parseSlots(vehicle.hardpoints.turrets),
-                    missiles: parseSlots(vehicle.hardpoints.missiles),
-                    counters: vehicle.hardpoints.countermeasures
+                    weapons: parseSlots(hardpoints.weapons),
+                    turrets: parseSlots(hardpoints.turrets),
+                    missiles: parseSlots(hardpoints.missiles),
+                    counters: hardpoints.countermeasures
                 }" :icons="{
                     weapons: 'weapons',
                     turrets: 'turrets',
@@ -107,7 +108,7 @@ const parseSlots = (data) => {
                 <layout-info 
                     :items="{
                         armor: vehicle.armor,
-                        shield: `${parseSlots(vehicle.hardpoints.shields)} (${vehicle.shield_type})`
+                        shield: `${parseSlots(hardpoints.shields)} (${vehicle.shield_type})`
                     }"
                     :icons="{
                         armor: 'armor',

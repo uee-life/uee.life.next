@@ -8,19 +8,17 @@ const isOwner = computed({
     }
 })
 
-const vehicle = ref({})
+//const vehicle = ref({})
 
-const {status, data: response, refresh} = useAPI(`/api/vehicles/${route.params.id}`, {
+const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id}`, {
     key: 'getVehicle',
-    server: false,
-    lazy: true,
     onResponse({response}) {
-        if (response._data.status == 'success') {
+        /*if (response._data.status == 'success') {
             vehicle.value = response._data.data
             vehicle.value.model.hardpoints = JSON.parse(vehicle.value.model.hardpoints)
         } else {
             vehicle.value = {}
-        }
+        }*/
         
     }
 })
@@ -29,20 +27,27 @@ const {status, data: response, refresh} = useAPI(`/api/vehicles/${route.params.i
 
 <template>
     <widgets-loading v-if="status == 'pending'" />
-    <div v-else-if="status == 'success' && response.status == 'success' && vehicle">
+    <div v-else-if="status == 'success' && vehicle.status == 'success' && vehicle.data.model">
         <layout-banner 
             display="full"
-            :name="vehicle.model.model"
-            :tag="vehicle.model.name"
-            :type="vehicle.model.career + ' / ' + vehicle.model.role"
-            :image="`/images/ships/${vehicle.model.identifier}.jpg`"
-            :logo="`/images/manufacturers/${vehicle.manufacturer.id}.png`"
+            :name="vehicle.data.model.model"
+            :tag="vehicle.data.model.name"
+            :type="vehicle.data.model.career + ' / ' + vehicle.data.model.role"
+            :image="`/images/ships/${vehicle.data.model.identifier}.jpg`"
+            :logo="`/images/manufacturers/${vehicle.data.manufacturer.id}.png`"
             />
         <panel title="Description" title-size="small">
-            {{ vehicle.model.description }}
+            {{ vehicle.data.model.description }}
         </panel>
-        <vehicle-model  :vehicle="vehicle.model" />
-        <panel title="manufacturer info" title-size="small"><layout-info :items="vehicle.manufacturer" /></panel>
+        <vehicle-model  :vehicle="vehicle.data.model" />
+        <panel title="manufacturer info" title-size="small">
+            <layout-info :items="{
+                name: vehicle.data.manufacturer.name,
+                tag: vehicle.data.manufacturer.tag,
+                type: vehicle.data.manufacturer.type,
+                description: vehicle.data.manufacturer.description
+            }" />
+        </panel>
     </div>
     <widgets-no-result v-else text="Vehicle not found" />
 </template>
