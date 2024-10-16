@@ -12,20 +12,20 @@ const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/m
 const result = ref(null)
 const input_location = ref("")
 const input_vehicle = ref("")
-/*
-const vehicleImage = (id) => {
-    console.log(`vehicle: ${id}`)
-    return `/images/ships/small/${id}.jpg`
-}
-*/
-function clearInput(inputType) {
 
-    if (inputType == 'location' ) {
-        input_vehicle.value = ""
-    } else if (inputType == 'vehicle') {
-        input_location.value = ""
+const noResultText = computed({
+    get() {
+        if (input.value.length >=3) {
+            if(pending.value) {
+                return "Searching..."
+            } else {
+                return "No Results"
+            }
+        } else {
+            return "Search Locations/Vehicles"
+        }
     }
-}
+})
 
 const filteredVehicles = computed({
     get() {
@@ -86,6 +86,7 @@ const goToVehicle = (id) => {
 
 <template>
     <widgets-loading v-if="locationStatus != 'success' || vehicleStatus != 'success'"/>
+
     <div v-else class="system-list">
       <client-only>
             <teleport to="#left-dock">
@@ -103,7 +104,7 @@ const goToVehicle = (id) => {
 
         <vehicle-summary-model v-for="vehicle in filteredVehicles" class="vehicle-model-summary"
             :vehicle="vehicle" 
-            @selected="goToVehicle">{{ vehicle }}</vehicle-summary-model>
+            @selected="goToVehicle"></vehicle-summary-model>
 
         <explore-location-summary 
             v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">

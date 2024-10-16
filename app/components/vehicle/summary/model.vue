@@ -83,6 +83,7 @@ const vehicleSize = computed({
         bottom: 0;
         right: 0;
         z-index: 10;
+        cursor: pointer;
     }
 
     .vehicle-info {
