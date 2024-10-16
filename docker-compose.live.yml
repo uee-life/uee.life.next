@@ -2,7 +2,7 @@ version: "3"
 
 services:
     neo4j:
-        image: neo4j:latest
+        image: localhost/neo4j:5.24_uee.life
         container_name: neo4j-db
         restart: unless-stopped
         environment:
@@ -18,7 +18,7 @@ services:
 
     app:
         build: ./
-        container_name: uee-life
+        container_name: uee.life
         restart: unless-stopped
         command:
             "npm run start"
@@ -31,7 +31,7 @@ services:
     
     nginx:
         image: nginx
-        container_name: uee-life-nginx
+        container_name: nginx_uee.life
         ports:
             - "8000:80"
         volumes:
