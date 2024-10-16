@@ -16,24 +16,103 @@ const edit = ref({
 
 const name = ref(props.vehicle.name)
 
+const model = ref(props.vehicle)
+
+const parseSlots = (data) => {
+    let slots = ""
+    for (const slot of Object.keys(data)) {
+        if (data[slot] > 0) {
+            if (slots) {
+                slots = slots.concat(', ')
+            }
+            slots = slots.concat(`${data[slot]}xS${slot}`)
+        }
+    }
+    if (slots) {
+        return slots
+    } else {
+        return 'None'
+    }
+}
+//model.value.hardpoints = JSON.parse(props.vehicle.hardpoints)
+
 </script>
 
 <template>
     <div>
         <div class="vehicle-info">
-            <panel title="Hull Info" titleSize="small" class="info-panel">
+            <panel title="Hull Info" titleSize="small" class="info-panel medium">
                 <layout-info :items="{
-                    Manufacturer: vehicle.manufacturer,
+                    Make: vehicle.manufacturer,
                     model: vehicle.model,
-                    size: vehicle.size,
-                    role: `${vehicle.career} - ${vehicle.role}`
+                    role: `${vehicle.career} - ${vehicle.role}`,
+                }" />
+                <layout-info :items="{
+                    crew: vehicle.max_crew,
+                    seats: vehicle.hardpoints.seats,
+                    escape_pods: vehicle.hardpoints.escape_pods,
+                    cargo: vehicle.cargo
                 }" />
             </panel>
-            <panel title="Metrics" titleSize="small" class="info-panel">
+            <panel title="Engineering" title-size="small" class="info-panel small">
+                <layout-info 
+                    :items="{
+                        speed: `${vehicle.speed_scm}m/s (${vehicle.speed_max}m/s)`,
+                        h_fuel: vehicle.fuel_hydro,
+                    }"
+                    :icons="{
+                        speed: 'thrusters',
+                        h_fuel: 'empty',
+                    }" />
+                <layout-info 
+                    :items="{
+                        q_drive: parseSlots(vehicle.hardpoints.qdrives),
+                        q_fuel: vehicle.fuel_quant
+                    }"
+                    :icons="{
+                        q_drive: 'quantum-drives',
+                        q_fuel: 'empty'
+                    }" />
+                <layout-info 
+                    :items="{
+                        power: parseSlots(vehicle.hardpoints.powerplants),
+                        cooling: parseSlots(vehicle.hardpoints.coolers)
+                    }"
+                    :icons="{
+                        power: 'power',
+                        cooling: 'cooling'
+                    }"/>
+                <!--layout-info 
+                    :items="{
+                        relays: vehicle.hardpoints.relays,
+                        extinguishers: vehicle.hardpoints.extinguishers
+                    }"
+                    :icons="{
+                        relays: 'empty',
+                        extinguisers: 'empty'
+                    }"/-->
+            </panel>
+            <panel title="Protection" title-size="small" class="info-panel">
                 <layout-info :items="{
-                    max_crew: vehicle.max_crew,
-                    max_cargo: vehicle.cargo
-                }" />
+                    weapons: parseSlots(vehicle.hardpoints.weapons),
+                    turrets: parseSlots(vehicle.hardpoints.turrets),
+                    missiles: parseSlots(vehicle.hardpoints.missiles),
+                    counters: vehicle.hardpoints.countermeasures
+                }" :icons="{
+                    weapons: 'weapons',
+                    turrets: 'turrets',
+                    missiles: 'missiles',
+                    counters: 'empty'
+                }"/>
+                <layout-info 
+                    :items="{
+                        armor: vehicle.armor,
+                        shield: `${parseSlots(vehicle.hardpoints.shields)} (${vehicle.shield_type})`
+                    }"
+                    :icons="{
+                        armor: 'armor',
+                        shield: 'shields'
+                    }" />
             </panel>
         </div>
     </div>
@@ -47,11 +126,22 @@ const name = ref(props.vehicle.name)
     column-gap: 20px;
 }
 
-.info-panel {
-    flex-basis: 250px;
+.info-panel.small {
+    flex-basis: auto;
     flex-grow: 1;
-    padding-left: 15px;
     margin-bottom: 20px;
+}
+
+.info-panel.small {
+    flex-basis: 250px;
+}
+
+.info-panel.medium {
+    flex-basis: 300px;
+}
+
+.info-panel.large {
+    flex-basis: 400px;
 }
 
 .info-items {

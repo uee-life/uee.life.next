@@ -115,7 +115,7 @@ const goToVehicle = (id) => {
     </div>
 </template>
 
-<style>
+<style scoped>
 .layout-enter-active,
 .layout-leave-active {
     transition-property: opacity;
