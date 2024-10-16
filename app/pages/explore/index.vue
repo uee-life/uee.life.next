@@ -1,31 +1,3 @@
-<template>
-    <widgets-loading v-if="locationStatus != 'success' || vehicleStatus != 'success'"/>
-    <div v-else class="system-list">
-      <client-only>
-            <teleport to="#left-dock">
-                <panel-dock title="nav">
-                    <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
-                </panel-dock>
-                <panel-dock title="find location" class="search-box">
-                    <input class="search-input" @input="clearInput('location')" v-model="input_location" placeholder="Location Name"/>
-                </panel-dock>
-                <panel-dock title="find vehicle" class="search-box">
-                    <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
-                </panel-dock>
-            </teleport>
-        </client-only>
-
-        <vehicle-summary-model v-for="vehicle in filteredVehicles" :vehicle="vehicle" class="vehicle-model-summary"></vehicle-summary-model>
-
-        <explore-location-summary 
-            v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
-            <div><span class="data">{{ systemType(location) }}</span></div>
-            <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
-        </explore-location-summary>
-        <div class="mask"></div>
-    </div>
-</template>
-  
 <script setup>
 const {$api} = useNuxtApp()
 
@@ -40,20 +12,20 @@ const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/m
 const result = ref(null)
 const input_location = ref("")
 const input_vehicle = ref("")
-/*
-const vehicleImage = (id) => {
-    console.log(`vehicle: ${id}`)
-    return `/images/ships/small/${id}.jpg`
-}
-*/
-function clearInput(inputType) {
 
-    if (inputType == 'location' ) {
-        input_vehicle.value = ""
-    } else if (inputType == 'vehicle') {
-        input_location.value = ""
+const noResultText = computed({
+    get() {
+        if (input.value.length >=3) {
+            if(pending.value) {
+                return "Searching..."
+            } else {
+                return "No Results"
+            }
+        } else {
+            return "Search Locations/Vehicles"
+        }
     }
-}
+})
 
 const filteredVehicles = computed({
     get() {
@@ -106,9 +78,44 @@ function systemType(sys) {
       return sys.type
     }
 }
+
+const goToVehicle = (id) => {
+    navigateTo(`/vehicles/${id}`)
+}
 </script>
 
-<style>
+<template>
+    <widgets-loading v-if="locationStatus != 'success' || vehicleStatus != 'success'"/>
+
+    <div v-else class="system-list">
+      <client-only>
+            <teleport to="#left-dock">
+                <panel-dock title="nav">
+                    <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
+                </panel-dock>
+                <panel-dock title="find location" class="search-box">
+                    <input class="search-input" @input="clearInput('location')" v-model="input_location" placeholder="Location Name"/>
+                </panel-dock>
+                <panel-dock title="find vehicle" class="search-box">
+                    <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
+                </panel-dock>
+            </teleport>
+        </client-only>
+
+        <vehicle-summary-model v-for="vehicle in filteredVehicles" class="vehicle-model-summary"
+            :vehicle="vehicle" 
+            @selected="goToVehicle"></vehicle-summary-model>
+
+        <explore-location-summary 
+            v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
+            <div><span class="data">{{ systemType(location) }}</span></div>
+            <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
+        </explore-location-summary>
+        <div class="mask"></div>
+    </div>
+</template>
+
+<style scoped>
 .layout-enter-active,
 .layout-leave-active {
     transition-property: opacity;
