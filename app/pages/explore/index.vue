@@ -79,6 +79,14 @@ function systemType(sys) {
     }
 }
 
+const clearInput = (box) => {
+    if (box == 'location') {
+        input_vehicle.value = ''
+    } else {
+        input_location.value = ''
+    }
+}
+
 const goToVehicle = (id) => {
     navigateTo(`/vehicles/${id}`)
 }
