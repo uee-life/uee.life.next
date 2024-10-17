@@ -10,8 +10,10 @@ export const addShipModel = async (ship) => {
     const query =
         `MATCH (m:Organization {id: $manufacturer, official: true})
          MERGE (s:VehicleModel {identifier: $identifier})
+         ON CREATE
+            SET s.id = toUpper(left(randomUUID(), 8))
          SET s = {
-            id: toUpper(left(randomUUID(), 8)),
+            id: s.id,
             identifier: $identifier,
             model: $model,
             manufacturer: $manufacturer,
