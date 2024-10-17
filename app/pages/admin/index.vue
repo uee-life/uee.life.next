@@ -2,7 +2,7 @@
 const { $api } = useNuxtApp()
 const result = ref('')
 
-const testCreateAccount = async () => {
+const createCodes = async () => {
     const result = await $api(`/api/admin/user/create`, {
         method: 'POST',
         body: {}
@@ -24,9 +24,12 @@ const testCreateAccount = async () => {
                     <div class="left-nav-button">
                         <nuxt-link to="/admin/Cache">Cache Admin</nuxt-link>
                     </div>
+                    <div class="left-nav-button">
+                        <nuxt-link to="/admin/Codes">Code Admin</nuxt-link>
+                    </div>
                 </panel-dock>
                 <panel-dock class="actions" title="Global Actions">
-                    <button @click="testCreateAccount">Test Account Creation</button>
+                    <button @click="createCodes">Test Account Creation</button>
                 </panel-dock>
             </teleport>
         </client-only>
