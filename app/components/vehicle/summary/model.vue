@@ -2,7 +2,7 @@
     <panel class="vehicle-summary" :title="vehicle.model" title-size="small">
         <div class="vehicle-info">
             <div class="info">
-                <div class="line-item"><span class="label">Type:</span><span class="data">{{ vehicle.career }} - {{ vehicle.role }}</span></div>
+                <div class="line-item"><span class="label">Type:</span><span class="data">{{ vehicle.career }} / {{ vehicle.role }}</span></div>
                 <div class="line-item"><span class="label">Size:</span><span class="data">{{ vehicleSize }}</span></div>
                 <div class="line-item"><span class="label">Crew:</span><span class="data">{{ vehicle.max_crew }}</span></div>
                 <div class="line-item"><span class="label">Cargo:</span><span class="data">{{ vehicle.cargo }}</span></div>
@@ -50,7 +50,7 @@ const manufacturerImage = computed({
 
 const vehicleSize = computed({
     get() {
-        return ['Micro','Small','Medium','Large','Extra-Large','Capital'][props.vehicle.size - 1]
+        return ['Snub','Small','Medium','Large','Capital','Super-Capital'][props.vehicle.size - 1]
     }
 })
 </script>
