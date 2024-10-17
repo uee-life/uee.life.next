@@ -45,11 +45,9 @@ export const latestUser = async () => {
             sort: 'created_at:-1'
         },
         onResponse({ request, response, options}) {
-            console.log(response._data)
             return response._data
         },
         onResponseError({request, response, options}) {
-            console.log(response, request)
             return {}
         },
         onRequestError() {

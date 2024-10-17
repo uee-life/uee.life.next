@@ -27,7 +27,7 @@ const handleError = (message) => {
       </div>
       <div class="nav-right">
         <template v-if="auth.isAuthenticated">
-          <nuxt-link v-if="['Capn_Flint', 'Capn_Nemo'].includes(auth.citizen.handle)" class="nav-button" to="/admin">Admin</nuxt-link>
+          <nuxt-link v-if="['capn_flint', 'capn_nemo'].includes(auth.citizen.handle.toLowerCase())" class="nav-button" to="/admin">Admin</nuxt-link>
           <nuxt-link class="nav-button" to="/assignments">Assignments</nuxt-link>
           <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>
           <a class="nav-button" @click="useLogout()">Sign Off</a>
@@ -37,7 +37,7 @@ const handleError = (message) => {
           <a class="nav-button" @click="modals.signup = true">Register</a>
         </template>
       </div>
-      <modal-sign-up v-if="modals.signup" @close="modals.signup = false" @success="handleSuccess" @error="handleError"/>
+      <modal-sign-up v-if="modals.signup" @close="modals.signup = false" @done="modals.signup = false"/>
   </div>
 </template>
 

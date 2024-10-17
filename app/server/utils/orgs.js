@@ -35,7 +35,7 @@ async function loadOrganization(orgID) {
     }
 
     let org = null
-    if(result) {
+    if(result[0]) {
         org = result[0].org
     }
 
@@ -48,7 +48,7 @@ export const createOrganization = async (org, official = false) => {
             id: $id,
             name: $name,
             type: $type,
-            logo: $logo
+            logo: $logo,
             description: $description,
             official: $official
         })`
@@ -70,6 +70,22 @@ export const orgAddMember = async (handle, orgID, rank, title) => {
          WHERE c.handle =~ $handle
          MATCH (o:Organization {id: $orgID})
          MERGE (c)-[:MEMBER_OF {rank: $rank, title: $title}]->(o)
+         RETURN c`
+    const params = {
+        handle: "(?i)"+handle,
+        orgID: orgID,
+        rank: rank,
+        title: title
+    }
+    const error = await writeQuery(query, params)
+}
+
+export const orgAddAffiliate = async (handle, orgID, rank, title) => {
+    const query =
+        `MATCH (c:Citizen)
+         WHERE c.handle =~ $handle
+         MATCH (o:Organization {id: $orgID})
+         MERGE (c)-[:AFFILIATE_OF {rank: $rank, title: $title}]->(o)
          RETURN c`
     const params = {
         handle: "(?i)"+handle,

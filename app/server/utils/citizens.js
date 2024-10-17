@@ -1,5 +1,5 @@
 import { readQuery, writeQuery } from "./neo4j"
-import { getOrganization, orgAddMember, orgAddFounder } from "./orgs"
+import { getOrganization, orgAddMember, orgAddFounder, orgAddAffiliate } from "./orgs"
 import * as rsi from "./rsi"
 import { parseStatus } from "./status"
 
@@ -176,6 +176,13 @@ async function createCitizen(citizen) {
 
         if (org.founders && org.founders.find(item => item.handle === citizen.handle)) {
             await orgAddFounder(citizen.handle, mainOrg.id)
+        }
+    }
+    if (citizen.orgs.affiliated.length > 0) {
+        console.log("Adding affiliate org")
+        for (const affOrg of citizen.orgs.affiliated) {
+            const org = await getOrganization(affOrg.id, true)
+            await orgAddAffiliate(citizen.handle, affOrg.id, affOrg.rank.level, affOrg.rank.title)
         }
     }
 }

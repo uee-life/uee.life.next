@@ -38,7 +38,6 @@ const { data: fleets, status, refresh } = useAPI(`/api/orgs/${props.org.id}/flee
 
 <template>
     <div class="org-fleet">
-        <panel-title text="Org Fleets" class="title"/>
         <template v-if="status == 'success'">
             <template v-if="fleets.data.length > 0">
                 <fleet-summary v-for="item in fleets.data" :fleet="item.fleet" @selected="selected"/>
