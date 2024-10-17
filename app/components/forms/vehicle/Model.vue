@@ -190,6 +190,10 @@ const {data, status} = useAPI('/api/vehicles/models', {
                 <td><input type="number" v-model="vehicleModel.max_crew" id="crew" class="input"></td>
             </tr>
             <tr class="field">
+                <td><label for="cargo">Max Cargo:</label></td>
+                <td><input type="number" v-model="vehicleModel.cargo" id="cargo" class="input"></td>
+            </tr>
+            <tr class="field">
                 <td><label for="cargo">Armor:</label></td>
                 <td><select v-model="vehicleModel.armor" id="cargo" class="input">
                     <option>Small</option>

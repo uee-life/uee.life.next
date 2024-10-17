@@ -1,5 +1,6 @@
 <script setup>
 const {$api} = useNuxtApp()
+const auth = useAuthStore()
 
 const {data: locations, status: locationStatus} = useAPI(`/api/explore/locations`, {
     key: 'getLocations'
@@ -12,6 +13,16 @@ const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/m
 const result = ref(null)
 const input_location = ref("")
 const input_vehicle = ref("")
+
+const modals = ref({
+    add: false
+})
+
+const isAdmin = computed({
+    get() {
+        return auth.isAuthenticated && auth.user.verified == 1 && ['capn_flint', 'capn_nemo'].includes(auth.citizen.handle.toLowerCase())
+    }
+})
 
 const noResultText = computed({
     get() {
@@ -31,7 +42,7 @@ const filteredVehicles = computed({
     get() {
         if (vehicleStatus.value == 'success') {
             if (input_vehicle.value.length < 3) {
-                return null
+                return []
             }
 
             return vehicles.value.data.models.filter(model => {
@@ -40,7 +51,7 @@ const filteredVehicles = computed({
                         model.model.toLowerCase().includes(input_vehicle.value.toLowerCase())
             })
         }
-        return null
+        return []
     }
 })
 
@@ -49,7 +60,7 @@ const filteredLocations = computed({
     get() {
         if (locationStatus.value == 'success') {
             if (input_location.value.length < 3) {
-                return null
+                return []
             }
 
             return locations.value.data.filter(loc => {
@@ -57,7 +68,7 @@ const filteredLocations = computed({
                         loc.name.toLowerCase().includes(input_location.value.toLowerCase())
             })
         }
-        return null
+        return []
     }
 })
 
@@ -95,7 +106,7 @@ const goToVehicle = (id) => {
 <template>
     <widgets-loading v-if="locationStatus != 'success' || vehicleStatus != 'success'"/>
 
-    <div v-else class="system-list">
+    <div class="system-list">
       <client-only>
             <teleport to="#left-dock">
                 <panel-dock title="nav">
@@ -107,19 +118,26 @@ const goToVehicle = (id) => {
                 <panel-dock title="find vehicle" class="search-box">
                     <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
                 </panel-dock>
+                <panel-dock v-if="isAdmin" class="actions" title="Admin">
+                    <div class="left-nav-button" @click="modals.add = true">Add New Vehicle</div>
+                </panel-dock>
             </teleport>
         </client-only>
+        <template v-if="filteredLocations.length > 0 || filteredVehicles.length > 0" >
+            <vehicle-summary-model v-for="vehicle in filteredVehicles" class="vehicle-model-summary"
+                :vehicle="vehicle" 
+                @selected="goToVehicle"></vehicle-summary-model>
 
-        <vehicle-summary-model v-for="vehicle in filteredVehicles" class="vehicle-model-summary"
-            :vehicle="vehicle" 
-            @selected="goToVehicle"></vehicle-summary-model>
-
-        <explore-location-summary 
-            v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
-            <div><span class="data">{{ systemType(location) }}</span></div>
-            <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
-        </explore-location-summary>
-        <div class="mask"></div>
+            <explore-location-summary 
+                v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
+                <div><span class="data">{{ systemType(location) }}</span></div>
+                <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
+            </explore-location-summary>
+        </template>
+        <widgets-no-result v-else text="Search UEE Data" />
+        <layout-modal v-if="modals.add" title="Add a vehicle model" @close = "modals.add = false">
+            <forms-vehicle-model @close="modals.add = false"/>
+        </layout-modal>
     </div>
 </template>
 
