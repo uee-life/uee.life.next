@@ -1,6 +1,13 @@
 <script setup>
+const { $api } = useNuxtApp()
 const result = ref('')
 
+const createCodes = async () => {
+    const result = await $api(`/api/admin/user/create`, {
+        method: 'POST',
+        body: {}
+    })
+}
 </script>
 
 <template>
@@ -17,9 +24,12 @@ const result = ref('')
                     <div class="left-nav-button">
                         <nuxt-link to="/admin/Cache">Cache Admin</nuxt-link>
                     </div>
+                    <div class="left-nav-button">
+                        <nuxt-link to="/admin/Codes">Code Admin</nuxt-link>
+                    </div>
                 </panel-dock>
                 <panel-dock class="actions" title="Global Actions">
-                    
+                    <button @click="createCodes">Test Account Creation</button>
                 </panel-dock>
             </teleport>
         </client-only>

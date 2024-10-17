@@ -10,13 +10,13 @@ const getAllVehicleModels = async () => {
         makes: [],
         models: []
     }
-    let query = "MATCH (s:VehicleModel) return s as model"
+    let query = "MATCH (s:VehicleModel) return s as model ORDER BY model.mode"
     const {result: models } = await readQuery(query)
     for (const m of models) {
         data.models.push(m.model)
     }
 
-    query = "MATCH (m:Organization {type: 'Manufacturer'}) return m as make"
+    query = "MATCH (m:Organization {type: 'Manufacturer'}) return m as make ORDER BY make.name"
     const {result: makes} =  await readQuery(query)
     for (const m of makes) {
         data.makes.push(m.make)

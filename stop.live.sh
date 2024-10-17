@@ -1,0 +1,1 @@
+podman-compose -p live -f docker-compose.live.yml down
