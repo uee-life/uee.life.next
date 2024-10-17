@@ -1,56 +1,65 @@
-<template>
-    <widgets-loading v-if="status != 'success'"/>
-    <div v-else class="system-list">
-      <client-only>
-            <teleport to="#left-dock">
-                <panel-dock title="nav">
-                    <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
-                </panel-dock>
-                <panel-dock title="find location" class="search-box">
-                    <input class="search-input" @keyup.enter="getResults()" @input="autoGetResults()" v-model="input" placeholder="Location Name"/>
-                </panel-dock>
-            </teleport>
-        </client-only>
-        <explore-location-summary v-if="result" v-for="sys in result.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
-            <div><span class="data">{{ systemType(sys) }}</span></div>
-            <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
-        </explore-location-summary>
-        <explore-location-summary v-else v-for="sys in systems.data" :link="`/explore/${sys.code}`" :loc="{thumbnail: systemImage(sys.image_url), name: sys.name}">
-            <img class="icon" v-if="sys.affiliation != 'None'" :src="`/images/factions/icon-${sys.affiliation}.png`"/>
-        </explore-location-summary>
-    </div>
-</template>
-  
 <script setup>
 const {$api} = useNuxtApp()
-const {data: systems, status} = useAPI(`/api/explore/systems`)
+
+const {data: locations, status: locationStatus} = useAPI(`/api/explore/locations`, {
+    key: 'getLocations'
+})
+
+const {data: vehicles, status: vehicleStatus, refresh} = useAPI(`/api/vehicles/models`, {
+    key: 'getVehicles'
+})
 
 const result = ref(null)
-const input = ref("")
+const input_location = ref("")
+const input_vehicle = ref("")
 
-
-async function autoGetResults() {
-    if(input.value.length >= 3) {
-//        pending.value = true
-        getResults()
-    } else {
-        result.value = null
-    }
-}
-
-async function getResults() {
-    const data = {
-        search: input.value
-    }
-    result.value = await $api(`/api/search/location`, {
-        method: 'POST',
-        body: data,
-        onResponse(_ctx) {
-//            pending.value = false
+const noResultText = computed({
+    get() {
+        if (input.value.length >=3) {
+            if(pending.value) {
+                return "Searching..."
+            } else {
+                return "No Results"
+            }
+        } else {
+            return "Search Locations/Vehicles"
         }
-    })
-    console.log(result)
-}
+    }
+})
+
+const filteredVehicles = computed({
+    get() {
+        if (vehicleStatus.value == 'success') {
+            if (input_vehicle.value.length < 3) {
+                return null
+            }
+
+            return vehicles.value.data.models.filter(model => {
+                return model.identifier.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                        model.manufacturer.toLowerCase().includes(input_vehicle.value.toLowerCase()) ||
+                        model.model.toLowerCase().includes(input_vehicle.value.toLowerCase())
+            })
+        }
+        return null
+    }
+})
+
+
+const filteredLocations = computed({
+    get() {
+        if (locationStatus.value == 'success') {
+            if (input_location.value.length < 3) {
+                return null
+            }
+
+            return locations.value.data.filter(loc => {
+                return loc.code.toLowerCase().includes(input_location.value.toLowerCase()) ||
+                        loc.name.toLowerCase().includes(input_location.value.toLowerCase())
+            })
+        }
+        return null
+    }
+})
 
 function systemImage(img) {
     if(img) {
@@ -69,9 +78,52 @@ function systemType(sys) {
       return sys.type
     }
 }
+
+const clearInput = (box) => {
+    if (box == 'location') {
+        input_vehicle.value = ''
+    } else {
+        input_location.value = ''
+    }
+}
+
+const goToVehicle = (id) => {
+    navigateTo(`/vehicles/${id}`)
+}
 </script>
 
-<style>
+<template>
+    <widgets-loading v-if="locationStatus != 'success' || vehicleStatus != 'success'"/>
+
+    <div v-else class="system-list">
+      <client-only>
+            <teleport to="#left-dock">
+                <panel-dock title="nav">
+                    <div class="left-nav-button"><a target="_blank" href="https://robertsspaceindustries.com/starmap">Open Starmap</a></div>
+                </panel-dock>
+                <panel-dock title="find location" class="search-box">
+                    <input class="search-input" @input="clearInput('location')" v-model="input_location" placeholder="Location Name"/>
+                </panel-dock>
+                <panel-dock title="find vehicle" class="search-box">
+                    <input class="search-input" @input="clearInput('vehicle')" v-model="input_vehicle" placeholder="Manufacturer/Vehicle"/>
+                </panel-dock>
+            </teleport>
+        </client-only>
+
+        <vehicle-summary-model v-for="vehicle in filteredVehicles" class="vehicle-model-summary"
+            :vehicle="vehicle" 
+            @selected="goToVehicle"></vehicle-summary-model>
+
+        <explore-location-summary 
+            v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
+            <div><span class="data">{{ systemType(location) }}</span></div>
+            <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
+        </explore-location-summary>
+        <div class="mask"></div>
+    </div>
+</template>
+
+<style scoped>
 .layout-enter-active,
 .layout-leave-active {
     transition-property: opacity;

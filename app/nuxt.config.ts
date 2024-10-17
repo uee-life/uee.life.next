@@ -56,7 +56,7 @@ export default defineNuxtConfig({
  ],
 
  gAnalytics: {
-   measurementId: "G-6WSP4X8Q6M"
+   measurementId: "G-SH1PW5J3QJ"
  },
 
  plugins: [

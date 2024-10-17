@@ -9,17 +9,27 @@ export const addShipModel = async (ship) => {
     // add ship static details and link to manufacturer
     const query =
         `MATCH (m:Organization {id: $manufacturer, official: true})
-         MERGE (s:ShipModel {identifier: $identifier})
+         MERGE (s:VehicleModel {identifier: $identifier})
+         ON CREATE
+            SET s.id = toUpper(left(randomUUID(), 8))
          SET s = {
+            id: s.id,
             identifier: $identifier,
             model: $model,
             manufacturer: $manufacturer,
             size: $size,
             cargo: $cargo,
+            armor: $armor,
+            speed_scm: $speed_scm,
+            speed_max: $speed_max,
+            shield_type: $shield_type,
+            fuel_hydro: $fuel_hydro,
+            fuel_quant: $fuel_quant,
             max_crew: $max_crew,
             career: $career,
             role: $role,
-            description: $description
+            description: $description,
+            hardpoints: $hardpoints
          }
          MERGE (m)<-[:MADE_BY]-(s)`
 

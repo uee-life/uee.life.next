@@ -12,6 +12,8 @@ const setColor = (type) => {
         case type.startsWith('WEB-'):
             return `\x1b[35m${type}\x1b[0m`
         case type.startsWith('CACHE'):
+            return `\x1b[32m${type}\x1b[0m`
+        case type.startsWith('CACHE'):
             return `\x1b[31m${type}\x1b[0m`
         default:
             return type

@@ -9,7 +9,7 @@ const modal = ref({
 const selected = ref(null)
 
 const updateVehicles = async () => {
-    result.value = await $api(`/api/admin/vehicleModels/import`)
+    result.value = await $api(`/api/admin/vehicles/import`)
     .catch((error) => {
         console.error(error)
     })
@@ -67,7 +67,7 @@ const {data: vehicleModels, status} = useAPI('/api/vehicles/models', {
             <teleport to="#left-dock">
                 <panel-dock class="actions" title="action">
                     <div class="left-nav-button" @click="modal.add = true">Add New Vehicle</div>
-                    <div class="left-nav-button" @click="updateShips">
+                    <div class="left-nav-button" @click="updateVehicles">
                         Sync with Erkul
                     </div>
                 </panel-dock>
