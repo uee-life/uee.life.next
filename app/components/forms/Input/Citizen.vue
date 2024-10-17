@@ -1,5 +1,6 @@
 <template>
     <div class="citizen-picker">
+        Citizen:
         <input class="input" 
                 id="citizen" 
                 @keyup.enter="getResults()" 

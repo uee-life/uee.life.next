@@ -13,11 +13,11 @@
                     </template>
                 </div>
             </nuxt-link>
-        </div>
-        <div v-if="showName" class="name">
+            <div v-if="showName" class="name">
                 {{ citizen.name }}
             </div>
             <slot></slot>
+        </div>
     </div>
 </template>
 

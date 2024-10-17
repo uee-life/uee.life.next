@@ -2,23 +2,18 @@ version: "3"
 
 services:
     neo4j-test:
-        image: neo4j:latest
-        container_name: neo4j-db
+        image: localhost/neo4j:5.24_uee.life-test
+        container_name: neo4j-db-test
         restart: unless-stopped
         environment:
             - NEO4J_AUTH=${NEO4J_AUTH}
         ports:
             - "7474:7474"
             - "7687:7687"
-        volumes:
-            - /home/rocky/neo4j/data:/data
-            - /home/rocky/neo4j/logs:/logs
-            - /home/rocky/neo4j/plugins:/plugins
-            - /home/rocky/neo4j/import:/import
 
     app-test:
         build: ./
-        container_name: uee-life
+        container_name: uee.life-test
         restart: unless-stopped
         command:
             "npm run start"
@@ -31,7 +26,7 @@ services:
     
     nginx-test:
         image: nginx
-        container_name: uee-life-nginx
+        container_name: nginx_uee.life-test
         ports:
             - "8090:80"
         volumes:

@@ -34,12 +34,14 @@ onMounted(() => {
             <citizen-portrait :citizen="citizen" />
         </panel>
         <div class="info">
+            <client-only>
             <layout-info :items='{
                     "UEE Record": citizen.record,
                     "Name": citizen.name,
                     "Handle": citizen.handle,
                     "Enlisted": citizen.enlisted
                     }'/>
+            </client-only>
         </div>
   </div>
 </template>

@@ -1,6 +1,19 @@
 <script setup>
 const auth = useAuthStore()
 
+const modals = ref({
+  signup: false
+})
+
+const handleSuccess = (message) => {
+  modals.value.signup = false
+  console.log('SUCCESS', message)
+}
+
+const handleError = (message) => {
+  modals.value.signup = false
+  console.log('ERROR', message)
+}
 </script>
 
 <template>
@@ -19,8 +32,12 @@ const auth = useAuthStore()
           <nuxt-link class="nav-button" to="/settings">Settings</nuxt-link>
           <a class="nav-button" @click="useLogout()">Sign Off</a>
         </template>
-        <a v-else class="nav-button" href="/auth/login">Sign In</a>
+        <template v-else>
+          <a class="nav-button" href="/auth/login">Log In</a>
+          <a class="nav-button" @click="modals.signup = true">Register</a>
+        </template>
       </div>
+      <modal-sign-up v-if="modals.signup" @close="modals.signup = false" @success="handleSuccess" @error="handleError"/>
   </div>
 </template>
 

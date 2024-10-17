@@ -26,13 +26,13 @@ const getToken = defineCachedFunction(async () => {
     return token
 }, {
     maxAge: 60 * 60 * 23,
-    name: 'auth0Token',
+    name: 'auth0Token2',
     getKey: () => { return 'token'}
 })
 
 export const latestUser = async () => {
     const token = await getToken()
-    const logs = await $fetch('https://ueelife.auth0.com/api/v2/logs', {
+    const logs = await $fetch('https://ueelife.auth0.com/api/v2/users', {
         method: 'get',
         headers: { 
             'content-type': 'application/json',
@@ -41,8 +41,8 @@ export const latestUser = async () => {
         query: {
             page: 0,
             per_page: 1,
-            fields: 'details.response.body.app_metadata',
-            q: 'type:"sapi" AND description:"Update a user"'
+            q: 'app_metadata.handle_verified:true',
+            sort: 'created_at:-1'
         },
         onResponse({ request, response, options}) {
             console.log(response._data)
@@ -57,7 +57,7 @@ export const latestUser = async () => {
             return {}
         }
     })
-    return logs
+    return await getCitizen(logs[0].app_metadata.handle)
 }
 
 export const randomUser = async () => {
@@ -126,10 +126,8 @@ export const verifyUser = async (userId, handle) => {
 }
 
 export const updateHandle = async (userId, handle) => {
-    console.debug("updating: ", handle)
     const account = await getAccount(userId)
     // delete old citizen record, plus anything directly linked to it, if a verified account existed.
-    console.debug(account)
     if (account.app_metadata.handle_verified) {
         await removeCitizen(account.app_metadata.handle)
     }
@@ -201,6 +199,94 @@ export const updateAppMetadata = async (userID, metadata) => {
         body: body
     })
     return result
+}
+
+export const createAccount = async (handle, email) => {
+    console.log('creating account')
+    const token = await getToken()
+    console.info(token)
+    const data = {
+        email: email,
+        user_metadata: {
+            handle: handle
+        },
+        email_verified: false,
+        connection: "Username-Password-Authentication",
+        password: (Math.random() + 1).toString(36).substring(2) + 'aB!',
+        verify_email: false,
+        username: handle
+    }
+
+    console.log('creating account')
+
+    const account = await $fetch(`https://ueelife.auth0.com/api/v2/users`, {
+        method: 'post',
+        headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: data,
+        onResponse({ response }) {
+            console.info(response._data)
+        }
+    }).catch(err => {
+        console.error(err)
+    })
+
+    console.log('getting reset token')
+
+    // get password reset token
+    const result = await $fetch(`https://ueelife.auth0.com/api/v2/tickets/password-change`, {
+        method: 'post',
+        headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: {
+            //result_url: 'www.uee.com/test',
+            user_id: account.user_id,
+            client_id: config.auth0_m2m.client_id,
+            //organization_id: '',
+            //connection_id: '',
+            //email: account.email,
+            ttl_sec: 0,
+            mark_email_as_verified: false,
+            includeEmailInRedirect: false
+        },
+        onResponse({request, response, error}) {
+            console.log(response._data)
+        }
+    })
+
+    console.log('Updating metadata')
+
+    await updateAppMetadata(account.user_id, {
+        reset_ticket: result.ticket
+    })
+
+    console.log('Sending verification email')
+
+    // trigger a verification email
+    const mailresult = await $fetch(`https://ueelife.auth0.com/api/v2/jobs/verification-email`, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: {
+            user_id: account.user_id,
+            client_id: config.auth0_m2m.client_id,
+        },
+        onResponse({ response }) {
+            console.log(response._data)
+        }
+     })
+
+    console.log('email send result', result)
+    return true
 }
 
 export class ManagementClient {
