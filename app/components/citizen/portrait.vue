@@ -176,6 +176,11 @@ function citizenLink() {
         height: fit-content;
     }
 
+    .portrait.small .name {
+        font-size: 12px;
+        text-align: center;
+    }
+
     .portrait.small.round {
         padding: 10px;
     }

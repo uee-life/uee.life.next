@@ -80,6 +80,22 @@ export const orgAddMember = async (handle, orgID, rank, title) => {
     const error = await writeQuery(query, params)
 }
 
+export const orgAddAffiliate = async (handle, orgID, rank, title) => {
+    const query =
+        `MATCH (c:Citizen)
+         WHERE c.handle =~ $handle
+         MATCH (o:Organization {id: $orgID})
+         MERGE (c)-[:AFFILIATE_OF {rank: $rank, title: $title}]->(o)
+         RETURN c`
+    const params = {
+        handle: "(?i)"+handle,
+        orgID: orgID,
+        rank: rank,
+        title: title
+    }
+    const error = await writeQuery(query, params)
+}
+
 export const orgAddFounder = async (handle, orgID) => {
     // need to make sure the citizen is created first
     await getCitizen(handle, true)
