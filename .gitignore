@@ -1,2 +1,6 @@
 
 .DS_Store
+
+# Config files
+*config.js
+*config.json

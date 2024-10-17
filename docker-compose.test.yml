@@ -2,7 +2,7 @@ version: "3"
 
 services:
     neo4j-test:
-        image: localhost/neo4j:5.24_uee.life-test
+        image: neo4j:latest
         container_name: neo4j-db-test
         restart: unless-stopped
         environment:
@@ -10,6 +10,11 @@ services:
         ports:
             - "7474:7474"
             - "7687:7687"
+        volumes:
+            - /home/rocky/neo4j/data:/data
+            - /home/rocky/neo4j/logs:/logs
+            - /home/rocky/neo4j/plugins:/plugins
+            - /home/rocky/neo4j/import:/import
 
     app-test:
         build: ./

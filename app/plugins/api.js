@@ -33,7 +33,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                         title: "Server Error",
                         text: "Internal Server Error: " + response._data,
                         icon: "error",
-                        confirButtonText: 'OK!'
+                        confirmButtonText: 'OK!'
                     }).then((result) => {
                         if(result.isConfirmed) {
                             reloadNuxtApp()
