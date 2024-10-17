@@ -35,7 +35,7 @@ async function loadOrganization(orgID) {
     }
 
     let org = null
-    if(result) {
+    if(result[0]) {
         org = result[0].org
     }
 
@@ -48,7 +48,7 @@ export const createOrganization = async (org, official = false) => {
             id: $id,
             name: $name,
             type: $type,
-            logo: $logo
+            logo: $logo,
             description: $description,
             official: $official
         })`
