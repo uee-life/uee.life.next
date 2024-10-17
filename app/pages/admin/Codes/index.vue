@@ -33,7 +33,7 @@ const {data, status, refresh} = useAPI('/api/admin/codes', {
                 </panel-dock>
             </teleport>
         </client-only>
-        <panel title="Active Codes" title-size="small" class="codes"><span v-for="c in data.data">{{ c.code }}, </span></panel>
+        <panel title="Active Codes" title-size="small" class="codes"><span v-for="c in data.data">{{ c.code }},</span></panel>
     </div>
 </template>
 
