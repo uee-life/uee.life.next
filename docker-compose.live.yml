@@ -2,7 +2,7 @@ version: "3"
 
 services:
     neo4j:
-        image: localhost/neo4j:5.24_uee.life
+        image: neo4j:latest
         container_name: neo4j-db
         restart: unless-stopped
         environment:
