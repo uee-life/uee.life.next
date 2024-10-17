@@ -212,11 +212,11 @@ const {data, status} = useAPI('/api/vehicles/models', {
             </tr>
             <tr class="field">
                 <td><label for="model">Hydro Fuel:</label></td>
-                <td><input type="number" v-model="vehicleModel.fuel_hydro" id="model" class="input"></td>
+                <td><input type="number" step="0.1" v-model="vehicleModel.fuel_hydro" id="model" class="input"></td>
             </tr>
             <tr class="field">
                 <td><label for="model">Quantum Fuel:</label></td>
-                <td><input type="number" v-model="vehicleModel.fuel_quant" id="model" class="input"></td>
+                <td><input type="number" step="0.1" v-model="vehicleModel.fuel_quant" id="model" class="input"></td>
             </tr>
             <label for="description">Description</label><br>
             <textarea v-model="vehicleModel.description" id="description" rows="10" class="input"></textarea><br>
