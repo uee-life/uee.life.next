@@ -2,9 +2,14 @@
 const route = useRoute()
 const auth = useAuthStore()
 
-const isOwner = computed({
+const modals = ref({
+    edit: false,
+    add: false
+})
+
+const isAdmin = computed({
     get() {
-        return auth.isAuthenticated && auth.user.verified == 1 && auth.citizen.handle.toLowerCase().trim() == response.value.data.owner.handle.toLowerCase().trim()
+        return auth.isAuthenticated && auth.user.verified == 1 && ['capn_flint', 'capn_nemo'].includes(auth.citizen.handle.toLowerCase())
     }
 })
 
@@ -28,6 +33,14 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id
 <template>
     <widgets-loading v-if="status == 'pending'" />
     <div v-else-if="status == 'success' && vehicle.status == 'success' && vehicle.data.model">
+        <client-only>
+            <teleport to="#left-dock">
+                <panel-dock v-if="isAdmin" class="actions" title="Admin">
+                    <div class="left-nav-button" @click="modals.add = true">Add New Vehicle</div>
+                    <div class="left-nav-button" @click="modals.edit = true">Edit Vehicle</div>
+                </panel-dock>
+            </teleport>
+        </client-only>
         <layout-banner 
             display="full"
             :name="vehicle.data.model.model"
@@ -48,6 +61,13 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id
                 description: vehicle.data.manufacturer.description
             }" />
         </panel>
+        <layout-modal v-if="modals.edit" title="Edit vehicle model" @close = "modals.edit = false">
+            <forms-vehicle-model 
+                :vehicle-info="vehicle.data.model" @close="modals.edit = false"/>
+        </layout-modal>
+        <layout-modal v-if="modals.add" title="Add a vehicle model" @close = "modals.add = false">
+            <forms-vehicle-model @close="modals.add = false"/>
+        </layout-modal>
     </div>
     <widgets-no-result v-else text="Vehicle not found" />
 </template>
