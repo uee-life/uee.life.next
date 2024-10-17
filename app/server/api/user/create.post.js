@@ -14,9 +14,9 @@ const checkAndCreateUser = async (data) => {
     // check invite code
     console.log(data)
     if (await checkCode(data.code)) {
-        //if (await createAccount(data.handle, data.email)) {
-        //    return true
-        //} 
+        if (await createAccount(data.handle, data.email)) {
+            return true
+        } 
         return true
     }
     return false

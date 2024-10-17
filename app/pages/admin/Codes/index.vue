@@ -2,6 +2,8 @@
 const { $api } = useNuxtApp()
 const count = ref(5)
 
+const isPrinted = (code) => {}
+
 const generateCodes = async () => {
     await $api(`/api/admin/codes/generate`, {
         method: 'POST',
@@ -33,12 +35,16 @@ const {data, status, refresh} = useAPI('/api/admin/codes', {
                 </panel-dock>
             </teleport>
         </client-only>
-        <panel title="Active Codes" title-size="small" class="codes"><span v-for="c in data.data">{{ c.code }},</span></panel>
+        <panel title="Active Codes" title-size="small" class="codes"><span v-for="c in data.data" :class="c.code.issued ? 'issued' : ''">{{ c.code.code }},</span></panel>
     </div>
 </template>
 
 <style scoped>
 .codes {
     padding: 15px;
+}
+
+.issued {
+    color: gray;
 }
 </style>
