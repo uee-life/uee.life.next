@@ -32,7 +32,7 @@ const getToken = defineCachedFunction(async () => {
 
 export const latestUser = async () => {
     const token = await getToken()
-    const logs = await $fetch('https://ueelife.auth0.com/api/v2/logs', {
+    const logs = await $fetch('https://ueelife.auth0.com/api/v2/users', {
         method: 'get',
         headers: { 
             'content-type': 'application/json',
@@ -41,8 +41,8 @@ export const latestUser = async () => {
         query: {
             page: 0,
             per_page: 1,
-            fields: 'details.response.body.app_metadata',
-            q: 'type:"sapi" AND description:"Update a user"'
+            q: 'app_metadata.handle_verified:true',
+            sort: 'created_at:-1'
         },
         onResponse({ request, response, options}) {
             console.log(response._data)
@@ -57,7 +57,7 @@ export const latestUser = async () => {
             return {}
         }
     })
-    return logs
+    return await getCitizen(logs[0].app_metadata.handle)
 }
 
 export const randomUser = async () => {

@@ -257,6 +257,15 @@
     color: #dbf3ff;
   }
 
+  hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #546f84;
+    margin: 1em 0;
+    padding: 0;
+  }
+
   /* Scrollbar config */
   /* width */
   ::-webkit-scrollbar {

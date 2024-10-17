@@ -1,7 +1,8 @@
 
 export const getVehicleGroup = async (identifier, subgroups=true) => {
     const query =
-        `MATCH (g:VehicleGroup {id: $id})-[:PART_OF]->{0,10}(f:VehicleGroup)-[:BELONGS_TO]->(o:Organization)
+        `MATCH (g:VehicleGroup)-[:PART_OF]->{0,10}(f:VehicleGroup)-[:BELONGS_TO]->(o:Organization)
+         WHERE g.id =~ $id
          RETURN g as info,
                 f as fleet,
                 o as org,
@@ -9,7 +10,7 @@ export const getVehicleGroup = async (identifier, subgroups=true) => {
                     MATCH (sg:VehicleGroup)-[:PART_OF]->(g)
                     return sg.id
                 } as groups`
-    const { result } = await readQuery(query, {id: identifier.toUpperCase()})
+    const { result } = await readQuery(query, {id: '(?i)'+identifier.toUpperCase()})
 
     if (result[0]) {
         const group = {
