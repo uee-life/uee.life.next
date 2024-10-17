@@ -52,7 +52,7 @@
     display: flex;
     margin: 10px;
     justify-content: center;
-    min-height: 30px;
+    min-height: 30px !important;
     max-width: 100%;
     font: 14px michroma;
     text-shadow: 1px 1px 2px black, -1px 1px 2px black, -1px -1px 2px black, 1px -1px 2px black;
@@ -83,22 +83,22 @@
 }
 
 .error {
-    background: rgba(189, 4, 4, 0.6);
+    background: rgba(189, 4, 4, 0.6) !important;
     color: #dbf3ff;
 }
 
 .warning {
-    background: repeating-linear-gradient(45deg, rgba(255, 240, 0, 0.6), rgba(255, 240, 0, 0.6) 5px, transparent 5px, transparent 10px);
+    background: repeating-linear-gradient(45deg, rgba(255, 240, 0, 0.6), rgba(255, 240, 0, 0.6) 5px, transparent 5px, transparent 10px) !important;
     color: #dbf3ff;
 }
 
 .debug {
-    background: rgba(9, 160, 100, 0.6);
+    background: rgba(9, 160, 100, 0.6) !important;
     color: #dbf3ff;
 }
 
 .info {
-    background: rgba(7, 122, 253, 0.6);
+    background: rgba(7, 122, 253, 0.6) !important;
     color: #dbf3ff;
 }
 
