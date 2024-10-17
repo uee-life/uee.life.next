@@ -2,14 +2,14 @@ version: "3"
 
 services:
     neo4j-test:
-        image: localhost/neo4j:5.24_uee.life-test
+        image: localhost/neo4j:5.24_uee.life.test
         container_name: neo4j-db-test
         restart: unless-stopped
         environment:
             - NEO4J_AUTH=${NEO4J_AUTH}
         ports:
-            - "7474:7474"
-            - "7687:7687"
+            - "7575:7474"
+            - "7689:7687"
 
     app-test:
         build: ./
