@@ -126,6 +126,7 @@ const requestFriend = async () => {
             friend: route.params.handle
         }
     })
+    refresh()
 }
 
 const confirmFriend = async () => {
