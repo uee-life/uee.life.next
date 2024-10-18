@@ -15,7 +15,7 @@ const props = defineProps({
         type: String,
         default: ''
     },
-    edit: {
+    canEdit: {
         type: Boolean,
         default: false
     }
@@ -77,20 +77,20 @@ const updateMember = async (member, role) => {
                 <h5 class="role">{{ c.role }}</h5>
                 <citizen-portrait :citizen="c.citizen" size="small" :showName="true">
                     <div class="mask"  @click="showAssignee(c)"></div>
-                    <img v-if="edit" @click="showAssignee(c)" class="edit" src="@/assets/edit.png">
+                    <img v-if="canEdit" @click="showAssignee(c)" class="edit" src="@/assets/edit.png">
                     <img v-else-if="isSelf(c.citizen.handle)" @click="removeMember(c.citizen)" class="edit" src="@/assets/delete.png">
                 </citizen-portrait>
             </div>
             <div v-else class="unassigned">
                 <h5 class="role">&nbsp;</h5>
                 <div class="bg"/>
-                <img v-if="edit" @click="modal.add = true" src="@/assets/plus.png" class="add-new edit"/>
+                <img v-if="canEdit" @click="modal.add = true" src="@/assets/plus.png" class="add-new edit"/>
                 <div v-else class="add-new" />
                 <div class="name">Unassigned</div>
             </div>
         </div>
         <layout-modal v-if="modal.show" title="Crew Record" @close="modal.show = false">
-            <assignment-member :member="selected" @remove="removeMember" @update="updateMember" :canEdit="edit"/>
+            <assignment-member :member="selected" @remove="removeMember" @update="updateMember" :canEdit="canEdit"/>
         </layout-modal>
         <layout-modal v-if="modal.add" title="Add Crew" @close="modal.add = false">
             <forms-assignment :placeholder="defaultRole" @add="assignMember"/>

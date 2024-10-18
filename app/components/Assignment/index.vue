@@ -58,7 +58,7 @@ const remove = async (data) => {
 </script>
 
 <template>
-    <assignment-summary :assignment="assignment" />
+    <assignment-summary :assignment="assignment" :is-admin="owner" @add="add" @remove="remove"/>
 </template>
 
 <style scoped>
