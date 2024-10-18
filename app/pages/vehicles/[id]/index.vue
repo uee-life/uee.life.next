@@ -15,7 +15,7 @@ const isAdmin = computed({
 
 //const vehicle = ref({})
 
-const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id}`, {
+const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id}/model`, {
     key: 'getVehicle',
     onResponse({response}) {
         /*if (response._data.status == 'success') {
