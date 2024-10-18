@@ -1,7 +1,7 @@
 // Public
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
-    const vehicle = await getVehicleModel(id)
+    const vehicle = await getVehicle(id)
 
     if (vehicle) {
         // load assignments

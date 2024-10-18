@@ -26,7 +26,7 @@
                 v-if="config.public.test_env"></widgets-notification>
             <widgets-notification 
                 messageType="info" 
-                messageText="Account not verified - Click to open settings" 
+                messageText="Account not verified - Click for settings" 
                 :modality="false" 
                 v-if="auth.isAuthenticated && !auth.user.verified"
                 @click="navigateTo('/settings')" 
@@ -37,6 +37,11 @@
 </template>
 
 <style scoped>
+
+@viewport {
+    max-zoom: 1;
+  }
+
 .app {
   position: relative;
   min-height: 100vh;

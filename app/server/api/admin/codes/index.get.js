@@ -8,7 +8,7 @@ const getActiveCodes = async () => {
     const query = `
         MATCH (c:InviteCode)
         WHERE c.used = false
-        RETURN c.code as code
+        RETURN c as code ORDER BY c.printed DESC
     `
 
     const { result } = await readQuery(query)

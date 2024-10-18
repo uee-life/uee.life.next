@@ -14,7 +14,7 @@ export default defineNuxtConfig({
        title: 'UEE.life',
        meta: [
          { charset: 'utf-8' },
-         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+         { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
          { hid: 'description', name: 'description', content: 'The Portal to your life in the UEE' },
          { name: 'og:title', property: 'og:title', content: 'UEE.life' },
          { name: 'og:description', property: 'og:description', content: 'The Portal to your life in the UEE' },
