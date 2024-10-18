@@ -85,7 +85,7 @@ function navigate() {
 </template>
 
 <style>
-    .vehicle-summary .panel-content {
+    .vehicle-summary>.panel-content {
         display: flex;
     }
 </style>
