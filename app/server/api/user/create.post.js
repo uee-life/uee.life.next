@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     if (await checkAndCreateUser(body)) {
         return apiSuccess("Account Created, check your email to finalize!")
     } else {
-        return apiError(event, 'Unable to create account')
+        return apiError(event, 'Code is not valid!')
     }
     
 })

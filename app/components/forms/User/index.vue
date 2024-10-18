@@ -1,17 +1,19 @@
 <template>
     <form @submit.prevent="registerUser" class="user-form">
+        <ClientOnly>
         <table>
             <tr>
-                <td>Invite Code:</td>
+                <td class="label">Invite Code:</td>
                 <td><input class="input" type="text" v-model="data.code"></td>
             </tr>
             <tr>
-                <td>Email:</td>
+                <td class="label">Email:</td>
                 <td><input class="input" type="text" v-model="data.email"></td>
             </tr>
         </table>
         <forms-input-citizen @selected="selected"/>
         <input type="submit" value="Add" :class="canSubmit" />
+        </ClientOnly>
     </form>
 </template>
 
@@ -62,8 +64,12 @@ const registerUser = () => {
     display: flex;
     flex-direction: column;
     width: 400px;
-    max-width: 400px;
+    max-width: 85vw;
     padding: 15px;
+}
+
+.label {
+    width: 100px;
 }
 
 .input {

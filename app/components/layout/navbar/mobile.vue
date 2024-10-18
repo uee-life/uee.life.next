@@ -3,14 +3,14 @@
       <div class="nav-bar" id="nav-bar">
           <span class="title">uee.life</span>
           <img class="logo" alt="logo" src="@/assets/logo.png">
-      </div>
-      <client-only placeholder="">
-        <button :class='hamburgerClass' @click="toggleMenu" type="button">
+          <button :class='hamburgerClass' @click="toggleMenu" type="button">
             <span class="hamburger-box">
                 <span class="hamburger-inner">
                 </span>
             </span>
         </button>
+      </div>
+      <client-only placeholder="">
         <div class="hamburger-menu">
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/" exact>Home</nuxt-link>
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/about">About</nuxt-link>
@@ -20,11 +20,16 @@
             <br>
             <template v-if="auth.isAuthenticated">
                 <nuxt-link class="burger-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
-                <a class="burger-button" @click="toggleMenu() && useLogout()">Sign Off</a>
+                <a class="burger-button" @click="signout()">Sign Off</a>
             </template>
-            <a v-else class="burger-button" @click="toggleMenu()" href="/auth/login">Sign In</a>
+            <template v-else>
+                <a class="burger-button" href="/auth/login">Log In</a>
+                <a class="burger-button" @click="signup()">Register</a>
+            </template>
+            
         </div>
       </client-only>
+      <modal-sign-up v-if="modals.signup" @close="modals.signup = false" @done="modals.signup = false"/>
     </div>
 </template>
 
@@ -37,6 +42,25 @@ const burgerType = ref("hamburger--collapse")
 onMounted(() => {
     menuActive.value = false
 })
+
+const modals = ref({
+    signup: false
+})
+
+const signin = () => {
+    toggleMenu()
+    navigateTo('/auth/login')
+}
+
+const signout = () => {
+    toggleMenu()
+    useLogout()
+}
+
+const signup = () => {
+    toggleMenu()
+    modals.value.signup = true
+}
 
 const toggleMenu = () => {
     menuActive.value = !menuActive.value
@@ -96,6 +120,7 @@ const citizenLink = computed({
     position: absolute;
     z-index: 1001;
     top: 0;
+    left: 0;
     }
 
     .hamburger.is-active .hamburger-inner,
