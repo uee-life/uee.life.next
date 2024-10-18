@@ -3,18 +3,30 @@ const props = defineProps({
     assignment: {
         type: Object,
         required: true
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
     }
 })
 
+const emit = defineEmits(['add', 'remove'])
+
 const auth = useAuthStore()
+
+const addCitizen = (data) => {
+    emit('add', data)
+}
 
 const removeCitizen = (data) => {
     switch(props.assignment.type) {
         case 'Crew':
             console.log('trying to remove crew: ', data.handle)
+            emit('remove', data)
             break;
         case 'Leader':
             console.log('trying to remove Commander: ', data.handle)
+            emit('remove', data)
     }
 }
 </script>
@@ -50,6 +62,8 @@ const removeCitizen = (data) => {
                         <assignment-member-list 
                             :assignees="assignment.assignees"
                             :max-assigned="assignment.target.max_crew"
+                            :can-edit="isAdmin"
+                            @add="addCitizen"
                             @remove="removeCitizen"/>
                     </panel-section>
                 </template>
@@ -65,6 +79,7 @@ const removeCitizen = (data) => {
                         <assignment-member-list 
                             :assignees="assignment.assignees"
                             :max-assigned="assignment.target.max_crew"
+                            :can-edit="isAdmin"
                             @remove="removeCitizen"/>
                     </panel-section>
                 </template>

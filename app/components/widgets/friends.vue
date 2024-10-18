@@ -1,8 +1,15 @@
 <script setup>
+const { $api } = useNuxtApp()
+
 import { isAfter, formatDistance } from 'date-fns'
 
 const online = ref([])
 const count = ref(0)
+const friend = ref(null)
+
+const modals = ref({
+    friend_confirm: false
+})
 
 const last_seen = (last) => {
     const seen = formatDistance(new Date(last), new Date())
@@ -14,8 +21,33 @@ const last_seen = (last) => {
     
 }
 
-const confirmFriend = async (citizen) => {
-    console.log('confirming friend:', citizen)
+const confirmFriend = async () => {
+    modals.value.friend_confirm = false
+    console.log('confirming friend:', friend.value)
+    await $api(`/api/friends/confirm`, {
+        method: 'POST',
+        body: {
+            friend: friend.value
+        }
+    })
+    refresh()
+}
+
+const cancelFriend = async () => {
+    modals.value.friend_confirm = false
+    console.log('cancelling friend:', friend.value)
+    await $api(`/api/friends/cancel`, {
+        method: 'POST',
+        body: {
+            friend: friend.value
+        }
+    })
+    refresh()
+}
+
+const selectFriend = (fr) => {
+    friend.value = fr.handle
+    modals.value.friend_confirm = true
 }
 
 function sortItems(items) {
@@ -41,25 +73,22 @@ const { data, status, refresh } = useAPI(`/api/friends`, {
 
 <template>
     <div class="online-list">
-        <div  v-if="online" v-for="citizen of online">
+        <div v-if="online.length == 0" class="online-item"><i>No friends online</i></div>
+        <div  v-else v-for="citizen of online">
             <div class="online-item" v-if="citizen.friendship == 'confirmed'" @click="navigateTo(`/citizens/${citizen.handle}`)">
                 <span><citizen-portrait :citizen="citizen" shape="round" size="tiny"/></span>
                 <span><div class="name">{{  citizen.name  }}</div><div v-if="citizen.status" class="seen">{{  last_seen(citizen.status.last) }}</div></span>
             </div>
-            <div v-else-if="citizen.friendship == 'received'" class="online-item">
+            <div v-else-if="citizen.friendship == 'received'" class="online-item" @click="selectFriend(citizen)">
                 <span><citizen-portrait :citizen="citizen" shape="round" size="tiny"/></span>
                 <span><div class="name">{{  citizen.name  }}</div><div v-if="citizen.status" class="seen">Incoming Request</div></span>
-                <div class="confirm">
-                    <img class="button" src="@/assets/tick.png" @click="confirmFriend(citizen)">
-                    <img class="button" src="@/assets/delete.png"  @click="">
-                </div>
             </div>
             <div v-else-if="citizen.friendship == 'requested'" class="online-item">
                 <span><citizen-portrait :citizen="citizen" shape="round" size="tiny"/></span>
                 <span><div class="name">{{  citizen.name  }}</div><div v-if="citizen.status" class="seen">Request Sent</div></span>
             </div>
         </div>
-        <div v-else class="online-item"><i>No friends online</i></div>
+        <modal-confirm v-if="modals.friend_confirm" text="Accept Friend Request?" @confirm="confirmFriend" @cancel="cancelFriend"></modal-confirm>
     </div>
 </template>
 
@@ -100,15 +129,19 @@ const { data, status, refresh } = useAPI(`/api/friends`, {
 
 .confirm {
     position: absolute;
-    right: 15px;
+    right: 45px;
     display: flex;
     width: 50px;
     align-items: center;
+    z-index: 100;
 }
 
 .confirm>.button {
     margin: 2px;
-    width: 25px;
+    height: 40px;
     cursor: pointer;
+    color: #dbf3ff;
+    background: rgba(13, 46, 66, 0.8);
+    text-transform: uppercase;
 }
 </style>

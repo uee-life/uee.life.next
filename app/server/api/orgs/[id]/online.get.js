@@ -12,6 +12,7 @@ const onlineOrgUsers = async (id) => {
         WITH o as org
         RETURN COLLECT {
                     MATCH (s:Status)<-[r:HAS_STATUS]-(c:Citizen)-[:MEMBER_OF]->(org)
+                    WHERE c.verified = true
                     return c as citizen
                 } as citizens
     `

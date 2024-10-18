@@ -37,6 +37,11 @@
 </template>
 
 <style scoped>
+
+@viewport {
+    max-zoom: 1;
+  }
+
 .app {
   position: relative;
   min-height: 100vh;
