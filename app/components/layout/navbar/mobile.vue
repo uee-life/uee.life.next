@@ -3,14 +3,14 @@
       <div class="nav-bar" id="nav-bar">
           <span class="title">uee.life</span>
           <img class="logo" alt="logo" src="@/assets/logo.png">
-      </div>
-      <client-only placeholder="">
-        <button :class='hamburgerClass' @click="toggleMenu" type="button">
+          <button :class='hamburgerClass' @click="toggleMenu" type="button">
             <span class="hamburger-box">
                 <span class="hamburger-inner">
                 </span>
             </span>
         </button>
+      </div>
+      <client-only placeholder="">
         <div class="hamburger-menu">
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/" exact>Home</nuxt-link>
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/about">About</nuxt-link>
@@ -120,6 +120,7 @@ const citizenLink = computed({
     position: absolute;
     z-index: 1001;
     top: 0;
+    left: 0;
     }
 
     .hamburger.is-active .hamburger-inner,
