@@ -2,7 +2,7 @@
     <div>
         <panel :class="notificationClass" id="notification" @click="toggleModal">
             <img :src="`/images/${messageType}.png`" class="logoImg" />
-            {{messageText}}
+            <span class="message">{{messageText}}</span>
             <img :src="`/images/${messageType}.png`" class="logoImg right" />
         </panel>
         <layout-modal :title="messageType" v-if="showModal" @close="toggleModal">
@@ -50,7 +50,7 @@
 <style scoped>
 .notification {
     display: flex;
-    margin: 10px;
+    margin: 5px 10px !important;
     justify-content: center;
     min-height: 30px !important;
     max-width: 100%;
@@ -67,11 +67,16 @@
     left: 8px;
     top: 8px;
     height: 25px;
+    z-index: 0;
 }
 
 .logoImg.right {
     left: auto;
     right: 8px;
+}
+
+.message {
+    z-index: 99;
 }
 
 .modal {
