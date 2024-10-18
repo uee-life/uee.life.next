@@ -47,7 +47,13 @@ export const ytFeed = async (feed, earliest) => {
                 }
             })
             result = sortItems(items)
+        },
+        onResponseError({error}) {
+            console.error(error)
         }
+    }).catch(e => {
+        console.error(e)
+        return []
     })
     return result
 }
