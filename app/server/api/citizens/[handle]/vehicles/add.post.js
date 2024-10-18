@@ -31,14 +31,19 @@ const addVehicle = async (vehicle, handle) => {
 
     const params = {
         handle: '(?i)'+handle,
-        id: vehicle.id.toUpperCase(),
+        id: vehicle.id.toLowerCase(),
         name: vehicle.name
     }
+    console.log(params)
     const { error, result } = await writeQuery(query, params)
 
-    if (result) {
+    if (result[0]) {
         const crewAssignment = await createAssignment(result[0].vehicle, handle, 'Crew', result[0].model.max_crew)
         console.log(crewAssignment)
+    } else {
+        if (error) {
+            console.log(error)
+        }
     }
 
     if (error) {
