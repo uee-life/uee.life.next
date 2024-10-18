@@ -10,9 +10,6 @@
                     <panel-dock v-if="!isMobile" title="Community Links" type="links">
                         <widgets-links :links="communityLinks"/>
                     </panel-dock>
-                    <panel-dock title="Stats" type="stats">
-                        <widgets-stats />
-                    </panel-dock>
                 </teleport>
                 <teleport to="#right-dock">
                     <panel-dock v-if="isMobile" title="Official Links" type="links">
@@ -27,6 +24,9 @@
                     </panel-dock>
                     <panel-dock v-if="auth.isAuthenticated" title="Friends">
                         <widgets-friends />
+                    </panel-dock>
+                    <panel-dock title="Stats" type="stats">
+                        <widgets-stats />
                     </panel-dock>
                 </teleport>
             </client-only>

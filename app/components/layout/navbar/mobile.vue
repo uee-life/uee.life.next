@@ -20,11 +20,16 @@
             <br>
             <template v-if="auth.isAuthenticated">
                 <nuxt-link class="burger-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
-                <a class="burger-button" @click="toggleMenu() && useLogout()">Sign Off</a>
+                <a class="burger-button" @click="signout()">Sign Off</a>
             </template>
-            <a v-else class="burger-button" @click="toggleMenu()" href="/auth/login">Sign In</a>
+            <template v-else>
+                <a class="burger-button" href="/auth/login">Log In</a>
+                <a class="burger-button" @click="signup()">Register</a>
+            </template>
+            
         </div>
       </client-only>
+      <modal-sign-up v-if="modals.signup" @close="modals.signup = false" @done="modals.signup = false"/>
     </div>
 </template>
 
@@ -37,6 +42,25 @@ const burgerType = ref("hamburger--collapse")
 onMounted(() => {
     menuActive.value = false
 })
+
+const modals = ref({
+    signup: false
+})
+
+const signin = () => {
+    toggleMenu()
+    navigateTo('/auth/login')
+}
+
+const signout = () => {
+    toggleMenu()
+    useLogout()
+}
+
+const signup = () => {
+    toggleMenu()
+    modals.value.signup = true
+}
 
 const toggleMenu = () => {
     menuActive.value = !menuActive.value
