@@ -1,7 +1,6 @@
 <script setup>
 const { $api } = useNuxtApp()
 
-const debug = ref(true)
 const errors = ref({
     verification: ""
 })
@@ -24,13 +23,10 @@ const { data: account, status, refresh } = useAPI(`/api/user/account`)
     <div class="settings">
         <widgets-loading v-if="status == 'pending'" />
         <template v-else>
-            <settings-verify :account="account.data" class="settings-panel" v-if="!account.data.app_metadata.handle_verified || debug" :errors="errors.verification" @verify="verifyAccount" />
+            <settings-verify :account="account.data" class="settings-panel" v-if="!account.data.app_metadata.handle_verified" :errors="errors.verification" @verify="verifyAccount" />
             <settings-info :account="account.data" class="settings-panel" @refresh="refresh" />
             <panel class="settings-panel" title="Settings" title-size="small">More coming soon...</panel>
         </template>
-        <div v-if="debug" class="debug">
-            <pre>{{ JSON.stringify(account, null, 2) }}</pre>
-        </div>
     </div>
 </template>
 
