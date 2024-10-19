@@ -58,7 +58,16 @@ const remove = async (data) => {
 </script>
 
 <template>
-    <assignment-summary :assignment="assignment" :is-admin="owner" @add="add" @remove="remove"/>
+    <assignment-summary v-if="assignment.class == 'VehicleGroup'" :assignment="assignment" :is-admin="owner" @add="add" @remove="remove"/>
+    <panel-section v-else-if="assignment.class == 'Vehicle'" class="assignees" :title="`${assignment.type} Assignees`" title-size="small">
+        <assignment-member-list
+        :assignees="assignment.assignees"
+        :max-assigned="assignment.target.max_crew"
+        :can-edit="owner"
+        @add="add"
+        @remove="remove" />
+    </panel-section>
+    
 </template>
 
 <style scoped>
