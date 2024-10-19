@@ -16,5 +16,5 @@ export const apiSuccess = (data) => {
 
 export const accessDenied = (event) => {
     setResponseStatus(event, 403)
-    console.warn(`Access Denied from user ${event.context.user} to resource ${event.context.path}`)
+    console.warn(`Access Denied from user ${event.context.user.handle} to resource ${event.context.path}`)
 }
