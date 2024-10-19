@@ -19,6 +19,9 @@
             <nuxt-link class="burger-button" @click="toggleMenu()" to="/explore">Explore</nuxt-link>
             <br>
             <template v-if="auth.isAuthenticated">
+                <nuxt-link v-if="['capn_flint', 'capn_nemo'].includes(auth.citizen.handle.toLowerCase())" @click="toggleMenu()" class="burger-button" to="/admin">Admin</nuxt-link>
+                <nuxt-link class="burger-button" @click="toggleMenu()" to="/assignments">Assignments</nuxt-link>
+                <nuxt-link class="burger-button" @click="toggleMenu()" to="/settings">Settings</nuxt-link>
                 <nuxt-link class="burger-button" @click="toggleMenu()" :to="citizenLink">My Profile</nuxt-link>
                 <a class="burger-button" @click="signout()">Sign Off</a>
             </template>

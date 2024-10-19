@@ -1,3 +1,25 @@
+# v1.0 Initial Release
+*Updated: 18 October 2954*
+
+We are live! Welcome to the initial release of UEE.life, with a core set of functionalities, built on a complex graph of data that connects you to your friends and assets in the verse. While we think the features we are providing in this release are pretty cool, they are only the start! Check back often to see new features as the come online!
+
+This is an initial release though, so there may be a few bugs and issues. Please let us know if you see anything so we can fix things and give you the best experience possible!
+
+# Launch Features
+- Citizen profiles with RSI verification
+  - Personal ship/fleet management
+- Org profiles
+  - Org ship/fleet management
+- Assignment system
+  - Hierarchical fleet groups
+  - Fleet commanders
+  - Ship Crew
+  - Personal assignment tracking
+- Friends and online status tracking
+- Unversal Database
+  - Vehicles data
+  - Starmap and location data
+
 # v0.2.0 Fleet Feature Test Release
 *Updated: 4 October 2954*
 
