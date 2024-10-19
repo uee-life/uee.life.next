@@ -29,7 +29,6 @@ const createCodes = async () => {
                     </div>
                 </panel-dock>
                 <panel-dock class="actions" title="Global Actions">
-                    <button @click="createCodes">Test Account Creation</button>
                 </panel-dock>
             </teleport>
         </client-only>

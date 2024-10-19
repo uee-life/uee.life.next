@@ -157,7 +157,7 @@ async function createCitizen(citizen) {
         handle: citizen.handle,
         id: citizen.handle.toUpperCase(),
         name: citizen.name,
-        record: citizen.record,
+        record: citizen.record ?? '000000',
         enlisted: citizen.enlisted,
         verified: citizen.verified,
         portrait: citizen.portrait,

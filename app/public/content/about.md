@@ -23,4 +23,12 @@
 - Create and share events with your Organizations or all Citizens
 - Build and manage your Organizations fleet
 
+## Future Plans
+
+- Org Alliances/reputation
+- Org people management
+- Event calendar and planning
+- Jobs board
+- Service request system
+
 *\* Some features still in development*

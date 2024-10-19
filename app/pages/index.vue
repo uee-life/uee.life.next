@@ -10,7 +10,11 @@
                     <panel-dock v-if="!isMobile" title="Community Links" type="links">
                         <widgets-links :links="communityLinks"/>
                     </panel-dock>
+                    <panel-dock title="Emergency Services">
+                        <partners-medrunner />
+                    </panel-dock>
                 </teleport>
+
                 <teleport to="#right-dock">
                     <panel-dock v-if="isMobile" title="Official Links" type="links">
                         <widgets-links :links="officialLinks"/>
