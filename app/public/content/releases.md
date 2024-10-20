@@ -1,3 +1,19 @@
+# v1.0.1 Release bug hotfix patch
+*Updated: 20 October 2954*
+
+Pushed out a bunch of hotfixes over the weekend to deal with some bugs that came up with the new registrations, and a few ease of use fixes. Also snuck in a couple of bonus things ;) The changes/fixes include:
+
+# Bug Fixes
+- Fixed an issue with citizens trying to register who don't have a record number (noone knows why!)
+- Fixed a bunch of layout and visual quirks
+- Fixed access issues to assignments and assignment visibility
+
+# Ease of Use
+- Added a "click to copy" button for the verification code, to reduce errors when trying to put the code in your RSI bio as part of the account verification flow
+
+# Bonus
+- Added a direct link out from the front page to the Medrunners crew! If you are downed, stranded, injured and alone, give them a call, maybe they can help!
+
 # v1.0 Initial Release
 *Updated: 18 October 2954*
 

@@ -6,7 +6,8 @@
             <p>Once done, return here and click on the "verify" button to complete verification.</p>
             <p>Not sure you have the right handle? Check your <a target="_blank" href="https://robertsspaceindustries.com/account/settings">RSI Profile</a></p>
             <p class="verify-code">
-                <input type="text" :value="verificationCode" readonly>
+                <input type="text" :value="verificationCode" disabled readonly>
+                <button @click="copyText" >{{ copybuttonText }}</button>
                 <button @click="$emit('verify')">Verify</button>
                 <span v-if="errors" class="error">FAILED: {{errors}}</span>
             </p>        
@@ -27,13 +28,18 @@ const props = defineProps({
     }
 })
 
+const copybuttonText = ref('Copy Code')
+
 const verificationCode = computed({
     get() {
         return `[ueelife:${props.account.app_metadata.verificationCode}]`
     }
 })
 
-
+const copyText = () => {
+    navigator.clipboard.writeText(verificationCode.value)
+    copybuttonText.value = 'Copied!'
+}
 
 </script>
 
