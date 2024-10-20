@@ -6,6 +6,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)
     const target = getRouterParam(event, 'id')
+    const citizen = await getCitizen(data.handle, true)
 
     if (user && user.verified) {
         if (checkAssignmentPerms(target, user, data)) {

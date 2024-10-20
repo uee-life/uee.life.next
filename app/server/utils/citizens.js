@@ -10,6 +10,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
     // if citizen isn't created yet, fetch the data from rsi and create it
     if(citizen && Object.keys(citizen).length === 0) {
         citizen = await rsi.fetchCitizen(handle)
+
         // added a check for random citizens without a record number. Not sure why they exist.
         if (citizen && create) {
             if (!citizen.record.startsWith('#')) {
