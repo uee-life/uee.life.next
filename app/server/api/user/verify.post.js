@@ -1,3 +1,4 @@
+import { generateCodes } from "~/server/utils/InviteCodes"
 import { fetchCitizen } from "~/server/utils/rsi"
 
 // Authenticated
@@ -34,6 +35,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     if (ueelifeCode(ver_code) == bio_code) {
         console.debug(user.user_id, user.handle)
         const result = await verifyUser(user.user_id, user.handle)
+        await generateCodes(5, 'buddy')
         return apiSuccess(result)
     } else {
         return apiError("codes no matchy")

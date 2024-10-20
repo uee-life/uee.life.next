@@ -6,7 +6,13 @@ const org = ref('')
 const isPrinted = (code) => {}
 
 const generateOrgCode = async () => {
-    // do stuff
+    await $api(`/api/admin/codes/generate`, {
+        method: 'POST',
+        body: {
+            org: org.value
+        }
+    })
+    refresh()
 }
 
 const generateCodes = async () => {
@@ -45,7 +51,7 @@ const {data, status, refresh} = useAPI('/api/admin/codes', {
             </teleport>
         </client-only>
         <panel title="Org Codes" title-size="small" class="codes">
-            <span v-for="c in data.data.org">{{ c.code.code }}</span>
+            <span v-for="c in data.data.org">{{ c }}, </span>
         </panel>
         <panel title="Active Codes" title-size="small" class="codes"><span v-for="c in data.data.standard" :class="c.issued ? 'issued' : ''">{{ c.code }},</span></panel>
         <panel title="Assigned Codes" title-size="small" class="codes">
