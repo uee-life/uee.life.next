@@ -11,7 +11,10 @@ export const getCitizen = async (handle, create = false, user = null) => {
     if(citizen && Object.keys(citizen).length === 0) {
         citizen = await rsi.fetchCitizen(handle)
         // added a check for random citizens without a record number. Not sure why they exist.
-        if (citizen && citizen.record.startsWith("#") && create) {
+        if (citizen && create) {
+            if (!citizen.record.startsWith('#')) {
+                citizen.record = '#000000'
+            }
             if(user && user.verified == 1 && user.handle.toUpperCase() == citizen.handle.toUpperCase()) {
                 citizen.verified = true
             } else {
