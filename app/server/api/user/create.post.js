@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 const checkAndCreateUser = async (data) => {
     // check invite code
     console.log(data)
-    if (await checkCode(data.code)) {
+    if (await checkCode(data.code, data.handle)) {
         if (await createAccount(data.handle, data.email)) {
             return true
         } 
@@ -23,11 +23,21 @@ const checkAndCreateUser = async (data) => {
     // create user account
 }
 
-const checkCode = async (code) => {
+const checkOrgMember = async (org, handle) => {
+    const citizen = getCitizen(handle)
+    const mainOrg = citizen.orgs.main.id
+
+    if (mainOrg == org) {
+        return true
+    } else {
+        return false
+    }
+}
+
+const checkCode = async (code, handle) => {
     const query = `
         MATCH (c:InviteCode)
         WHERE c.code = $code AND c.used = false
-        SET c.used = true
         return c as code
     `
     const { result } = await writeQuery(query, {
@@ -36,6 +46,25 @@ const checkCode = async (code) => {
 
     console.log(result)
     if (result[0]) {
+        if (result[0].code.org) {
+            if (checkOrgMember(result[0].code.org), handle) {
+                logActivity('REGISTRATION', 'Org registration code used for org: ', result[0].code.org)
+                return true
+            } else {
+                logActivity('REGISTRATION', 'Attempted code use by non-org member for org: ', result[0].code.org)
+                return false
+            }
+        } else {
+            const q = `
+                MATCH (c:InviteCode)
+                WHERE c.code = $code
+                SET c.used = true
+                return c
+            `
+            await writeQuery(query, {
+                code: code.toUpperCase()
+            })
+        }
         return true
     } else {
         return false

@@ -47,6 +47,7 @@ const removeVehicle = () => {
 }
 
 function navigate() {
+    
     if (props.assignment) {
         navigateTo(`/assignments/${props.assignment}`)
     } else if (props.vehicle.assignments && props.vehicle.assignments[0]) {

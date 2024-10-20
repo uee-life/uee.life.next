@@ -21,7 +21,7 @@ const getActiveCodes = async () => {
     for (const res of result) {
         console.log(res)
         if (res.code.type == 'org') {
-            codes.org.push(`${res.org}:${res.code}`)
+            codes.org.push(`${res.code.org}:${res.code.code}`)
         } else if (res.code.type == 'standard') {
             codes.standard.push(res.code)
         }
