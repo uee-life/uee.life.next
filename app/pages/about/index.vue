@@ -45,7 +45,6 @@
         flex-direction: column;
         width: 100%;
         box-sizing: border-box;
-        padding-top: 20px;
     }
 
     .nav {

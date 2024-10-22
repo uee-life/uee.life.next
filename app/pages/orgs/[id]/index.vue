@@ -4,7 +4,7 @@ const { $api } = useNuxtApp()
 const auth = useAuthStore()
 const route = useRoute()
 
-const tabs = ["info", "vehicles", "fleets", "members", "affiliates"]
+const tabs = ["info", "organization", "vehicles", "fleets", "members", "affiliates"]
 
 const initialTab = ref("info")
 
@@ -51,13 +51,13 @@ const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
             <img src="@/assets/loading.gif" >
         </div>
         <template v-else-if="org.data">
-            <client-only>
+            <!--client-only>
                 <teleport to="#left-dock">
                     <panel-dock title="Online Members" >
                         <org-online :org="org.data"/>
                     </panel-dock>
                 </teleport>
-            </client-only>
+            </client-only-->
             <layout-banner 
                 display="full"
                 :name="org.data.name"
@@ -74,6 +74,13 @@ const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
                         <org-content v-if="org.data.description" :content="org.data.description" :centered="true"></org-content>
                         <org-overview :org="org.data" />
                         <org-info :org="org.data" :isOwner="isOwner"/>
+                    </template>
+
+                    <template #tab-title-organization>
+                        ORG CHART
+                    </template>
+                    <template #tab-content-organization>
+                        <org-organization :org="org.data"/>
                     </template>
 
                     <template #tab-title-vehicles>
