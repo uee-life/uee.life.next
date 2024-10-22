@@ -41,7 +41,8 @@ export default defineNuxtConfig({
 
  googleFonts: {
    families: {
-     Michroma: true
+     Michroma: true,
+     Orbitron: true
    }
  },
 
