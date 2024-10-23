@@ -59,3 +59,14 @@ export const generateOrgCode = async (id) => {
 
     return result
 }
+
+export const issueCodes = async () => {
+    const query = `
+        MATCH (c:InviteCode {type: 'standard'})
+        SET c.issued = true
+        return c
+    `
+
+    const { error } = writeQuery(query)
+    return error
+}
