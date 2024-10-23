@@ -1,25 +1,32 @@
 export const generateCodes = async (count, type='standard', handle=null) => {
+    let citizen = null
+    if (handle && type == 'buddy') {
+        citizen = await getCitizen(handle)
+        citizen = citizen.verified ? citizen : null
+    }
+
     const query = `
         UNWIND range(1, $count) as row
-        MERGE (c:InviteCode {code: toUpper(right(left(randomUUID(), 13), 9)), used: false})
+        CREATE (c:InviteCode)
         set c = {
-            code: toUpper(right(left(RandomUUID, 13), 9)),
+            code: toUpper(right(left(randomUUID(), 13), 9)),
             used: false,
             type: $type,
-            issued: false            
+            issued: false,
+            owner: $owner         
         }
         return c as code
     `
     const result = await writeQuery(query, {
         count: parseInt(count),
-        type: type
+        type: type,
+        owner: citizen ?? ''
     })
-
-    const citizen = await getCitizen(handle)
-
-    if (type='buddy' && result[0] && result[0].code && citizen && citizen.verified) {
+    
+    if (result[0] && result[0].code && citizen) {
         await attachCode(result[0].code, citizen.id)
     }
+    
 
     return result
 }
@@ -30,11 +37,13 @@ const attachCode = async (code, citizenID) => {
         where c.id =~ $citizenID
         MATCH (i:InviteCode)
         WHERE i.code = $code
+        SET i.owner = $owner
         MERGE (i)-[:BELONGS_TO]->(c)
     `
     await writeQuery(query, {
         id: '(?i)' + citizenID,
-        code: code
+        code: code,
+        owner: citizenID
     })
 }
 
@@ -44,7 +53,7 @@ export const generateOrgCode = async (id) => {
     const query = `
         MERGE (c:InviteCode)-[:BELONGS_TO]->(o)
         SET c = {
-            code: toUpper(right(left(RandomUUID(), 13), 9)),
+            code: toUpper(right(left(randomUUID(), 13), 9)),
             used: false,
             type: 'org',
             issued: false,

@@ -35,6 +35,7 @@ const checkOrgMember = async (org, handle) => {
 }
 
 const checkCode = async (code, handle) => {
+    return true
     const query = `
         MATCH (c:InviteCode)
         WHERE c.code = $code AND c.used = false
