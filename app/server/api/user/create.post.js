@@ -48,8 +48,8 @@ const checkCode = async (code, handle) => {
     })
 
     if (result[0]) {
-        if (result[0].code.org) {
-            if (checkOrgMember(result[0].code.org), handle) {
+        if (result[0].code.type == 'org') {
+            if (checkOrgMember(result[0].code.owner), handle) {
                 logActivity('REGISTRATION', 'Org registration code used for org: ', result[0].code.org)
                 return true
             } else {
@@ -63,14 +63,14 @@ const checkCode = async (code, handle) => {
                 SET c.used = true
                 return c
             `
-            await writeQuery(query, {
+            await writeQuery(q, {
                 code: code.toUpperCase()
             })
         }
         return true
     } else {
-        await addUsedCode(code.toUpperCase())
-        return true
+        //await addUsedCode(code.toUpperCase())
+        return false
     }
 }
 
