@@ -23,14 +23,14 @@
                         <widgets-links :links="communityLinks"/>
                     </panel-dock>
                     
-                    <panel-dock title="Events" type="online">
-                        <event-panel />
-                    </panel-dock>
                     <panel-dock v-if="auth.isAuthenticated" title="Friends">
                         <widgets-friends />
                     </panel-dock>
                     <panel-dock title="Stats" type="stats">
                         <widgets-stats />
+                    </panel-dock>
+                    <panel-dock title="Discord">
+                        <widgets-discord />
                     </panel-dock>
                 </teleport>
             </client-only>
