@@ -60,11 +60,12 @@ const checkCode = async (code, handle) => {
             const q = `
                 MATCH (c:InviteCode)
                 WHERE c.code = $code
-                SET c.used = true
+                SET c.used = true, c.owner = $handle
                 return c
             `
             await writeQuery(q, {
-                code: code.toUpperCase()
+                code: code.toUpperCase(),
+                handle: handle
             })
         }
         return true
