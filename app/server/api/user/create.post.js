@@ -35,6 +35,9 @@ const checkOrgMember = async (org, handle) => {
 }
 
 const checkCode = async (code, handle) => {
+    if (code.length == 0) {
+        return false
+    }
     const query = `
         MATCH (c:InviteCode)
         WHERE c.code = $code AND c.used = false
@@ -44,10 +47,9 @@ const checkCode = async (code, handle) => {
         code: code.toUpperCase()
     })
 
-    console.log(result)
     if (result[0]) {
-        if (result[0].code.org) {
-            if (checkOrgMember(result[0].code.org), handle) {
+        if (result[0].code.type == 'org') {
+            if (checkOrgMember(result[0].code.owner), handle) {
                 logActivity('REGISTRATION', 'Org registration code used for org: ', result[0].code.org)
                 return true
             } else {
@@ -68,6 +70,25 @@ const checkCode = async (code, handle) => {
         }
         return true
     } else {
+        //await addUsedCode(code.toUpperCase())
         return false
     }
+}
+
+const addUsedCode = async (code, handle) => {
+    const query = `
+        CREATE (c:InviteCode)
+        SET c = {
+            code: $code,
+            used: true,
+            type: 'standard',
+            issued: true,
+            owner: $handle
+        }
+    `
+
+    await writeQuery(query, {
+        code: code,
+        handle: handle
+    })
 }
