@@ -35,7 +35,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     if (ueelifeCode(ver_code) == bio_code) {
         console.debug(user.user_id, user.handle)
         const result = await verifyUser(user.user_id, user.handle)
-        await generateCodes(5, 'buddy')
+        await generateCodes(5, 'buddy', user.handle)
         return apiSuccess(result)
     } else {
         return apiError("codes no matchy")

@@ -16,6 +16,7 @@ const getActiveCodes = async () => {
     const codes = {
         standard: [],
         org: [],
+        buddy: []
     }
 
     for (const res of result) {
