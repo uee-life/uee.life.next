@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
         friends: []
     }
 
-    online.org = await onlineOrgUsers()
+    online.org = await onlineUsers()
     return apiSuccess(online)
 })
 

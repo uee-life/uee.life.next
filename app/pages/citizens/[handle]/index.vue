@@ -189,6 +189,8 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
                         <div v-else-if="citizen.data.friendship == 'requested'" class="add-friend">Request Sent!</div>
                         <div v-else-if="citizen.data.friendship == 'received'" class="add-friend interact" @click="modals.friend_confirm = true">Accept Request</div>
                     </panel-dock>
+
+                    <widgets-buddy-codes v-if="auth.isAuthenticated && isOwner" />
                 </teleport>
                 <teleport to="#right-dock">
                     <panel-dock v-if="isOwner && $viewport.isLessThan('tablet')" title="Tools">
