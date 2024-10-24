@@ -29,6 +29,12 @@ export const getCitizen = async (handle, create = false, user = null) => {
         citizen.orgs = await getCitizenOrgs(handle)
         // check and update verification, but only if this is our own citizen record
         if (user && user.handle.toUpperCase() == citizen.handle.toUpperCase()) {
+            // sync data automatically every 12 hours
+            if (citizen.updated && (new Date() - new Date(citizen.updated) > 43200000)) { // longer ago than 12 hours
+                console.log('Auto-syncing citizen data for citizen', citizen.handle)
+                citizen = await updateCitizen(await rsi.fetchCitizen(citizen.handle))
+            }
+
             console.log('checking/fixing verification status', user)
             console.log(citizen.verified)
             if (user && user.verified == 1 && citizen.verified == false) {
@@ -191,9 +197,9 @@ async function createCitizen(citizen) {
     }
 }
 
-export const updateCitizen = async (citizen) => {
+export const updateCitizen = async (data) => {
     console.log('UPDATING citizen')
-    console.log(citizen)
+    console.log(data)
     const query = 
         `MATCH (c:Citizen)
          WHERE c.id =~ $handle
@@ -201,25 +207,63 @@ export const updateCitizen = async (citizen) => {
             name: $name,
             verified: $verified,
             bio: $bio,
-            website: $website
+            website: $website,
+            updated: datetime()
          }
-         return c`
+         return c as citizen`
     
     const params = {
-        handle: '(?i)'+citizen.handle,
-        name: citizen.name,
-        verified: citizen.verified,
-        bio: citizen.bio,
-        website: citizen.website ?? ''
+        handle: '(?i)'+data.handle,
+        name: data.name,
+        verified: data.verified,
+        bio: data.bio,
+        website: data.website ?? ''
     }
 
-    console.log('params')
-    console.log(params)
-
-    const { error } = await writeQuery(query, params)
+    const { error, result } = await writeQuery(query, params)
     if (error) {
         console.error(error)
     }
+
+    const citizen = result[0].citizen
+    citizen.orgs = data.orgs
+    console.log(citizen)
+
+    // need to remove org links first
+    const detachMember = `
+        MATCH (c:Citizen)
+        WHERE c.id =~ $handle
+        MATCH (c)-[m:MEMBER_OF|AFFILIATE_OF|OWNER_OF]->(o:Organization)
+        DELETE m
+    `
+
+    await writeQuery(detachMember, {
+        handle: '(?i)' + citizen.handle
+    })
+
+    // then, if they are part of an org, see if the ORG already exists, if not, add that too
+    if(citizen.orgs.main) {
+        console.log("Found org, adding as member")
+        const mainOrg = citizen.orgs.main
+        const org = await fetchOrg(mainOrg.id)
+
+        console.log(org)
+        //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
+        await orgAddMember(citizen.handle, mainOrg.id, mainOrg.rank.level, mainOrg.rank.title)
+
+        if (org.founders && org.founders.find(item => item.handle === citizen.handle)) {
+            await orgAddFounder(citizen.handle, mainOrg.id)
+        }
+    }
+    if (citizen.orgs.affiliated.length > 0) {
+        console.log("Adding affiliate org")
+        for (const affOrg of citizen.orgs.affiliated) {
+            const org = await getOrganization(affOrg.id, true)
+            await orgAddAffiliate(citizen.handle, affOrg.id, affOrg.rank.level, affOrg.rank.title)
+        }
+    }
+
+    return citizen
 }
 
 export const removeCitizen = async (handle) => {
