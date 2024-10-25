@@ -22,9 +22,16 @@ const getBuddyCodes = async (handle) => {
 
     console.log(result)
 
-    const codes = []
+    let codes = []
     for (const res of result) {
         codes.push(res.code)
+    }
+
+    if(codes.length < 5) {
+        const citizen = await getCitizen(handle)
+        if (citizen.verified) {
+            codes = await generateCodes(5, 'buddy', handle)
+        }
     }
 
     return codes

@@ -1,8 +1,7 @@
 export const generateCodes = async (count, type='standard', handle=null) => {
-    let citizen = null
+    let owner = ''
     if (handle && type == 'buddy') {
-        citizen = await getCitizen(handle)
-        citizen = citizen.verified ? citizen : null
+        owner = handle
     }
 
     const query = `
@@ -17,35 +16,22 @@ export const generateCodes = async (count, type='standard', handle=null) => {
         }
         return c as code
     `
-    const result = await writeQuery(query, {
+    const { result } = await writeQuery(query, {
         count: parseInt(count),
         type: type,
-        owner: citizen ?? ''
+        owner: owner
     })
+
+    const codes = []
     
-    if (result[0] && result[0].code && citizen) {
-        await attachCode(result[0].code, citizen.id)
+    for (res of result) {
+        codes.push(res.code)
     }
     
 
-    return result
+    return codes
 }
 
-const attachCode = async (code, citizenID) => {
-    const query = `
-        MATCH (c:Citizen)
-        where c.id =~ $citizenID
-        MATCH (i:InviteCode)
-        WHERE i.code = $code
-        SET i.owner = $owner
-        MERGE (i)-[:BELONGS_TO]->(c)
-    `
-    await writeQuery(query, {
-        id: '(?i)' + citizenID,
-        code: code,
-        owner: citizenID
-    })
-}
 
 export const generateOrgCode = async (id) => {
     const org = await getOrganization(id, true)
