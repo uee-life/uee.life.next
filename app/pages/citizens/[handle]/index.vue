@@ -164,7 +164,7 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         <template v-else-if="citizen.status == 'success'">
             <client-only>
                 <teleport to="#left-dock">
-                    <panel-dock v-if="citizen.data.orgs.main && $viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
+                    <panel-dock v-if="citizen.data.orgs.main.id && $viewport.isGreaterOrEquals('tablet')" :title="citizen.data.orgs.main.model ? citizen.data.orgs.main.mode : 'Organization'">
                         <citizen-org v-if="citizen.data.orgs && citizen.data.orgs.main" :org="citizen.data.orgs.main"/>
                     </panel-dock>
                     <panel-dock title="Navigation" class="left-nav">
