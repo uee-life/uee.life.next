@@ -1,3 +1,28 @@
+# v1.0.2 Release bug hotfix patch
+*Updated: 26 October 2954*
+
+Pushed out a few more fixes, as well as adding some of the missing ships (more are on our backlog!). More fixes and tweaks will be coming soon, but I wanted to get these out to you.
+
+# Features
+- Re-added the full stats view, so we can keep track of verified citizens, ships and fleets!
+- Set profiles to auto-sync new data from RSI once every 12 hours when you're logged in, to keep things in sync.
+- Added the discord QR code to the front page, and removed the ATMO event widget
+
+# Bug fixes
+- Fixed the Fleet banner not navigating back to your org page when clicked
+- Fixed buddy codes not displaying once an account is verified. All good now!
+- Fixed some issues with user registration, due to a configuration preventing people with emails longer than 15 characters registering. Oops!
+
+# Vehicles
+Added the following vehicles:
+- ATLS
+- CSV
+- Starlancer variants
+- Ironclad variants
+- Banu Merchantman
+
+
+
 # v1.0.1 Release bug hotfix patch
 *Updated: 20 October 2954*
 
