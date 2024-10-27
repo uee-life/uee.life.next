@@ -69,6 +69,7 @@ const officialLinks = [
 const communityLinks = [
     {name: "SC Wiki", url: "https://starcitizen.tools"},
     {name: "Erkul fitting Calculator", url: "https://erkul.games/calculator"},
+    {name: "The Armory", url: "https://armory.thespacecoder.space/"},
     {name: "Gallog Trade Tool", url: "https://gallog.co/trading/"},
     {name: "Starship42 Ship Viewer", url: "https://www.starship42.com"},
     {name: "GameGlass", url: "https://gameglass.gg"},
