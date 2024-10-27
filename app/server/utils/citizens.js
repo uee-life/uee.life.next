@@ -191,15 +191,17 @@ async function createCitizen(citizen) {
     if (citizen.orgs.affiliated.length > 0) {
         console.log("Adding affiliate org")
         for (const affOrg of citizen.orgs.affiliated) {
-            const org = await getOrganization(affOrg.id, true)
-            await orgAddAffiliate(citizen.handle, affOrg.id, affOrg.rank.level, affOrg.rank.title)
+            if (affOrg.id) { // catching redacted orgs
+                const org = await getOrganization(affOrg.id, true)
+                await orgAddAffiliate(citizen.handle, affOrg.id, affOrg.rank.level, affOrg.rank.title)
+            }
+            
         }
     }
 }
 
 export const updateCitizen = async (data) => {
     console.log('UPDATING citizen')
-    console.log(data)
     const query = 
         `MATCH (c:Citizen)
          WHERE c.id =~ $handle
@@ -227,7 +229,6 @@ export const updateCitizen = async (data) => {
 
     const citizen = result[0].citizen
     citizen.orgs = data.orgs
-    console.log(citizen)
 
     // need to remove org links first
     const detachMember = `
@@ -242,26 +243,29 @@ export const updateCitizen = async (data) => {
     })
 
     // then, if they are part of an org, see if the ORG already exists, if not, add that too
-    if(citizen.orgs.main) {
-        console.log("Found org, adding as member")
-        const mainOrg = citizen.orgs.main
-        const org = await fetchOrg(mainOrg.id)
+    if (citizen.orgs) {
+        if(citizen.orgs.main) {
+            console.log("Found org, adding as member")
+            const mainOrg = citizen.orgs.main
+            const org = await fetchOrg(mainOrg.id)
 
-        console.log(org)
-        //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
-        await orgAddMember(citizen.handle, mainOrg.id, mainOrg.rank.level, mainOrg.rank.title)
+            console.log(org)
+            //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
+            await orgAddMember(citizen.handle, mainOrg.id, mainOrg.rank.level, mainOrg.rank.title)
 
-        if (org.founders && org.founders.find(item => item.handle === citizen.handle)) {
-            await orgAddFounder(citizen.handle, mainOrg.id)
+            if (org.founders && org.founders.find(item => item.handle === citizen.handle)) {
+                await orgAddFounder(citizen.handle, mainOrg.id)
+            }
+        }
+        if (citizen.orgs.affiliated.length > 0) {
+            console.log("Adding affiliate org")
+            for (const affOrg of citizen.orgs.affiliated) {
+                const org = await getOrganization(affOrg.id, true)
+                await orgAddAffiliate(citizen.handle, affOrg.id, affOrg.rank.level, affOrg.rank.title)
+            }
         }
     }
-    if (citizen.orgs.affiliated.length > 0) {
-        console.log("Adding affiliate org")
-        for (const affOrg of citizen.orgs.affiliated) {
-            const org = await getOrganization(affOrg.id, true)
-            await orgAddAffiliate(citizen.handle, affOrg.id, affOrg.rank.level, affOrg.rank.title)
-        }
-    }
+    
 
     return citizen
 }

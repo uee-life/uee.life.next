@@ -24,6 +24,7 @@ export const fetchCitizen = defineCachedFunction(async (handle) => {
     })
 
     if (response) {
+        console.log(response)
         try {
             const $ = cheerio.load(response)
             let info = {}
@@ -131,7 +132,7 @@ export const fetchOrgList = defineCachedFunction(async (handle) => {
                 orgs.affiliated.push({
                     id: $(el).find('.info').find('a').prop('href').split('/')[2],
                     name: $(el).find('.info').find('a').text(),
-                    logo: logo.startsWith('https://') ? logo : baseURI + logo,
+                    logo: logo ? (logo.startsWith('https://') ? logo : baseURI + logo) : '',
                     rank: {
                         title: $(el).find('.ranking').prev().find('strong').text(),
                         level: $(el).find('.ranking').find('.active').length,
@@ -148,7 +149,7 @@ export const fetchOrgList = defineCachedFunction(async (handle) => {
 }, {
     maxAge: 60 * 5,
     name: 'rsi-fetchOrgList',
-    getKey: (org) => org
+    getKey: (handle) => handle
 })
 
 
