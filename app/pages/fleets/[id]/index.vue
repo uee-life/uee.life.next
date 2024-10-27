@@ -16,7 +16,7 @@
                 :type="fleet.data.info.purpose"
                 image="/images/default/fleet.jpg"
                 :logo="fleet.data.org.logo" 
-                @clicked="console.log('CLICKED')"/>
+                @clicked="navigateTo(`/orgs/${fleet.data.org.id}`)"/>
         </nuxt-link>
         <panel class="fleet-chart" title="Fleet Hierarchy" title-size="small">
             <client-only>

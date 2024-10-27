@@ -50,9 +50,10 @@
   })
   </script>
 
-<template>
+  <template>
     <div>
-        <div class="banner-img" :style="bannerImage">
+        <div class="banner-img" :style="bannerImage"></div>
+            <div class="mask" @click="$emit('clicked')">
             <div class="banner-bottom">
                 <div v-if="logo" class="banner-logo" id="banner-logo">
                     <slot name="logo">
@@ -65,7 +66,6 @@
                 </div>
             </div>
         </div>
-        <div class="mask" @click="$emit('clicked')"></div>
     </div>   
 </template>
   
