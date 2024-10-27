@@ -98,7 +98,7 @@ const citizenLink = computed({
         opacity: 0.8;
     }
 
-    .ship-summary .delete {
+    .vehicle-summary .delete {
         position: absolute;
         top: -5px;
         right: -5px;
