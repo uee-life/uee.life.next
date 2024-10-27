@@ -27,7 +27,7 @@ const getBuddyCodes = async (handle) => {
         codes.push(res.code)
     }
 
-    if(codes.length < 5) {
+    if(codes.length == 0) {
         const citizen = await getCitizen(handle)
         if (citizen.verified) {
             codes = await generateCodes(5, 'buddy', handle)

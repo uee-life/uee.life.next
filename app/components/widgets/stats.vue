@@ -29,13 +29,13 @@ onBeforeUnmount(() => {
 
 <template>
     <template v-if="stats.latest">
-        <!--div class="stats">
+        <div class="stats">
             <span>Verified Users: {{ stats.verified }}</span>
             <span>Online Now: {{ stats.online }}</span>
             <span>Ships: {{ stats.ships }}</span>
             <span>Fleets: {{ stats.fleets }}</span>
         </div>
-        <hr class="spacer"/-->
+        <hr class="spacer"/>
         <div class="latest">
             <h3>Latest Citizen</h3>
             <citizen-portrait :citizen="stats.latest" :show-name="true" />

@@ -1,22 +1,3 @@
-<template>
-    <div>
-        <div class="banner-img" :style="bannerImage"></div>
-            <div class="mask" @click="$emit('clicked')">
-            <div class="banner-bottom">
-                <div v-if="logo" class="banner-logo" id="banner-logo">
-                    <slot name="logo">
-                        <img :src="logo" />
-                    </slot>
-                </div>
-                <div class="banner-summary">
-                    <h1>{{name}}<template v-if="tag"> /  <span class="tag"><slot name="tag">{{ tag.toUpperCase() }}</slot></span></template></h1>
-                    <slot><div class="banner-type">{{type.toUpperCase()}}</div></slot>
-                </div>
-            </div>
-        </div>
-    </div>   
-</template>
-  
 <script setup>
   import { gsap } from 'gsap'
   
@@ -68,6 +49,25 @@
       tl.to(".banner-summary", {delay: -0.5, duration: 1, opacity: 1})
   })
   </script>
+
+  <template>
+    <div>
+        <div class="banner-img" :style="bannerImage"></div>
+            <div class="mask" @click="$emit('clicked')">
+            <div class="banner-bottom">
+                <div v-if="logo" class="banner-logo" id="banner-logo">
+                    <slot name="logo">
+                        <img :src="logo" />
+                    </slot>
+                </div>
+                <div class="banner-summary">
+                    <h1>{{name}}<template v-if="tag"> /  <span class="tag"><slot name="tag">{{ tag.toUpperCase() }}</slot></span></template></h1>
+                    <slot><div class="banner-type">{{type.toUpperCase()}}</div></slot>
+                </div>
+            </div>
+        </div>
+    </div>   
+</template>
   
   <style scoped>
   

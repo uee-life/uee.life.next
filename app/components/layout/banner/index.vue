@@ -1,21 +1,3 @@
-<template>
-    <ClientOnly>
-        <teleport :to="`#banner-${display}`">
-            <panel-banner :class="bannerClass"
-                :name="name"
-                :tag="tag"
-                :type="type"
-                :image="image"
-                :logo="logo"
-                @clicked="$emit('clicked')">
-                <template v-slot:logo>
-                    <slot name="logoslot"></slot>
-                </template>
-            </panel-banner>
-        </teleport>
-    </ClientOnly>
-</template>
-
 <script setup>
 const { $viewport } = useNuxtApp()
 
@@ -56,6 +38,24 @@ const bannerClass = computed({
     }
 })
 </script>
+
+<template>
+    <ClientOnly>
+        <teleport :to="`#banner-${display}`">
+            <panel-banner :class="bannerClass"
+                :name="name"
+                :tag="tag"
+                :type="type"
+                :image="image"
+                :logo="logo"
+                @clicked="$emit('clicked')">
+                <template v-slot:logo>
+                    <slot name="logoslot"></slot>
+                </template>
+            </panel-banner>
+        </teleport>
+    </ClientOnly>
+</template>
 
 <style scoped>
 </style>
