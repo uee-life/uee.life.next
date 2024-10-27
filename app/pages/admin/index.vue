@@ -2,10 +2,14 @@
 const { $api } = useNuxtApp()
 const result = ref('')
 
-const createCodes = async () => {
-    const result = await $api(`/api/admin/user/create`, {
+const handle = ref('')
+
+const syncUser = async () => {
+    await $api(`/api/admin/user/sync`, {
         method: 'POST',
-        body: {}
+        body: {
+            handle: handle.value
+        }
     })
 }
 </script>
@@ -29,6 +33,10 @@ const createCodes = async () => {
                     </div>
                 </panel-dock>
                 <panel-dock class="actions" title="Global Actions">
+                    <div>Handle: <input v-model="handle" /></div>
+                    <div class="left-nav-button" @click="syncUser">
+                        Sync User
+                    </div>
                 </panel-dock>
             </teleport>
         </client-only>

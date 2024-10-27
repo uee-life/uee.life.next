@@ -40,6 +40,22 @@ export const addShipModel = async (ship) => {
     return null
 }
 
+export const removeVehicleModel = async (id) => {
+    const query = `
+        MATCH (v:VehicleModel)
+        WHERE v.id = $id
+        DETACH DELETE v
+    `
+
+    const { error } = await writeQuery(query, {
+        id: id.toUpperCase()
+    })
+    if (error) {
+        return error
+    }
+    return null
+}
+
 export const getShipOwner = async (identifier) => {
     const ship = await getShip(identifier)
     return ship.owner

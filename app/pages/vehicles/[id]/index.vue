@@ -1,10 +1,12 @@
 <script setup>
+const { $api } = useNuxtApp()
 const route = useRoute()
 const auth = useAuthStore()
 
 const modals = ref({
     edit: false,
-    add: false
+    add: false,
+    remove: false
 })
 
 const isAdmin = computed({
@@ -12,6 +14,18 @@ const isAdmin = computed({
         return auth.isAuthenticated && auth.user.verified == 1 && ['capn_flint', 'capn_nemo'].includes(auth.citizen.handle.toLowerCase())
     }
 })
+
+const removeVehicleModel = async () => {
+    modals.value.remove = false
+    console.log('removing vehicle ', route.params.id)
+    await $api(`/api/admin/vehicles/remove`, {
+        method: 'POST',
+        body: {
+            id: route.params.id
+        }
+    })
+    navigateTo('/explore')
+}
 
 //const vehicle = ref({})
 
@@ -38,6 +52,7 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id
                 <panel-dock v-if="isAdmin" class="actions" title="Admin">
                     <div class="left-nav-button" @click="modals.add = true">Add New Vehicle</div>
                     <div class="left-nav-button" @click="modals.edit = true">Edit Vehicle</div>
+                    <div class="left-nav-button" @click="modals.remove = true">Delete Vehicle</div>
                 </panel-dock>
             </teleport>
         </client-only>
@@ -68,6 +83,7 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id
         <layout-modal v-if="modals.add" title="Add a vehicle model" @close = "modals.add = false">
             <forms-vehicle-model @close="modals.add = false"/>
         </layout-modal>
+        <modal-confirm v-if="modals.remove" @confirm="removeVehicleModel" @cancel="modals.remove = false" />
     </div>
     <widgets-no-result v-else text="Vehicle not found" />
 </template>

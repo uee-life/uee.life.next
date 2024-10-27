@@ -8,18 +8,20 @@ but this is here if that ever changes!
 // Authorized: Current user
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
-    if (user && user.verified) {
+    const body = await readBody(event)
+
+    if (await checkPermission(user, ['admin:all'])) {
         // invalidate the cache for the citizen
-        await useStorage('cache').removeItem(`nitro:functions:rsi-fetchCitizen:${user.handle}.json`)
-        await useStorage('cache').removeItem(`nitro:functions:rsi-fetchOrgList:${user.handle}.json`)
+        await useStorage('cache').removeItem(`nitro:functions:rsi-fetchCitizen:${body.handle}.json`)
+        await useStorage('cache').removeItem(`nitro:functions:rsi-fetchOrgList:${body.handle}.json`)
 
         // refetch data
-        let citizen = await rsi.fetchCitizen(user.handle)
+        let citizen = await rsi.fetchCitizen(body.handle)
         console.log(citizen)
         await updateCitizen(citizen)
 
         return apiSuccess('Sync Successful!')
-    } else {
-        return apiError(event, 401, 'Sync error')
-    }
+    } 
+    
+    return accessDenied(event)
 })
