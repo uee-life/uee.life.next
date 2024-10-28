@@ -17,6 +17,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
         // refetch data
         let citizen = await rsi.fetchCitizen(body.handle)
+        console.log("citizen:")
         console.log(citizen)
         await updateCitizen(citizen)
 
