@@ -24,7 +24,6 @@ export const fetchCitizen = defineCachedFunction(async (handle) => {
     })
 
     if (response) {
-        console.log(response)
         try {
             const $ = cheerio.load(response)
             let info = {}

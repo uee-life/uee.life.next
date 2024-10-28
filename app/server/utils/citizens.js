@@ -210,6 +210,7 @@ export const updateCitizen = async (data) => {
             verified: $verified,
             bio: $bio,
             website: $website,
+            portrait: $portrait,
             updated: datetime()
          }
          return c as citizen`
@@ -219,6 +220,7 @@ export const updateCitizen = async (data) => {
         name: data.name,
         verified: data.verified,
         bio: data.bio,
+        portrait: data.portrait,
         website: data.website ?? ''
     }
 
