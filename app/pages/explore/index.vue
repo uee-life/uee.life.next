@@ -136,7 +136,7 @@ const goToVehicle = (id) => {
         </template>
         <widgets-no-result v-else text="Search UEE Data" />
         <layout-modal v-if="modals.add" title="Add a vehicle model" @close = "modals.add = false">
-            <forms-vehicle-model @close="modals.add = false"/>
+            <forms-vehicle-model @close="modals.add = false && refresh()"/>
         </layout-modal>
     </div>
 </template>
