@@ -19,6 +19,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
         let citizen = await rsi.fetchCitizen(body.handle)
         console.log("citizen:")
         console.log(citizen)
+        citizen.verified = true
         await updateCitizen(citizen)
 
         return apiSuccess('Sync Successful!')
