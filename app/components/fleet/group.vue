@@ -39,6 +39,7 @@ const isAdmin = computed({
         if (auth.isAuthenticated) {
             if(isCmdr.value) {
                 // can't be full admin of your own command group
+                // To prevent people deleting the group as delegate commander
                 return false
             } else if(group.value.admins.some(e => e.handle == auth.citizen.handle)) {
                 return true

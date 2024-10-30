@@ -8,7 +8,7 @@ const props = defineProps({
 
 const redacted = computed({
     get() {
-        if (props.citizen.handle == "Redacted") {
+        if (props.citizen.handle == "[REDACTED]") {
             return "card redacted"
         } else {
             return "card"
@@ -58,14 +58,6 @@ const citizenLink = computed({
     right: 3px;
 } 
 
-.card.redacted {
-    background-color: rgba(255,34,34,0.2);
-}
-
-.card.redacted>a {
-    border: 1px solid #ff2222;
-}
-
 .card {
     display: flex;
     box-sizing: border-box;
@@ -104,6 +96,19 @@ const citizenLink = computed({
     justify-content: center;
     margin-left: 20px;
     margin-top: -5px;
+}
+
+.card.redacted {
+    background-color: rgba(255,34,34,0.2);
+    border: 1px solid #ff2222;
+}
+
+.card.redacted>a {
+    border: 1px solid #ff2222;
+}
+
+.card.redacted>.identity {
+    color: red;
 }
 
 .rank {

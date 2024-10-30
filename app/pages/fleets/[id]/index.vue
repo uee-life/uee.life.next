@@ -32,7 +32,7 @@
             @reset="reset" 
             @return="navigateTo(`/orgs/${fleet.data.org.id}`)">
             <template v-slot:assignment>
-                <panel style="margin:10px; text-align: center;" title="Assignment" title-size="small">Log in to view assignment</panel>
+                <!--panel style="margin:10px; text-align: center;" title="Assignment" title-size="small">Log in to view assignment</panel-->
             </template>
         </fleet-group>
     </div>

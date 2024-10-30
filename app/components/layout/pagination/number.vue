@@ -28,7 +28,7 @@ const pageClass = computed({
 })
 
 function onClick() {
-    console.log("emitting loadPage")
+    console.log("emitting loadPage:", props.pageNumber)
     emit("loadPage", props.pageNumber)
 }
 </script>
