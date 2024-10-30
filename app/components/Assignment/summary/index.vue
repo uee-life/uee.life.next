@@ -21,9 +21,11 @@ const addCitizen = (data) => {
 const removeCitizen = (data) => {
     switch(props.assignment.type) {
         case 'Crew':
+            console.log('trying to remove crew: ', data.handle)
             emit('remove', data)
             break;
         case 'Leader':
+            console.log('trying to remove Commander: ', data.handle)
             emit('remove', data)
     }
 }

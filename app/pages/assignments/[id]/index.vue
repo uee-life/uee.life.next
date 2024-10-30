@@ -79,6 +79,11 @@ const assignmentName = computed({
     }
 })
 
+const assignMember = async (data) => {
+    console.log('addAssigned', data)
+    // add an API call to add assignee 
+}
+
 const { data: response, refresh, status } = useAPI(`/api/assignments/${route.params.id}`)
 </script>
 

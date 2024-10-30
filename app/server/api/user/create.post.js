@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
 
 const checkAndCreateUser = async (data) => {
     // check invite code
+    console.log(data)
     if (await checkCode(data.code, data.handle)) {
         if (await createAccount(data.handle, data.email)) {
             return true
@@ -49,10 +50,10 @@ const checkCode = async (code, handle) => {
     if (result[0]) {
         if (result[0].code.type == 'org') {
             if (checkOrgMember(result[0].code.owner), handle) {
-                logActivity('REGISTRATION', 'Org registration code used for org: ', result[0].code)
+                logActivity('REGISTRATION', 'Org registration code used for org: ', result[0].code.org)
                 return true
             } else {
-                logActivity('REGISTRATION', 'Attempted code use by non-org member for org: ', result[0].code)
+                logActivity('REGISTRATION', 'Attempted code use by non-org member for org: ', result[0].code.org)
                 return false
             }
         } else {

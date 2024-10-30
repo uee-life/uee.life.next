@@ -94,9 +94,8 @@ async function create_and_link_object(object, type) {
     const params = object
     const error = await writeQuery(query, params)
     if (error) {
-        return error
+        console.error(error)
     }
-    return null
 }
 
 async function create_jump(data) {
@@ -178,15 +177,15 @@ async function loadSystems(systemdata) {
             await create_and_link_object(object, "POI")
         }
 
-        logger.info("System Done: ", system.name, " POIS: ", objects.pois.length)
+        console.log("System Done: ", system.name, " POIS: ", objects.pois.length)
     }))
-    logger.info("All done!")
-    logger.info("Counts: ", JSON.stringify(count))
+    console.log("All done!")
+    console.log("Counts: ", count)
     return systems
 }
 
 async function loadJumps(jumpData) {
-    logger.info("creating jump points")
+    console.log("creating jump points")
     let count = 0
     jumpData.forEach(item => {
         count += 1
@@ -198,7 +197,7 @@ async function loadJumps(jumpData) {
         }
         create_jump(jump)
     })
-    logger.info("Jumps done!")
+    console.log("Jumps done!")
     return count
 }
 
@@ -295,7 +294,7 @@ async function getObjects(location) {
                             if(["LZ"].includes(item.type)) {
                                 objects.pois.push(buildObject(item, {id: location.system_id, code: location.system}, affiliation))
                             } else {
-                                //logger.warn("UNMANAGED PLANET LOC: ", item.type)
+                                //console.log("UNMANAGED PLANET LOC: ", item.type)
                             }
                         })
                     }
@@ -323,17 +322,18 @@ async function getObjects(location) {
                         } else {
                             // types: STAR, BLACKHOLE
                             if(item.type != "STAR") {
-                                logger.warn("UNMANAGED ORBITAL TYPE: ", item.type)
+                                console.log("UNMANAGED ORBITAL TYPE: ", item.type)
+                                console.log(item)
                             }
                         }
                     })
                 }
             } else {
-                logger.error(`Error with ${location.type}: ${location.rsi_code}`)
+                console.error(`Error with ${location.type}: ${location.rsi_code}`)
             }
         },
         onResponseError(_ctx) {
-            logger.error(_ctx.response.error)
+            console.error(_ctx.response.error)
         }
     })
     return objects

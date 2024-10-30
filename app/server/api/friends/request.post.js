@@ -2,7 +2,7 @@
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const body = await readBody(event)
-
+    console.log(body)
     // get target citizen, and create the entity if needed.
     const target = await getCitizen(body.friend, true)
 
@@ -10,7 +10,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
 })
 
 const requestFriend = async (user, friend) => {
-    logger.info('friend requested by ', user.handle, 'to', friend.handle)
+    console.log('friend requested by ', user.handle, 'to', friend.handle)
     const query = `
         MATCH (source:Citizen)
         WHERE source.id =~ $source

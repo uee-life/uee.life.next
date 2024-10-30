@@ -22,6 +22,7 @@ const getCitizenAssignments = async (handle) => {
     const assignments = []
 
     for (const res of result) {
+        console.log(res)
         assignments.push(await getAssignment(res.assignment.id))
     }
 

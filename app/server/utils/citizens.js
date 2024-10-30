@@ -21,7 +21,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
             } else {
                 citizen.verified = false
             }
-            logActivity('API', `Creating Citizen: ${citizen.handle}`, user ?? {handle: 'Anonymous'})
+            logActivity('API', `Creating Citizen: ${citizen.handle}`, user ? user.handle : 'Anonymous')
             await createCitizen(citizen)
         }
     } else {
@@ -31,18 +31,19 @@ export const getCitizen = async (handle, create = false, user = null) => {
         if (user && user.handle.toUpperCase() == citizen.handle.toUpperCase()) {
             // sync data automatically every 12 hours
             if (citizen.updated && (new Date() - new Date(citizen.updated) > 43200000)) { // longer ago than 12 hours
-                logger.info('Auto-syncing citizen data for citizen', citizen.handle)
+                console.log('Auto-syncing citizen data for citizen', citizen.handle)
                 citizen = await updateCitizen(await rsi.fetchCitizen(citizen.handle))
             }
 
-            logger.info('checking/fixing verification status', user)
+            console.log('checking/fixing verification status', user)
+            console.log(citizen.verified)
             if (user && user.verified == 1 && citizen.verified == false) {
                 citizen.verified = true
-                logActivity('API-ACTION', `Updating Citizen: ${citizen.handle}`, user)
+                logActivity('API-ACTION', `Updating Citizen: ${citizen.handle}`, user.handle)
                 updateCitizen(citizen)
             } else if (user && user.verified == 0 && citizen.verified == true) {
                 citizen.verified = false
-                logActivity('API-ACTION', `Updating Citizen: ${citizen.handle}`, user)
+                logActivity('API-ACTION', `Updating Citizen: ${citizen.handle}`, user.handle)
                 updateCitizen(citizen)
             }
         }
@@ -53,7 +54,7 @@ export const getCitizen = async (handle, create = false, user = null) => {
 }
 
 async function loadCitizen(handle, user) {
-    logActivity('API-UTIL', 'loading citizen: ' + handle, user)
+    console.log('loading citizen: ' + handle)
     const query = 
         `MATCH (c:Citizen)-[s:HAS_STATUS]->(:Status {type: 'active'})
          WHERE c.id =~ $handle
@@ -146,7 +147,7 @@ const getCitizenOrgs = async (handle) => {
 }
 
 async function createCitizen(citizen) {
-    logger.info("Creating Citizen: ", citizen.handle)
+    console.log("Creating Citizen: ", citizen.handle)
     // first, save the actual citizen
     const query = 
         `MATCH (s:Status {type: 'active'})
@@ -177,7 +178,7 @@ async function createCitizen(citizen) {
 
     // then, if they are part of an org, see if the ORG already exists, if not, add that too
     if(citizen.orgs.main) {
-        logger.info("Found org, adding as member")
+        console.log("Found org, adding as member")
         const mainOrg = citizen.orgs.main
         const org = await getOrganization(mainOrg.id, true)
         //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
@@ -188,7 +189,7 @@ async function createCitizen(citizen) {
         }
     }
     if (citizen.orgs.affiliated.length > 0) {
-        logger.info("Adding affiliate org")
+        console.log("Adding affiliate org")
         for (const affOrg of citizen.orgs.affiliated) {
             if (affOrg.id) { // catching redacted orgs
                 const org = await getOrganization(affOrg.id, true)
@@ -200,7 +201,7 @@ async function createCitizen(citizen) {
 }
 
 export const updateCitizen = async (data) => {
-    logger.info('UPDATING citizen')
+    console.log('UPDATING citizen')
     const query = 
         `MATCH (c:Citizen)
          WHERE c.id =~ $handle
@@ -225,7 +226,7 @@ export const updateCitizen = async (data) => {
 
     const { error, result } = await writeQuery(query, params)
     if (error) {
-        logger.error(error)
+        console.error(error)
     }
 
     const citizen = result[0].citizen
@@ -246,10 +247,11 @@ export const updateCitizen = async (data) => {
     // then, if they are part of an org, see if the ORG already exists, if not, add that too
     if (citizen.orgs) {
         if(citizen.orgs.main) {
-            logger.info("Found org, adding as member")
+            console.log("Found org, adding as member")
             const mainOrg = citizen.orgs.main
             const org = await fetchOrg(mainOrg.id)
 
+            console.log(org)
             //FIXME: Fix the camelcase, and change this to org_rank when that part is fixed.
             await orgAddMember(citizen.handle, mainOrg.id, mainOrg.rank.level, mainOrg.rank.title)
 
@@ -258,7 +260,7 @@ export const updateCitizen = async (data) => {
             }
         }
         if (citizen.orgs.affiliated.length > 0) {
-            logger.info("Adding affiliate org")
+            console.log("Adding affiliate org")
             for (const affOrg of citizen.orgs.affiliated) {
                 const org = await getOrganization(affOrg.id, true)
                 await orgAddAffiliate(citizen.handle, affOrg.id, affOrg.rank.level, affOrg.rank.title)

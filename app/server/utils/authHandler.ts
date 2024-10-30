@@ -16,7 +16,7 @@ export const defineAuthenticatedEventHandler = <T extends EventHandlerRequest, D
             }
             // do something after
         } catch (err) {
-            logger.error(err)
+            console.log(err)
             return err
         }
     })

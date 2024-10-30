@@ -34,6 +34,7 @@ const removeGroup = async (id) => {
         id: id
     })
     if (error) {
+        console.log(error)
         return error
     } else {
         return null

@@ -70,6 +70,7 @@ const ifSure = async (cb) => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, change it!'
         }).then((result) => {
+            console.log(result)
             if (result.isConfirmed) {
                 cb()        
             }
@@ -84,6 +85,7 @@ const changeHandle = async () => {
             handle: handle.value
         }
     })
+    console.log(result)
     reloadNuxtApp()
 }
 

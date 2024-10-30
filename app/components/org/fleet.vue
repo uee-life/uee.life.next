@@ -20,6 +20,8 @@ const modals = ref({
 
 const addFleet = async (fleet) => {
     modals.value.fleet = false
+    console.log('adding fleet: ')
+    console.log(fleet)
     const result = await $api(`/api/orgs/${props.org.id}/fleets/add`, {
         method: 'POST',
         body: fleet

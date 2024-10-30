@@ -3,6 +3,7 @@
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const codes = await getBuddyCodes(user.handle)
+    console.log('getting codes for', user.handle)
 
     // do something
     return apiSuccess(codes)
@@ -19,6 +20,7 @@ const getBuddyCodes = async (handle) => {
         handle: '(?i)' + handle
     })
 
+    console.log(result)
 
     let codes = []
     for (const res of result) {

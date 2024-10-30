@@ -4,6 +4,7 @@ export default defineEventHandler(async (event) => {
 
     let user = null
     if (event.context.user) {
+        console.log('getting citizen as a logged in user!')
         user = await loadUser(event.context.user)
     }
     

@@ -9,10 +9,10 @@ export default defineAuthenticatedEventHandler(async (event) => {
         const group = await getVehicleGroup(groupID, false)
         if (user && user.verified && group.admins.some(e => e.handle == user.handle)) {
             const newGroup = await updateGroup(groupID, groupData)
-
+            console.log(newGroup)
             clearCommander(groupID)
-
             if (newGroup.cmdr) {
+                console.log('GOT CMDR: ' + newGroup.cmdr)
                 const cmdr = await getCitizen(newGroup.cmdr, true)
                 await addCommander(cmdr, groupID)
             }

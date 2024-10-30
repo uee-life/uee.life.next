@@ -40,6 +40,7 @@ const startY = ref(0)
 const transformVal = ref('')
 
 const setSelected = (id) => {
+  console.log('set selected called')
   emit('setSelected', id)
 }
 

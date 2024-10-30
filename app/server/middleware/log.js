@@ -7,8 +7,8 @@ export default defineEventHandler(async (event) => {
         await setStatus(user.handle, 'active')
     }
     if (path.pathname.startsWith('/api/')) {
-        logActivity('API-CALL', path + ` [${event.req.method}]`, user)
+        logActivity('API-CALL', path + ` [${event.req.method}]`, user.handle)
     } else {
-        logActivity('WEB-CALL', path, user)
+        logActivity('WEB-CALL', path, user.handle)
     }
 })

@@ -72,6 +72,8 @@ const canEdit = computed({
 
 const addGroup = async (group) => {
     modals.value.group = false
+    console.log('adding group: ')
+    console.log(group)
     const result = await $api(`/api/fleets/${props.selected}/add`, {
         method: 'POST',
         body: group
@@ -81,6 +83,7 @@ const addGroup = async (group) => {
 
 const removeGroup = async () => {
     modals.value.confirm = false
+    console.log(`removing group: ${props.selected}`)
     await $api(`/api/fleets/${props.selected}/remove`, {
         method: 'POST'
     })
@@ -133,6 +136,7 @@ const addVehicle = async (id) => {
 }
 
 const removeVehicle = async (vehicle) => {
+    console.log('removing vehicle:', vehicle.id, 'from:', props.selected)
     await $api(`/api/fleets/${props.selected}/vehicles/remove`, {
         key: 'fleetRemoveVehicle',
         method: 'POST',
@@ -147,10 +151,14 @@ const removeVehicle = async (vehicle) => {
 const setGroup = async () => {
     groupStatus.value = 'pending'
     const res = await $api(`/api/fleets/${props.selected}`, {
-        key: 'getFleetGroup'
+        key: 'getFleetGroup',
+        onRequest() {
+            console.log('getFleetGroup called')
+        }
     })
 
     if (res.status == 'success') {
+        console.log('got new group data', status)
         group.value = res.data
         groupStatus.value = 'success'
     } else {
@@ -167,6 +175,7 @@ const {status, data: vehicles, refresh} = await useAPI(() => `/api/fleets/${prop
 watch(
     () => props.selected,
     () => {
+        console.log('prop value changed', props.selected)
         setGroup()
     }
 )

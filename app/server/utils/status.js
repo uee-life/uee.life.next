@@ -33,7 +33,7 @@ export const setStatus = async (handle, status) => {
     // - last_activity: "activity text"
     // - activity_time: <activity-datetime>
 
-    logger.info(`setting status for ${handle} - ${status}`)
+    console.log(`setting status for ${handle} - ${status}`)
     const query = `
         MATCH (c:Citizen)
         WHERE c.id =~ $handle

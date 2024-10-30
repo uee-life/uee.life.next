@@ -21,7 +21,7 @@ export const getVehicleGroup = async (identifier, subgroups=true) => {
             cmdr: result[0].info.cmdr ? await getCitizen(result[0].info.cmdr) : ''
         }
         if(subgroups) {
-            logger.info('adding subgroups')
+            console.info('adding subgroups')
             group.groups = []
             for (const grp of result[0].groups) {
                 group.groups.push(await getVehicleGroup(grp))

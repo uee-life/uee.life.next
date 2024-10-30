@@ -37,8 +37,7 @@ function setFilter(value) {
 }
 
 function selected(vehicle) {
-    // what are we using this for???
-    logger.debug('collection vehicle selected: ', vehicle)
+    console.log('collection vehicle selected: ', vehicle)
 }
 
 const filteredVehicles = computed({

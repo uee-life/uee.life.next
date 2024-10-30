@@ -9,6 +9,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     if (crewmate) {
         const error = await assignCrew(shipId, crew, user.handle)
         if (error) {
+            console.error(error)
             return apiError(event, 400)
         } else {
             return apiSuccess("Crewmate added")

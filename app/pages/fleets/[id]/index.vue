@@ -81,7 +81,7 @@
             lazy: true,
             server: false
         })
-        
+        console.log('RESULT', result)
         if (result.status == 'success') {
             vehiclePool.value = result.data
         }

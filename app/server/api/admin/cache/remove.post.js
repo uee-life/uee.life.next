@@ -5,7 +5,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     const body = await readBody(event)
 
     if (await checkPermission(user, ['admin:all'])) {
-        logActivity('CACHE', `Removing: ${body.item}`, user)
+        console.log(`[CACHE][${user.handle}] removing: ${body.item}`)
         await useStorage('cache').removeItem(body.item, true)
         return apiSuccess("Cache item removed!")
     }

@@ -17,7 +17,7 @@ const isAdmin = computed({
 
 const removeVehicleModel = async () => {
     modals.value.remove = false
-
+    console.log('removing vehicle ', route.params.id)
     await $api(`/api/admin/vehicles/remove`, {
         method: 'POST',
         body: {

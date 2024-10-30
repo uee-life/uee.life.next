@@ -38,6 +38,7 @@ onBeforeUnmount(() => {
 
 const { data, status, refresh } = useAPI(`/api/online`, {
     onResponse({ response }) {
+        console.log(response._data.data.org)
         online.value.org.name = response._data.data.org.name.name
         online.value.org.citizens = sortItems(response._data.data.org.citizens)
     }

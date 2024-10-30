@@ -10,11 +10,15 @@ const selected = ref(null)
 
 const updateVehicles = async () => {
     result.value = await $api(`/api/admin/vehicles/import`)
+    .catch((error) => {
+        console.error(error)
+    })
 }
 
 const filteredVehicles = computed({
     get() {
         return vehicleModels.value.data.models.filter(model => {
+            console.log(model)
             return model.identifier.toLowerCase().includes(filter.value.toLowerCase()) ||
                     model.manufacturer.toLowerCase().includes(filter.value.toLowerCase()) ||
                     model.model.toLowerCase().includes(filter.value.toLowerCase())
@@ -23,10 +27,12 @@ const filteredVehicles = computed({
 })
 
 const vehicleImage = (id) => {
+    console.log(`vehicle: ${id}`)
     return `/images/ships/small/${id}.jpg`
 }
 
 const editVehicleModel = (s) => {
+    console.log('editing: ' + s)
     selected.value = s
     modal.value.edit = true
 }

@@ -30,7 +30,7 @@ const regDate = computed({
 
 //TODO: Update this to make the change...
 async function updateName() {
-    logger.info("updating vehicle name to: ", name.value)
+    console.log("updating vehicle name to: ", name.value)
     edit.value.name = false
     await $api(`/api/vehicles/${props.vehicle.id}/update`, {
         method: 'POST',

@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
 
-    logger.debug('Getting assignment', id)
+    console.log('Getting assignment', id)
 
     const assignment = await getAssignment(id)
     if (assignment) {

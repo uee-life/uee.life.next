@@ -9,6 +9,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     if (crewmate) {
         const error = await assignCrew(shipId, crew, user.handle)
         if (error) {
+            console.error(error)
             return apiError(event, 400)
         } else {
             return apiSuccess("Crewmate added")
@@ -42,6 +43,7 @@ const assignCrew = async (ship, crew, owner) => {
         owner: '(?i)'+owner,
         role: crew.role
     }
+    console.log(query, params)
     const { error } = await writeQuery(query, params)
     if (error) {
         return error

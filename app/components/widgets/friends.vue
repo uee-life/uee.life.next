@@ -23,6 +23,7 @@ const last_seen = (last) => {
 
 const confirmFriend = async () => {
     modals.value.friend_confirm = false
+    console.log('confirming friend:', friend.value)
     await $api(`/api/friends/confirm`, {
         method: 'POST',
         body: {
@@ -34,6 +35,7 @@ const confirmFriend = async () => {
 
 const cancelFriend = async () => {
     modals.value.friend_confirm = false
+    console.log('cancelling friend:', friend.value)
     await $api(`/api/friends/cancel`, {
         method: 'POST',
         body: {
@@ -62,6 +64,7 @@ onBeforeUnmount(() => {
 
 const { data, status, refresh } = useAPI(`/api/friends`, {
     onResponse({ response }) {
+        console.log(response._data.data)
         online.value = sortItems(response._data.data)
     }
 })

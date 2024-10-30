@@ -4,6 +4,16 @@ const auth = useAuthStore()
 const modals = ref({
   signup: false
 })
+
+const handleSuccess = (message) => {
+  modals.value.signup = false
+  console.log('SUCCESS', message)
+}
+
+const handleError = (message) => {
+  modals.value.signup = false
+  console.log('ERROR', message)
+}
 </script>
 
 <template>
