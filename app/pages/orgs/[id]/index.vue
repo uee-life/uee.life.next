@@ -26,22 +26,7 @@ const isOwner = computed({
     }
 })
 
-async function getOrgShips() {
-    fleet.value = await $api(`/api/orgs/${route.params.id}/vehicles`, {
-        async onResponse({ response }) {
-            //console.log(response)
-            //fleet.value = response.data
-        }
-    })
-    console.log(fleet.value)
-}
-
-const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
-    key: 'getOrg',
-    async onResponse(_ctx) {
-        await getOrgShips()
-    }
-})
+const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`)
 
 </script>
 
@@ -80,7 +65,7 @@ const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
                         VEHICLES
                     </template>
                     <template #tab-content-vehicles>
-                        <vehicle-collection :vehicles="fleet.data" view="small" :showSummary="true" />
+                        <org-vehicles />
                     </template>
 
                     <template #tab-title-fleets>

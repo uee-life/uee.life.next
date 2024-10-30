@@ -68,7 +68,7 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id
             {{ vehicle.data.model.description }}
         </panel>
         <vehicle-model  :vehicle="vehicle.data.model" />
-        <panel title="manufacturer info" title-size="small">
+        <panel title="manufacturer bio" title-size="small">
             <layout-info :items="{
                 name: vehicle.data.manufacturer.name,
                 tag: vehicle.data.manufacturer.tag,

@@ -1,3 +1,31 @@
+# v1.0.3 Post-release hotfix patch
+*Updated: 29 October 2954*
+
+More fixes and vehicles! Added all remaining base vehicles, a few special variants are still missing, but you can at least add the base models. Also fixed org vehicles view, and added pagination to make it more performant. Plus, a host of other fixes!
+
+# Features
+- Added pagination to org vehicle list
+- Some stylistic and visual tweaks/improvements
+
+# Bug fixes
+- Fixed org vehicle display
+- Fixed org member lists to link to citizen pages
+
+# Vehicles
+- Idris variants
+- Nautilus variants
+- Reclaimer variants
+- Legionnaire
+- Spirit E1
+- Kraken variants
+- Railen
+- Expanse
+- Hull variants
+- Odyssey
+- Galaxy
+- G12 variants
+- Ranger variants
+
 # v1.0.2 Release bug hotfix patch
 *Updated: 26 October 2954*
 

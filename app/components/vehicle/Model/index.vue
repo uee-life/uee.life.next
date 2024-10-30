@@ -42,7 +42,7 @@ const parseSlots = (data) => {
 <template>
     <div>
         <div class="vehicle-info">
-            <panel title="Hull Info" titleSize="small" class="info-panel medium">
+            <panel title="Hull" titleSize="small" class="info-panel medium">
                 <layout-info :items="{
                     Make: vehicle.manufacturer,
                     model: vehicle.model,
