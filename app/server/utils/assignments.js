@@ -16,11 +16,10 @@ export const checkAssignmentPerms = async (target, user, data=null) => {
             }
         case 'Organization':
             const orgMembers = await getOrgMembers(assignment.owner.id, 5)
-            console.log("Org members:", orgMembers)
             // finish me
             return false
         default:
-            console.warn('Unrecognized assignment owner type:', assignment.owner.type)
+            logger.warn('Unrecognized assignment owner type:', assignment.owner.type)
             return false
     }
 }
@@ -38,7 +37,7 @@ export const createAssignment = async (targetID, ownerID, type, max='0') => {
         }
         RETURN a as assignment
     `
-    console.log("assigning", targetID, ownerID, type, max)
+    logger.debug("assigning", targetID, ownerID, type, max)
 
     const { result } = await writeQuery(query, {
         ownerID: '(?i)' + ownerID,

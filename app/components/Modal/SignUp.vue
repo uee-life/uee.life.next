@@ -8,7 +8,6 @@ const status = ref({
 })
 
 const createAccount = async (data) => {
-    console.log('creating account', data)
     const result = await $api(`/api/user/create`, {
         method: 'POST',
         body: data

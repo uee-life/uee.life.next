@@ -6,7 +6,6 @@ const errors = ref({
 })
 
 const verifyAccount = async () => {
-    console.log('Verifying account')
     const result = await $api(`/api/user/verify`, {
         key: 'verifyAccount',
         method: 'POST'

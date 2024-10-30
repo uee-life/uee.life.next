@@ -18,9 +18,9 @@ export const writeQuery = async (query, params) => {
         //TODO: put in a check here to make sure the write was successful
     } catch (err) {
         error = err
-        console.error(`Something went wrong: ${err}`);
-        console.error(`Query: ${query}`)
-        console.error(`Params: ${JSON.stringify(params)}`)
+        logger.error(`Something went wrong: ${err}`);
+        logger.error(`Query: ${query}`)
+        logger.error(`Params: ${JSON.stringify(params)}`)
     } finally {
         await session.close();
     }
@@ -44,9 +44,9 @@ export const readQuery = async (query, params={}) => {
         records = result.records;
     } catch (err) {
         error = err
-        console.error(`Something went wrong: ${err}`);
-        console.error(`Query: ${query}`)
-        console.error(`Params: ${JSON.stringify(params)}`)
+        logger.error(`Something went wrong: ${err}`);
+        logger.error(`Query: ${query}`)
+        logger.error(`Params: ${JSON.stringify(params)}`)
     } finally {
         await session.close()
     }

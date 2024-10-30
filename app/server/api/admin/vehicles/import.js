@@ -28,7 +28,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 // RSI functions
 async function bootstrap() {
-    console.log("Importing ships")
+    logger.info("Importing ships")
     const url = "https://api.erkul.games/ptu/ships"
     const token = config.external.ERKUL_TOKEN
 
@@ -72,15 +72,15 @@ async function loadShips(ships) {
             official: true
         }
 
-        /*if(!manufacturers.includes(manufacturer.id)) {
+        if(!manufacturers.includes(manufacturer.id)) {
             manufacturers.push(manufacturer.id)
-            console.log("new manufacturer: ", manufacturer.id)
+            logger.info("new manufacturer: ", manufacturer.id)
             if (!await orgExists(manufacturer.id)) {
-                console.log("doesn't exist, creating")
-                console.log(manufacturer)
+                logger.info("doesn't exist, creating")
                 await addManufacturer(manufacturer)
             }
-        }*/
+        }
+
         const hps = parseHardpoints(ship.data.loadout)
         
 
@@ -222,7 +222,7 @@ const parseHardpoints = (hardpoints) => {
                         }
                     }
                 } else {
-                    //console.log('unmatched weapon', hp)
+                    //logger.warn('unmatched weapon', hp)
                 }
                 break
 
@@ -237,7 +237,7 @@ const parseHardpoints = (hardpoints) => {
                                 counts.turrets[0] += 1
                             }
                         } else {
-                            //console.log('unmatched turret', item)
+                            //logger.warn('unmatched turret', item)
                         }
                     }
                 }
@@ -253,7 +253,7 @@ const parseHardpoints = (hardpoints) => {
                         }
                     }
                 } else {
-                    //console.log('unmatched missile', hp)
+                    //logger.warn('unmatched missile', hp)
                 }
                 
                 
@@ -357,8 +357,6 @@ async function addManufacturer(data) {
     - type: "Manufacturer" [Manufacturer]
     - official: [true]
     */
-
-    console.log("Manufacturer: ", data)
 
     await createOrganization(data, true)
 }

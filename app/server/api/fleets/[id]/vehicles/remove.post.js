@@ -21,7 +21,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
 const removeVehicle = async (vehicleID, groupID) => {
     // first, remove any org assignments to that vehicle
     const group = await getVehicleGroup(groupID)
-    console.log(group)
+
     await clearAssignments(vehicleID, group.org.id)
     const query = 
         `MATCH (v:Vehicle {id: $vehicleID})-[r:PART_OF]->(g:VehicleGroup {id: $groupID})

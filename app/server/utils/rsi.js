@@ -29,7 +29,7 @@ export const fetchCitizen = defineCachedFunction(async (handle) => {
             let info = {}
             info.handle = handle
             if ($('p:contains("authenticated")').text()) {
-                console.error($('p:contains("authenticated")').text())
+                logger.error($('p:contains("authenticated")').text())
             }
             info.record = $('span:contains("UEE Citizen Record")', '#public-profile').next().text()
             info.name = $('div.profile.left-col', '#public-profile').find('div.info').find('p.entry').find('strong.value').html()
@@ -88,7 +88,7 @@ export const fetchOrg = defineCachedFunction(async (org) => {
 
         return info
     } catch (error) {
-        console.error(error)
+        logger.error(error)
         return null
     }
 }, {
@@ -142,7 +142,7 @@ export const fetchOrgList = defineCachedFunction(async (handle) => {
 
         return orgs
     } catch (error) {
-        console.error(error)
+        logger.error(error)
         return null
     }
 }, {
@@ -176,7 +176,7 @@ async function fetchOrgFounders(org) {
         })
         return founders
     } catch (error) {
-        console.error(error)
+        logger.error(error)
         return { error: "Org not found!" }
     }
 }

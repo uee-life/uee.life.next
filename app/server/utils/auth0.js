@@ -15,10 +15,10 @@ const getToken = defineCachedFunction(async () => {
         headers: { 'content-type': 'application/json'},
         body: body,
         onRequest() {
-            console.log(`[CACHE][getToken] Cache updated`)
+            logActivity('CACHE', '[getToken] Cache updated')
         },
         onResponse({ request, response, options}) {
-            console.log('got token: ', response._data)
+            logger.debug('got token: ', response._data)
             token = response._data.access_token
         }
     })
@@ -51,7 +51,7 @@ export const latestUser = async () => {
             return {}
         },
         onRequestError() {
-            console.log("Error requesting")
+            logger.error("Error requesting")
             return {}
         }
     })
@@ -72,7 +72,7 @@ export const randomUser = async () => {
         }
     }).then((res) => {
         const i = Math.round(Math.random() * res.length)
-        console.log("user: ", res[i])
+
         const user = {
             id: res[i].identities[0].user_id,
             handle: res[i].app_metadata.handle,
@@ -88,7 +88,7 @@ export const randomUser = async () => {
 
 const addVerificationCode = async (userId) => {
     const code = crypto.randomUUID()
-    console.log('generated uuid: ', code)
+
     updateAppMetadata(userId, {
         verificationCode: code
     })
@@ -109,10 +109,9 @@ export const verifyUser = async (userId, handle) => {
             per_page: 100
         }
     })
-    console.log("Existing User: ")
-    console.log(existingUser)
+
     if(existingUser[0]) {
-        console.log('Handle already linked to an account')
+        logger.info('Handle already linked to an account')
         return null
     }
     // Update existing session
@@ -142,7 +141,7 @@ export const updateHandle = async (userId, handle) => {
 }
 
 export const checkPermission = async (user, permissions) => {
-    logActivity('AUTH', `Requesting Permissions ${permissions}`, user.handle)
+    logActivity('AUTH', `Requesting Permissions ${permissions}`, user)
     const perms = await getPermissions(user.user_id)
     return permissions.some(item => perms.includes(item))
 }
@@ -161,7 +160,7 @@ export const getAccount = async (userId) => {
         return account
     } else {
         account.app_metadata.verificationCode = await addVerificationCode(account.user_id)
-        console.log("account: ", account)
+        logger.debug("account: ", account)
         return account
     }
 }
@@ -181,8 +180,6 @@ export const getPermissions = async (userId) => {
 
 
 export const updateAppMetadata = async (userID, metadata) => {
-    console.log("updating metadata:")
-    console.log(metadata)
     const token = await getToken()
     const body = {
         app_metadata: metadata
@@ -200,9 +197,9 @@ export const updateAppMetadata = async (userID, metadata) => {
 }
 
 export const createAccount = async (handle, email) => {
-    console.log('creating account')
+    logger.info('creating account')
     const token = await getToken()
-    console.info(token)
+
     const data = {
         email: email,
         user_metadata: {
@@ -215,8 +212,6 @@ export const createAccount = async (handle, email) => {
         username: handle
     }
 
-    console.log('creating account')
-
     const account = await $fetch(`https://ueelife.auth0.com/api/v2/users`, {
         method: 'post',
         headers: {
@@ -226,13 +221,13 @@ export const createAccount = async (handle, email) => {
         },
         body: data,
         onResponse({ response }) {
-            console.info(response._data)
+            logger.debug(response._data)
         }
     }).catch(err => {
-        console.error(err)
+        logger.error(err)
     })
 
-    console.log('getting reset token')
+    logger.info('getting reset token')
 
     // get password reset token
     const result = await $fetch(`https://ueelife.auth0.com/api/v2/tickets/password-change`, {
@@ -254,17 +249,17 @@ export const createAccount = async (handle, email) => {
             includeEmailInRedirect: false
         },
         onResponse({request, response, error}) {
-            console.log(response._data)
+            logger.debug(response._data)
         }
     })
 
-    console.log('Updating metadata')
+    logger.info('Updating metadata')
 
     await updateAppMetadata(account.user_id, {
         reset_ticket: result.ticket
     })
 
-    console.log('Sending verification email')
+    logger.info('Sending verification email')
 
     // trigger a verification email
     const mailresult = await $fetch(`https://ueelife.auth0.com/api/v2/jobs/verification-email`, {
@@ -279,11 +274,11 @@ export const createAccount = async (handle, email) => {
             client_id: config.auth0_m2m.client_id,
         },
         onResponse({ response }) {
-            console.log(response._data)
+            logger.debug(response._data)
         }
      })
 
-    console.log('email send result', result)
+    logger.info('email send result', result)
     return true
 }
 

@@ -26,11 +26,8 @@ const props = defineProps({
 })
 
 const add = async (data) => {
-    console.log('assigning citizen:', data)
     // check there's room for another assignee
     if (props.assignment.assignees.filter(e => e != null).length >= props.maxAssignees) {
-        console.log(props.assignment.assignees)
-        console.log('too many')
         // too many
     } else {
         await $api(`/api/assignments/${props.assignment.id}/assign`, {
@@ -46,7 +43,6 @@ const add = async (data) => {
 }
 
 const remove = async (data) => {
-    console.log('removing crew:', data)
     await $api(`/api/assignments/${props.assignment.id}/remove`, {
         method: 'POST',
         body: {

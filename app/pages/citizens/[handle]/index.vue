@@ -35,13 +35,10 @@ const dossierLink = computed({
 })
 
 async function sync() {
-    console.log('Syncing...')
     await $api('/api/user/sync', {
         key: 'syncCitizen',
         onResponse({ response }) {
-            console.log('Sync done!')
             const result = response._data
-            console.log(response)
             $swal.fire({
                 title: result.status,
                 text: result.message,
@@ -75,9 +72,6 @@ async function addVehicle(vehicle) {
                     confirmButtonText: 'OK!'
                 })
             }
-        },
-        onResponseError(_ctx) {
-            console.error('Add Error: ', _ctx.response._data)
         }
     })
     await refresh()
@@ -118,7 +112,6 @@ async function getVehicles() {
 }
 
 const requestFriend = async () => {
-    console.log('sending friend request to', route.params.handle)
     await $api(`/api/friends/request`, {
         key: 'requestFriend',
         method: 'POST',
@@ -149,7 +142,6 @@ const { data: citizen, refresh, status } = useAPI(`/api/citizens/${route.params.
         lazy: true,
         async onResponse({ response }) {
             const data = response._data.data
-            console.log(data)
             if(data.website) {
                 links.value.push({text: 'Website', url: data.website})
             }

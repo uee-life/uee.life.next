@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
 })
 
 const getOrgShipList = async (id) => {
-    console.log("Getting vehicles for org", id)
     const query =
         `MATCH (o:Organization)<-[:MEMBER_OF]-(c:Citizen)<-[:OWNED_BY]-(s:Vehicle)-[:INSTANCE_OF]->(m:VehicleModel)
          WHERE o.id =~ $id

@@ -1,6 +1,34 @@
+import winston from 'winston'
+import winstonDailyFileTransport from 'winston-daily-rotate-file'
 
-export const logActivity = async (type, details, user='Anonymous') => {
-    console.log(`[${new Date().toUTCString()}]-[${setColor(type)}]-[${user}] ${details}`)
+const dailyRotateFileTransport = new winstonDailyFileTransport({
+    filename: 'nitro-%DATE%.log',
+    dirname: 'logs',
+    datePattern: 'YYYY-MM-DD',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d'
+})
+
+export const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
+    transports: [
+        new winston.transports.Console(), // Log to console
+        dailyRotateFileTransport
+    ]
+})
+
+export const logActivity = async (type, details, meta={handle: 'Anonymous'}) => {
+    //logger.info(`[${new Date().toUTCString()}]-[${setColor(type)}]-[${user}] ${details}`)
+    if (meta) {
+        meta.type = type
+    }
+    
+    logger.info(`${details}`, meta)
 }
 
 const setColor = (type) => {
@@ -24,6 +52,6 @@ export const perfMon = async (func, params) => {
     const start = performance.now()
     const result = await func(params)
     const end = performance.now()
-    console.info(`Performance (${func.name} : ${params}): ${end - start}`)
+    logger.debug(`Performance (${func.name} : ${params}): ${end - start}`)
     return result
 }

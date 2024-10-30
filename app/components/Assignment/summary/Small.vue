@@ -1,4 +1,6 @@
 <script setup>
+const emit = defineEmits(['add', 'remove'])
+
 const props = defineProps({
     assignment: {
         type: Object,
@@ -11,10 +13,10 @@ const auth = useAuthStore()
 const removeCitizen = (data) => {
     switch(props.assignment.type) {
         case 'Crew':
-            console.log('trying to remove crew: ', data.handle)
+            emit('remove', data)
             break;
         case 'Leader':
-            console.log('trying to remove Commander: ', data.handle)
+            emit('remove', data)
     }
 }
 </script>

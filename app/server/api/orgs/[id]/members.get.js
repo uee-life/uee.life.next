@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
     const ueeMembers = await getOrgMembers(id)
 
     const rsiMembers = await rsi.fetchMembers(id, query["page"])
-    console.log(rsiMembers.members)
 
     rsiMembers.members = merge(rsiMembers.members, ueeMembers, (a, b) => a.handle == b.handle).sort((a, b) => b.rank - a.rank)
 

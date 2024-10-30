@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
         page: 1
     }
     const body = await readBody(event)
-    console.log("body:", body)
 
     data.search = body.search
 

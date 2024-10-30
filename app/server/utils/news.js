@@ -49,10 +49,10 @@ export const ytFeed = async (feed, earliest) => {
             result = sortItems(items)
         },
         onResponseError({error}) {
-            console.error(error)
+            logger.error(error)
         }
     }).catch(e => {
-        console.error(e)
+        logger.error(e)
         return []
     })
     return result
@@ -67,16 +67,15 @@ export const ytFeed2 = async (feed, earliest) => {
     let result = []
     await $fetch(link, {
         onResponse({ response }) {
-            //console.log(response._data)
             const items = []
             const $ = cheerio.load(response._data, {xmlMode: false})
             const script = $('script')[3].children[0].data.replace(/\\/g, '')
             //const json = JSON.parse(script)
             const parsed = script.split('\n')[1].split('contents":[{')[1].split('}],"currentIndex')[0].split('}},{')
             for (const i of parsed) {
-                console.log(`{${i}}}`)
+                logger.debug(`{${i}}}`)
                 const json = JSON.parse(`{${i}}}`).playlistPanelVideoRenderer
-                console.log(json.title.runs)
+                logger.debug(json.title.runs)
                 const item = {
                     source: feed.source,
                     source_img: feed.image,

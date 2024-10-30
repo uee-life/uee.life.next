@@ -75,7 +75,7 @@ const rsiNews = defineCachedFunction(async (data) => {
         logActivity('CACHE', 'Updating RSI news cache')
         return news
     } catch (error) {
-        console.error(error)
+        logger.error(error)
         return []
     }
 }, {

@@ -35,7 +35,7 @@ const addVehicle = async (vehicleID, group) => {
     })
 
     if(result[0]) {
-        console.log('vehicle added, creating crew assignment.', result[0].vehicle)
+        logger.debug('vehicle added, creating crew assignment.', result[0].vehicle)
         const crewAssignment = await createAssignment(vehicleID, group.org.id, 'Crew', result[0].vehicle.max_crew)
         return result[0].id
     } else {

@@ -94,8 +94,9 @@ async function create_and_link_object(object, type) {
     const params = object
     const error = await writeQuery(query, params)
     if (error) {
-        console.error(error)
+        return error
     }
+    return null
 }
 
 async function create_jump(data) {
@@ -177,15 +178,15 @@ async function loadSystems(systemdata) {
             await create_and_link_object(object, "POI")
         }
 
-        console.log("System Done: ", system.name, " POIS: ", objects.pois.length)
+        logger.info("System Done: ", system.name, " POIS: ", objects.pois.length)
     }))
-    console.log("All done!")
-    console.log("Counts: ", count)
+    logger.info("All done!")
+    logger.info("Counts: ", JSON.stringify(count))
     return systems
 }
 
 async function loadJumps(jumpData) {
-    console.log("creating jump points")
+    logger.info("creating jump points")
     let count = 0
     jumpData.forEach(item => {
         count += 1
@@ -197,7 +198,7 @@ async function loadJumps(jumpData) {
         }
         create_jump(jump)
     })
-    console.log("Jumps done!")
+    logger.info("Jumps done!")
     return count
 }
 
@@ -294,7 +295,7 @@ async function getObjects(location) {
                             if(["LZ"].includes(item.type)) {
                                 objects.pois.push(buildObject(item, {id: location.system_id, code: location.system}, affiliation))
                             } else {
-                                //console.log("UNMANAGED PLANET LOC: ", item.type)
+                                //logger.warn("UNMANAGED PLANET LOC: ", item.type)
                             }
                         })
                     }
@@ -322,18 +323,17 @@ async function getObjects(location) {
                         } else {
                             // types: STAR, BLACKHOLE
                             if(item.type != "STAR") {
-                                console.log("UNMANAGED ORBITAL TYPE: ", item.type)
-                                console.log(item)
+                                logger.warn("UNMANAGED ORBITAL TYPE: ", item.type)
                             }
                         }
                     })
                 }
             } else {
-                console.error(`Error with ${location.type}: ${location.rsi_code}`)
+                logger.error(`Error with ${location.type}: ${location.rsi_code}`)
             }
         },
         onResponseError(_ctx) {
-            console.error(_ctx.response.error)
+            logger.error(_ctx.response.error)
         }
     })
     return objects

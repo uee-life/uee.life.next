@@ -25,7 +25,6 @@ const resultClass = (item) => {
 }
 
 const selected = (id) => {
-    console.log('selected', id)
     vehicle.value = id
     emit('selected', id)
 }

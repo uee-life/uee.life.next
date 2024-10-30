@@ -15,7 +15,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
         if (user && user.verified && parentVG.admins.some(e => e.handle == user.handle)) {
             const newGroupID = await addGroup(parentID, group)
             if (!newGroupID) {
-                console.error(`Couldn't create new group`)
+                logger.error(`Couldn't create new group`)
                 return apiError(`Couldn't create new group`, 400)
             } else {
                 if (group.cmdr) {

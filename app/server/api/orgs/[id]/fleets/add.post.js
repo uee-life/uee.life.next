@@ -41,7 +41,8 @@ const addFleet = async (fleet, orgID) => {
         orgID: orgID
     })
     if (error) {
-        console.error(error)
+        logger.error(error)
+        return null
     } else {
         return result[0].identifier
     }

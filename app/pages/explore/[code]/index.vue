@@ -9,7 +9,6 @@ const initialTab = ref("locations")
 
 const starmapLink = computed({
     get() {
-        console.log(status.value)
 
         let link = `https://robertsspaceindustries.com/starmap?location=`
 

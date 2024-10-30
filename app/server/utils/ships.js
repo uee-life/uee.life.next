@@ -70,7 +70,6 @@ export const getCrew = async (identifier) => {
     
     const crew = []
     for (const res of result) {
-        //console.log(res)
         crew.push({
             citizen: res.citizen,
             role: res.relationship.role

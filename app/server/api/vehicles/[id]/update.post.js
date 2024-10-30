@@ -3,14 +3,12 @@
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const vehicleID = getRouterParam(event, 'id')
-    console.log(vehicleID)
+
     const data = await readBody(event)
 
     //TODO: make this implicit by passing the users handle
     const vehicle = await getVehicle(vehicleID)
     if (vehicle.owner.id == user.handle) {
-        console.log('can update vehicle!')
-        console.log(data)
         await updateVehicle(vehicleID, data.name)
         return apiSuccess("Vehicle updated!")
     } else {
