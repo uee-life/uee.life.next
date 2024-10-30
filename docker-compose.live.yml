@@ -28,6 +28,8 @@ services:
                 hard: 4096
         depends_on:
             - neo4j
+        volumes:
+            - /home/rocky/app/logs/live:/app/logs
     
     nginx:
         image: nginx
