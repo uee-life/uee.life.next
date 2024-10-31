@@ -14,6 +14,8 @@ export default defineAuthenticatedEventHandler(async (event) => {
     } else {
         console.log('verification code: ', ueelifeCode(ver_code))
     }
+    // clear cache first
+    await useStorage('cache').removeItem(`nitro:functions:rsi-fetchCitizen:${user.handle}.json`)
     const bio_code = await fetchCitizen(user.handle).then((citizen) => {
         const code = citizen.bio.match(/\[ueelife\:[A-Za-z0-9\-]+\]/i)
         console.debug(citizen.bio)

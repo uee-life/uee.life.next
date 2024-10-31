@@ -1,17 +1,3 @@
-<template>
-    <panel class="vehicle-summary" :title="vehicle.name" titleSize="small">
-        <img :src="vehicleImage" />
-        <img class="manufacturer" :src="manufacturerImage" />
-        <div class="vehicle-info">
-            <h5>{{ vehicle.model }}</h5>
-            <div>{{ vehicle.career }} - {{ vehicle.role }}</div>
-            <div v-if="vehicle.owner">Owner: {{vehicle.owner.name}}</div>
-        </div>
-        <div class="mask" @click="$emit('selected', vehicle.id)"></div>
-        <img v-if="isAdmin" title="Remove Vehicle" class="delete" @click="$emit('remove', vehicle.id)" src="@/assets/delete.png">
-    </panel>
-</template>
-
 <script setup>
 const props = defineProps({
     vehicle: {
@@ -44,6 +30,21 @@ const citizenLink = computed({
     }
 })
 </script>
+
+<template>
+    <panel v-if="vehicle" class="vehicle-summary" :title="vehicle.name" titleSize="small">
+        <img :src="vehicleImage" />
+        <img class="manufacturer" :src="manufacturerImage" />
+        <div class="vehicle-info">
+            <h5>{{ vehicle.model }}</h5>
+            <div>{{ vehicle.career }} - {{ vehicle.role }}</div>
+            <div v-if="vehicle.owner">Owner: {{vehicle.owner.name}}</div>
+        </div>
+        <div class="mask" @click="$emit('selected', vehicle.id)"></div>
+        <img v-if="isAdmin" title="Remove Vehicle" class="delete" @click="$emit('remove', vehicle.id)" src="@/assets/delete.png">
+    </panel>
+    <div v-else>{{ vehicle }}</div>
+</template>
 
 <style scoped>
     img {

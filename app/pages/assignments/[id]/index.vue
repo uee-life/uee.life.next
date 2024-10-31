@@ -115,6 +115,7 @@ const { data: response, refresh, status } = useAPI(`/api/assignments/${route.par
                 :vehicle-id="response.data.target.id"
                 :show-owner="true"
                 @refresh="refresh" />
+            <vehicle-model :vehicle="response.data.target" />
             <assignment 
                 :assignment="response.data"
                 :max-assignees="response.data.max_assigned"
