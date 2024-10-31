@@ -24,7 +24,7 @@ export const generateCodes = async (count, type='standard', handle=null) => {
 
     const codes = []
     
-    for (res of result) {
+    for (const res of result) {
         codes.push(res.code)
     }
     

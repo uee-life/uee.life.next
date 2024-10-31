@@ -247,7 +247,7 @@ export const updateCitizen = async (data) => {
     // then, if they are part of an org, see if the ORG already exists, if not, add that too
     if (citizen.orgs) {
         if(citizen.orgs.main) {
-            console.log("Found org, adding as member")
+            console.log("Found org, adding as member: ", citizen.orgs.main)
             const mainOrg = citizen.orgs.main
             const org = await fetchOrg(mainOrg.id)
 
