@@ -3,7 +3,7 @@ export const apiError = (event, message="", errorCode=200) => {
     //setResponseStatus(event, errorCode)
     return {
         status: 'error',
-        data: message
+        data: JSON.stringify(message)
     }
 }
 

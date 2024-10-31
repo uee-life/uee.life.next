@@ -59,7 +59,7 @@ function navigate() {
 </script>
 
 <template>
-    <panel class="vehicle-summary" :title="vehicle.name" titleSize="small">
+    <panel v-if="vehicle" class="vehicle-summary" :title="vehicle.name ?? ''" titleSize="small">
         <img class="vehicle-image" :src="vehicleImage" />
         <img class="manufacturer" :src="manufacturerImage" />
         <div class="vehicle-info">
@@ -83,6 +83,7 @@ function navigate() {
         <img v-if="isAdmin" title="Remove Vehicle" class="delete" @click="modals.confirm = true" src="@/assets/delete.png">
         <modal-confirm v-if="modals.confirm" @confirm="removeVehicle" @cancel="modals.confirm = false"></modal-confirm>
     </panel>
+    <widgets-no-result v-else text="Vehicle not found" />
 </template>
 
 <style>

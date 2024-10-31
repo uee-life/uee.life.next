@@ -46,51 +46,21 @@ async function updateName() {
     <div>
         <div class="vehicle-info">
             <panel title="Registration" titleSize="small" class="info-panel">
-                <div class="info-items">
-                    <div class="labels">
-                        <span>Ship ID:</span>
-                        <span>Reg Date:</span>
-                        <span>Name:</span>
-                    </div>
-                    <div class="data">
-                        <span>{{ vehicleID(vehicle.id) }}</span>
-                        <span>{{ ueeDate(regDate) }}</span>
+                <layout-info :items="{
+                    ship_id: vehicleID(vehicle.id),
+                    reg_date: ueeDate(regDate),
+                    name: ''
+                    }">
+                    <template v-slot:name>
                         <span v-if="edit.name">
                             <input type="text" v-model="name" maxlength="30" />
                             <img class="button" title="submit" src="@/assets/tick.png" @click="updateName()"/>
                             <img class="button" title="cancel" src="@/assets/delete.png" @click="edit.name = false"/>
                         </span>
                         <span v-else>{{ vehicle.name ? vehicle.name : 'Not Provided' }}<img v-if="isOwner" class="button" @click="edit.name = true" src="@/assets/edit.png"/></span>
-                    </div>
-                </div>
-            </panel>
-            <panel title="Hull Info" titleSize="small" class="info-panel">
-                <div class="info-items">
-                    <div class="labels">
-                        <span>Manufacturer:</span>
-                        <span>Model:</span>
-                        <span>Size:</span>
-                        <span>Role:</span>
-                    </div>
-                    <div class="data">
-                        <span>{{ vehicle.manufacturer }}</span>
-                        <span>{{ vehicle.model }}</span>
-                        <span>{{ vehicle.size }}</span>
-                        <span>{{ `${vehicle.career} - ${vehicle.role}` }}</span>
-                    </div>
-                </div>
-            </panel>
-            <panel title="Metrics" titleSize="small" class="info-panel">
-                <div class="info-items">
-                    <div class="labels">
-                        <span>Max Crew:</span>
-                        <span>Max Cargo:</span>
-                    </div>
-                    <div class="data">
-                        <span>{{ vehicle.max_crew }}</span>
-                        <span>{{ vehicle.cargo }}</span>
-                    </div>
-                </div>
+                    </template>
+                
+                </layout-info>
             </panel>
         </div>
     </div>
@@ -138,10 +108,10 @@ async function updateName() {
     display: flex;
 }
 
-.info-items .data .button {
-    position: relative;
-    width: 20px;
-    height: 20px;
+.button {
+    position: absolute;
+    width: 18px;
+    height: 18px;
     margin-left: 5px;
     cursor: pointer;
 }

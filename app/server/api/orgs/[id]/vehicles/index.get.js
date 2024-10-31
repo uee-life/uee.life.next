@@ -18,8 +18,9 @@ const getOrgShipList = async (id) => {
     for (const res of result.result) {
         const vehicle = {
             owner: res.owner,
+            assignments: await getAssignments(res.vehicle.id, res.owner.id),
             ...res.vehicleData,
-            ...res.vehicle
+            ...res.vehicle,
         }
 
         list.push(vehicle)

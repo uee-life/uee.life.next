@@ -20,7 +20,7 @@ const props = defineProps({
             <td class="icon"><img v-if="icons[k]" :src="`/images/icons/${icons[k]}.png`"/></td>
             <td class="label">{{ k.replace('_', ' ') }}</td>
 
-            <td class="value">{{ v }}</td>
+            <td class="value">{{ v }}<slot :name="k"></slot></td>
         </tr>
     </table>
     </ClientOnly>

@@ -31,7 +31,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
                     $swal.fire({
                         title: "Server Error",
-                        text: "Internal Server Error: " + response._data,
+                        text: "Internal Server Error: " + `[${response._data.url}] ${response._data.message}`,
                         icon: "error",
                         confirmButtonText: 'OK!'
                     }).then((result) => {

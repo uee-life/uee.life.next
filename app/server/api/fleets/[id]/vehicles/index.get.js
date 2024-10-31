@@ -2,7 +2,7 @@
 export default defineEventHandler(async (event) => {
     const groupID = getRouterParam(event, 'id')
 
-    return apiSuccess(await perfMon(getVehicleList, groupID))
+    return apiSuccess(await getVehicleList(groupID))
 })
 
 //TODO: Optimize this (too many DB calls)
