@@ -1,6 +1,12 @@
 <template>
         <div>
             <client-only>
+                <teleport to="#notifications">
+                    <event-banner>
+                        test
+                    </event-banner>
+                </teleport>
+                
                 <teleport to="#left-dock">
                     <widgets-site-news v-if="isMobile" style="margin: 20px 10px"/>
                     <panel-dock title="News Source" type="news-filter"/>
@@ -19,6 +25,9 @@
                 </teleport>
 
                 <teleport to="#right-dock">
+                    <panel-dock title="Events">
+                        <event-panel />
+                    </panel-dock>
                     <panel-dock v-if="isMobile" title="Emergency Services">
                         <partners-medrunner />
                     </panel-dock>
