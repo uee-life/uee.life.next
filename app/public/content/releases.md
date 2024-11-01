@@ -1,3 +1,16 @@
+# v1.0.4 Post-release hotfix patch
+*Updated: 31 October 2954*
+
+Halloween hotfix patch! Added in a banner for Day of the Vara, and a rotating ad for the IAE coming soon. Also made a couple of bug fixes, fixing vehicle table view, and some other small display issues. Enjoy!
+
+# Content
+- Added the Day of the Vara banner
+- Added a rotating ad for IAE 2954
+
+# Bug fixes
+- Fixed table view for org vehicles
+- Various small display fixes and tweaks
+
 # v1.0.3 Post-release hotfix patch
 *Updated: 29 October 2954*
 

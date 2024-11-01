@@ -8,6 +8,7 @@
     <div class="main" id="page-wrap">
       <layout-navbar-mobile />
       <layout-notifications />
+      <layout-ads-banners />
       <layout-banner-dock name="banner-full" />
       <layout-dock name="left-dock" />
       <div class="content">

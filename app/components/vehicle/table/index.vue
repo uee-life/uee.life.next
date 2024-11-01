@@ -1,7 +1,7 @@
 <template>
     <vue-good-table class="ship-table"
         :columns="columns"
-        :rows="ships"
+        :rows="vehicles"
         theme="ueelife"
         :search-options="search"
         :pagination-options="pagination">
@@ -18,7 +18,7 @@
 
 <script setup>
 const props = defineProps({
-    ships: {
+    vehicles: {
         type: Object,
         required: true
     }
