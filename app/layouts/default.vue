@@ -3,8 +3,10 @@
     <layout-header-default />
     <layout-notifications />
     <layout-navbar-default />
+    
 
     <div class="main">
+      <layout-ads-banners />
       <layout-banner-dock name="banner-full" />
       <layout-dock name="left-dock" />
       <div class="content">

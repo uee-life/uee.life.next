@@ -1,7 +1,7 @@
 <template>
         <div>
             <client-only>
-                <teleport to="#notifications">
+                <teleport to="#banner-ads">
                     <event-banner>
                         test
                     </event-banner>

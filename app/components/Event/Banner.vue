@@ -16,7 +16,7 @@
     background: url(/images/events/vara-2954.jpg);
     background-size: cover;
     height: 18vw;
-    max-width: 100%;
+    max-height: 320px !important;
 }
 
 .mask {
