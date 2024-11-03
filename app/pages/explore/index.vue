@@ -131,7 +131,7 @@ const goToVehicle = (id) => {
             <explore-location-summary 
                 v-for="location in filteredLocations" :link="`/explore/${location.code}`" :loc="{thumbnail: systemImage(location.image_url), name: location.name}">
                 <div><span class="data">{{ systemType(location) }}</span></div>
-                <img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
+                <nuxt-img class="icon" v-if="location.affiliation != 'None'" :src="`/images/factions/icon-${location.affiliation}.png`"/>
             </explore-location-summary>
         </template>
         <widgets-no-result v-else text="Search UEE Data" />

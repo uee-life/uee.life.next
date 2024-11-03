@@ -27,10 +27,12 @@
           default: 'content'
       }
   })
+
+  const img = useImage()
   
   const bannerImage = computed({
-      get() {
-          return `background: url("${props.image}") top center / cover`
+    get() {
+          return `background: url("${img(`https://static.uee.life/${props.image}`)}") top center / cover`
       }
   })
   

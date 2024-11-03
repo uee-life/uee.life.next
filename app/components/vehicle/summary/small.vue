@@ -33,8 +33,8 @@ const citizenLink = computed({
 
 <template>
     <panel v-if="vehicle" class="vehicle-summary" :title="vehicle.name" titleSize="small">
-        <img :src="vehicleImage" />
-        <img class="manufacturer" :src="manufacturerImage" />
+        <nuxt-img :src="vehicleImage" />
+        <nuxt-img class="manufacturer" :src="manufacturerImage" />
         <div class="vehicle-info">
             <h5>{{ vehicle.model }}</h5>
             <div>{{ vehicle.career }} - {{ vehicle.role }}</div>

@@ -47,17 +47,26 @@ export default defineNuxtConfig({
  },
 
  modules: [
-   '@pinia/nuxt',
-   '@pinia-plugin-persistedstate/nuxt',
-   '@nuxt/content',
-   '@nuxtjs/google-fonts',
-   '@nuxtjs/device',
-   'nuxt-viewport',
-   '@nuxt-alt/google-analytics'
+  '@pinia/nuxt',
+  '@pinia-plugin-persistedstate/nuxt',
+  '@nuxt/content',
+  '@nuxtjs/google-fonts',
+  '@nuxtjs/device',
+  'nuxt-viewport',
+  '@nuxt-alt/google-analytics',
+  '@nuxt/image'
  ],
 
  gAnalytics: {
    measurementId: "G-SH1PW5J3QJ"
+ },
+
+ image: {
+    domains: ['static.uee.life'],
+    alias: {
+        images: 'https://static.uee.life/images',
+        content: `https://static.uee.life/content`
+    }
  },
 
  plugins: [

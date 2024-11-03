@@ -60,8 +60,8 @@ function navigate() {
 
 <template>
     <panel v-if="vehicle" class="vehicle-summary" :title="vehicle.name ?? ''" titleSize="small">
-        <img class="vehicle-image" :src="vehicleImage" />
-        <img class="manufacturer" :src="manufacturerImage" />
+        <nuxt-img class="vehicle-image" :src="vehicleImage" />
+        <nuxt-img class="manufacturer" :src="manufacturerImage" />
         <div class="vehicle-info">
             <h5></h5>
             <div class="labels">
