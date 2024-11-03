@@ -82,7 +82,7 @@ const {data: vehicleModels, status} = useAPI('/api/vehicles/models', {
             v-if="status == 'success'" 
             v-for="vehicle in filteredVehicles"
             class="ship-model">
-            <img :src="vehicleImage(vehicle.identifier)"  class="ship-image"/>
+            <nuxt-img :src="vehicleImage(vehicle.identifier)"  class="ship-image"/>
             <div class="ship-info">
                 <div>{{ `${vehicle.manufacturer} ${vehicle.model}` }}</div>
                 <div>{{ `${vehicle.career} - ${vehicle.role}`}}</div>

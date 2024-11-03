@@ -1,9 +1,9 @@
 <template>
     <div>
         <panel :class="notificationClass" id="notification" @click="toggleModal">
-            <img :src="`/images/${messageType}.png`" class="logoImg" />
+            <nuxt-img :src="`/images/${messageType}.png`" class="logoImg" />
             <span class="message">{{messageText}}</span>
-            <img :src="`/images/${messageType}.png`" class="logoImg right" />
+            <nuxt-img :src="`/images/${messageType}.png`" class="logoImg right" />
         </panel>
         <layout-modal :title="messageType" v-if="showModal" @close="toggleModal">
             <div class="modal">

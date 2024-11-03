@@ -5,7 +5,7 @@
                 <div class="background" :style="style"></div>
                 <div class="mask"></div>
                 <div class="article-image" :style="style">
-                    <img src="/images/padimg.png">
+                    <nuxt-img src="/images/padimg.png" />
                 </div>
                 <div class="news-item-info">
                     <div><b>{{ item.title }}</b></div>
@@ -13,7 +13,7 @@
                     <div>{{ item.source }}</div>
                 </div>
             </div>
-            <img class="source-img" :src="item.source_img" :title="item.source"/>
+            <nuxt-img class="source-img" :src="item.source_img" :title="item.source"/>
         </a>
     </panel>
 </template>
@@ -26,9 +26,11 @@ const props = defineProps({
     }
 })
 
+const img = useImage()
+
 const style = computed({
     get() {
-        return 'background: url("' + props.item.image + '"); background-size: cover; background-position: center center;'
+        return 'background: url("' + img(props.item.image) + '"); background-size: cover; background-position: center center;'
     }
 })
 </script>

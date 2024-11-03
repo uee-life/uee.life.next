@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxt/image": "^1.8.1",
     "@nuxtjs/device": "^3.1.1",
     "@nuxtjs/google-fonts": "^3.1.3",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
@@ -24,7 +25,6 @@
     "@lucia-auth/adapter-sqlite": "^3.0.1",
     "@nuxt-alt/google-analytics": "^0.0.3",
     "@nuxt/content": "^2.10.0",
-    "@nuxt/image": "^1.7.0",
     "@pinia/nuxt": "^0.5.1",
     "@sweetalert2/theme-borderless": "^5.0.16",
     "arctic": "^1.7.0",
