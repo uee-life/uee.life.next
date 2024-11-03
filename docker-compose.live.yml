@@ -27,7 +27,7 @@ services:
                 soft: 4096
                 hard: 4096
         volumes:
-            - /home/rocky/github/static.uee.life/public:/src/public
+            - /home/rocky/github/static.uee.life/public/content:/src/.output/public/content
         depends_on:
             - neo4j
     
