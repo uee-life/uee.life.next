@@ -27,8 +27,6 @@ const loadMarkdown = async () => {
     data = props.markdown
   }
 
-  console.log(data)
-
   markdown.value = await parseMarkdown(data)
 }
 
