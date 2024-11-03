@@ -8,7 +8,8 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
     //TODO: make this implicit by passing the users handle
     const vehicle = await getVehicle(vehicleID)
-    if (vehicle.owner.id == user.handle) {
+
+    if (vehicle.owner.id == user.handle.toUpperCase()) {
         console.log('can update vehicle!')
         console.log(data)
         await updateVehicle(vehicleID, data.name)
