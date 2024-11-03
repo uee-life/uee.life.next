@@ -1,12 +1,6 @@
 <template>
         <div>
-            <client-only>
-                <teleport to="#banner-ads">
-                    <event-banner>
-                        test
-                    </event-banner>
-                </teleport>
-                
+            <client-only>                
                 <teleport to="#left-dock">
                     <widgets-site-news v-if="isMobile" style="margin: 20px 10px"/>
                     <panel-dock title="News Source" type="news-filter"/>
