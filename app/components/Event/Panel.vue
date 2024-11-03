@@ -23,8 +23,8 @@ onBeforeUnmount(() => {
     <div class="event">
         <!--a target="_blank" href=""-->
             <div class="event-img">
-                <img v-if="firstImage" src="/images/events/IAE2954-1.jpg" />
-                <img v-else src="/images/events/IAE2954-2.jpg" />
+                <nuxt-img v-if="firstImage" src="/images/events/IAE2954-1.jpg" />
+                <nuxt-img v-else src="/images/events/IAE2954-2.jpg" />
             </div>
         <!--/a-->
     </div>

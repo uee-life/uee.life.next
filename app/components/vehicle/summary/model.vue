@@ -10,8 +10,8 @@
                 <div class="line-item"><span class="data">{{ vehicle.description }}</span></div>
             </div>
         </div>
-        <img class="vehicle" @click="selected" :src="vehicleImage" />
-        <img class="manufacturer" :src="manufacturerImage" />
+        <nuxt-img class="vehicle" @click="selected" :src="vehicleImage" />
+        <nuxt-img class="manufacturer" :src="manufacturerImage" />
         <slot></slot>
         <div class="mask" @click="$emit('selected', vehicle.id)"></div>
         <template v-if="isAdmin">

@@ -1,7 +1,7 @@
 <template>
     <div class="citizen-org" :title="affiliate ? 'Affiliation' : orgModel" title-size="small">
         <nuxt-link class="org-link" :to="orgLink">
-          <img :src="orgLogo" :class="logoSize"/>
+          <nuxt-img :src="orgLogo" :class="logoSize"/>
         </nuxt-link>
         <div :class="nameSize">
           {{ org.name }}

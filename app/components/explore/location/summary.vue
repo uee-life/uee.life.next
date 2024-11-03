@@ -1,7 +1,7 @@
 <template>
     <panel class="summary" :title="loc.type ? loc.type : ''" titleSize="small">
         <router-link class="summary" :to="link">
-            <div v-if="loc.thumbnail" class="thumbnail"><img :src="loc.thumbnail" /></div>
+            <div v-if="loc.thumbnail" class="thumbnail"><nuxt-img :src="loc.thumbnail" /></div>
             <div class="summary-info">
                 <div><h3 class="summary-name">{{ loc.name }}</h3></div>
                 <slot></slot>

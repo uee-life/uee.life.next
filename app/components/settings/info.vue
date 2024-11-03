@@ -116,7 +116,7 @@ const handleClaimed = async () => {
         height: 50px;
         padding: 7px;
         margin-right: 20px;
-        background: url('/images/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
         position: relative;
         opacity: 0;
     }

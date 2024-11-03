@@ -22,10 +22,13 @@ const markdown = ref("")
 const loadMarkdown = async () => {
   let data = null
   if (props.file) {
-    data = await $api('/content/' + props.file)
+    data = await $api('https://static.uee.life/content/' + props.file)
   } else {
     data = props.markdown
   }
+
+  console.log(data)
+
   markdown.value = await parseMarkdown(data)
 }
 

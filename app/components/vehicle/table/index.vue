@@ -145,7 +145,7 @@ const columns = [
 
     .vgt-table.ueelife td {
         color: #39ced8;
-        background: url('/_nuxt/assets/fading-bars.png') repeat;
+        background: url('@/assets/fading-bars.png') repeat;
     }
 
     .vgt-wrap__footer {
