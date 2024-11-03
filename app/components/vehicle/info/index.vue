@@ -53,7 +53,7 @@ async function updateName() {
                     }">
                     <template v-slot:name>
                         <span v-if="edit.name">
-                            <input type="text" v-model="name" maxlength="30" />
+                            <input type="text" v-model="name" maxlength="30" @keyup.enter="updateName()"/>
                             <img class="button" title="submit" src="@/assets/tick.png" @click="updateName()"/>
                             <img class="button" title="cancel" src="@/assets/delete.png" @click="edit.name = false"/>
                         </span>
@@ -109,10 +109,11 @@ async function updateName() {
 }
 
 .button {
-    position: absolute;
+    position: relative;
     width: 18px;
     height: 18px;
     margin-left: 5px;
+    vertical-align: top;
     cursor: pointer;
 }
 .owner {
