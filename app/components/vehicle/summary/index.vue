@@ -50,8 +50,8 @@ function navigate() {
     
     if (props.assignment) {
         navigateTo(`/assignments/${props.assignment}`)
-    } else if (props.vehicle.assignments && props.vehicle.assignments[0]) {
-        navigateTo(`/assignments/${props.vehicle.assignments[0].id}`)
+    } else if (props.vehicle.assignment && props.vehicle.assignment.id) {
+        navigateTo(`/assignments/${props.vehicle.assignment.id}`)
     } else {
         navigateTo(`/vehicles/${props.vehicle.id}`)
     }
@@ -76,7 +76,7 @@ function navigate() {
                 <span>{{ vehicle.model }}</span>
                 <span>{{ vehicleID(vehicle.id)}}</span>
                 <span>{{ vehicle.career }} - {{ vehicle.role }}</span>
-                <span v-if="vehicle.crew">{{ vehicle.crew }} / {{ vehicle.max_crew }}</span>
+                <span v-if="vehicle.crew">{{ vehicle.crew.length }} / {{ vehicle.max_crew }}</span>
             </div>
         </div>
         <div class="mask" @click="navigate"></div>

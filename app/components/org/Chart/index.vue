@@ -25,12 +25,7 @@ const isAdmin = computed({
     }
 })
 
-const reset = () => {
-    selected.value = data.data.info.id
-    refresh()
-}
-
-const { status, data, refresh} = await useAPI(() => `/api/orgs/${props.org.id}/organization`, {
+const { status, data, refresh} = await useAPI(() => `/api/orgs/${props.org.id}/chart`, {
     onResponse({ response }) {
         selected.value = response._data.data.info.id
     }
@@ -52,7 +47,7 @@ const { status, data, refresh} = await useAPI(() => `/api/orgs/${props.org.id}/o
             :selected="selected"
             :members="[]"
             @refresh="refresh" 
-            @reset="reset" 
+            @reset="refresh" 
             @return="navigateTo(`/orgs/${org.data.org.id}`)">
             <template v-slot:assignment>
                 <panel style="margin:10px; text-align: center;" title="Assignment" title-size="small">Log in to view assignment</panel>

@@ -11,12 +11,11 @@ export default defineAuthenticatedEventHandler(async (event) => {
             const newGroup = await updateGroup(groupID, groupData)
 
             clearGroupLeaders(groupID)
-
+            
             if (newGroup.cmdr) {
                 const cmdr = await getCitizen(newGroup.cmdr, true)
                 await assignGroupLeader(cmdr, groupID, 'Commander')
             }
-
             return apiSuccess("Group updated")        
         } else {
             return accessDenied(event)
@@ -28,7 +27,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const updateGroup = async (groupID, group) => {
     const query = `
-        MATCH (g:Group {id: $id})
+        MATCH (g:OrgGroup {id: $id})
         SET g = {
             id: $id,
             name: $name,

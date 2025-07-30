@@ -138,7 +138,6 @@ const {data, status} = useAPI('/api/vehicles/models', {
     server: false,
     lazy: true,
     onResponse({response}) {
-        console.log(response._data.data)
         careers.value = [...new Set(response._data.data.models.map(a => a.career))]
         roles.value = [...new Set(response._data.data.models.map(a => a.role))]
         sizes.value = [...new Set(response._data.data.models.map(a => a.size))]

@@ -1,7 +1,7 @@
 // Public
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
-    const fleet = await getOrgGroup(id)
+    const fleet = await getGroup(id)
     if (fleet) {
         return apiSuccess(fleet)
     } else {

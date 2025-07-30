@@ -114,10 +114,11 @@ export const orgAddFounder = async (handle, orgID) => {
 
 export const getOrgMembers = async (orgID, rank=0) => {
     const query = 
-        `MATCH (:Status {type: 'active'})<-[s:HAS_STATUS]-(c:Citizen)-[r:MEMBER_OF]->(o:Organization {id: $orgID})
-         WHERE r.rank >= $rank
+        `MATCH (:Status {type: 'active'})<-[s:HAS_STATUS]-(c:Citizen)-[r:MEMBER_OF]->(o:Organization)
+         WHERE r.rank >= $rank AND o.id =~ $orgID
+
          RETURN c as member, r.rank as rank, s.updated as status`
-    const { result, error } = await readQuery(query, {orgID: orgID, rank: rank})
+    const { result, error } = await readQuery(query, {orgID: '(?i)'+orgID, rank: rank})
 
     const members = []
 
@@ -134,4 +135,8 @@ export const getOrgMembers = async (orgID, rank=0) => {
     }
 
     return members
+}
+
+export const getOrgLeaders = async (orgID) => {
+    return await getOrgMembers(orgID, 5)
 }

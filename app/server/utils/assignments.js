@@ -1,5 +1,3 @@
-import { getParentGroup, getVehicleGroup } from "./vehicleGroups"
-import { getVehicle } from "./vehicles"
 
 export const checkAssignmentPerms = async (target, user, data=null) => {
     const assignment = await getAssignment(target)
@@ -92,19 +90,30 @@ const getAssignmentMeta = async (assignee, assignment) => {
     }
 }
 
-// This is SLOW (3s)
 export const getAssignment = async (assignmentID) => {
+    return await getLegacyAssignment(assignmentID)
+}
+
+// This is SLOW (3s)
+export const getLegacyAssignment = async (assignmentID) => {
+    console.log('calling getAssignment for:', assignmentID)
     const query = `
         MATCH (owner)<-[:OWNED_BY]-(assignment:Assignment)-[:ATTACHED_TO]->(target)
         WHERE assignment.id =~ $assID
         return owner,
                 labels(owner)[0] as owner_type,
-                target, 
-                labels(target)[0] as labels, 
+                target,
+                labels(target)[0] as labels,
                 assignment,
                 COLLECT {
-                    MATCH (assignee)-[:ASSIGNED_TO]->(assignment)
-                    return assignee.id as id
+                    MATCH (:Status {type: 'active'})<-[s:HAS_STATUS]-(assignee)-[r:ASSIGNED_TO]->(assignment)
+                    WITH {
+                        citizen: properties(assignee),
+                        role: r.role,
+                        assigned: r.assigned,
+                        seen: s.updated
+                        } as assig
+                    return assig
                 } as assignees
     `
 
@@ -114,13 +123,12 @@ export const getAssignment = async (assignmentID) => {
     if(result[0]) {
         const assignees = []
         for (const member of result[0].assignees) {
-            assignees.push({
-                citizen: await getCitizen(member),
-                ...await getAssignmentMeta(member, assignmentID)
-            })
+            member.citizen.status = await parseStatus(member.seen)
+            delete member.seen
+            assignees.push(member)
         }
         const assignment =  {
-            class: result[0].labels,
+            class: result[0].assignment.type, // remove this later
             owner: {
                 type: result[0].owner_type,
                 ...result[0].owner
@@ -130,23 +138,50 @@ export const getAssignment = async (assignmentID) => {
             ...result[0].assignment
         }
 
-        if (assignment.owner.type == 'Citizen') {
-            assignment.admins = [assignment.owner]
-            if (assignment.class == 'Vehicle') {
-                assignment.target = await getVehicle(assignment.target.id)
-            }
-        } else if (assignment.owner.type == 'Organization') {
-            if (assignment.class == 'Vehicle') {
-                const parent = await getParentGroup(assignment.target.id)
-                assignment.admins = parent.admins
-                assignment.fleet = parent.fleet
-                assignment.target = await getVehicle(assignment.target.id)
-            }
-            if (assignment.class == 'VehicleGroup') {
-                const group = await getVehicleGroup(assignment.target.id)
-                assignment.fleet = group.fleet
-                assignment.admins = group.admins
-            }
+        switch (assignment.owner.type) {
+            case 'Citizen':
+                console.log('Citizen Assignment')
+                assignment.admins = [assignment.owner]
+                switch (assignment.class) {
+                    case 'Vehicle':
+                        // vehicle crew
+                        //assignment.target = assignment.target.id
+                        console.log(assignment.type)
+                        break
+                    default:
+                        // assignment class not supported
+                }
+                break
+
+            case 'Organization':
+                console.log('Org Assignment', assignment.type)
+                switch (assignment.type) {
+                    case 'Crew':
+                        // Crew assignment to a ship in an org vehicle group
+
+                    case 'Vehicle':
+                        const parent = await getParentGroup(assignment.target.id)
+                        assignment.group = parent.root
+                        assignment.admins = parent.admins
+                        //assignment.target = assignment.target.id
+                        break
+                    case 'VehicleGroup':
+                        const group = await getGroup(assignment.target.id)
+                        assignment.group = group.root
+                        assignment.admins = group.admins
+                        //assignment.target = assignment.target.id
+                        break
+                    case 'OrgGroup':
+                        // Group member
+                        break
+                    case 'Job':
+                        // Job assignment
+                        break
+                }
+                break
+
+            default:
+                console.log('unsupported: ', assignment.owner.type)
         }
 
         return assignment
@@ -182,10 +217,10 @@ export const clearAllAssignments = async (targetID) => {
     })
 }
 
-// gets all assignments owned, or attached to, a given entity
+// gets all assignments owned by a given owner and attached to a given entity
 export const getAssignments = async (targetID, ownerID) => {
     const query = `
-        MATCH (owner {id: $ownerID})<-[:OWNED_BY]-(a:Assignment)-[:ATTACHED_TO]->(target)
+        MATCH (target)<-[:ASSIGNED_TO]-(a:Assignment)-[:OWNED_BY]->(owner)
         WHERE target.id =~ $targetID
         return a.id as assignment
     `
@@ -200,7 +235,8 @@ export const getAssignments = async (targetID, ownerID) => {
     return assignments
 }
 
-export const getAllAssignments = async (targetID) => {
+export const getLegacyAssignments = async (targetID) => {
+    console.log('calling getLegacyAssignments for:', targetID)
     const query = `
         MATCH (a:Assignment)-[:ATTACHED_TO]->(target)
         WHERE target.id =~ $targetID
@@ -211,6 +247,7 @@ export const getAllAssignments = async (targetID) => {
     })
     const assignments = []
     for (const res of result) {
+        console.log(res)
         assignments.push(await getAssignment(res.assignment))
     }
     return assignments

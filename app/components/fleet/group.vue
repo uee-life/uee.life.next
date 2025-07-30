@@ -26,18 +26,18 @@ const group = ref(JSON.parse(JSON.stringify(props.fleet)))
 const groupStatus = ref('success')
 
 const auth = useAuthStore()
-const isCmdr = computed({
+const isLeader = computed({
     get() {
         return auth.isAuthenticated
             && auth.user.verified == 1
-            && auth.citizen.handle == group.value.cmdr.handle
+            && auth.citizen.handle == group.value.leader.handle
     }
 })
 
 const isAdmin = computed({
     get() {
         if (auth.isAuthenticated) {
-            if(isCmdr.value) {
+            if(isLeader.value) {
                 // can't be full admin of your own command group
                 return false
             } else if(group.value.admins.some(e => e.handle == auth.citizen.handle)) {
@@ -56,24 +56,22 @@ const route = useRoute()
 
 const modals = ref({
     group: false,
-    commander: false,
+    leader: false,
     vehicle: false,
     edit: false,
     confirm: false,
-    confirmCmdr: false
+    confirmLeader: false
 })
 
 const canEdit = computed({
     get() {
-        return isAdmin.value || isCmdr.value
+        return isAdmin.value || isLeader.value
     }
 })
 
 const addGroup = async (group) => {
     modals.value.group = false
-    console.log('adding group: ')
-    console.log(group)
-    const result = await $api(`/api/fleets/${props.selected}/add`, {
+    const result = await $api(`/api/groups/${props.selected}/add`, {
         method: 'POST',
         body: group
     })
@@ -82,8 +80,7 @@ const addGroup = async (group) => {
 
 const removeGroup = async () => {
     modals.value.confirm = false
-    console.log(`removing group: ${props.selected}`)
-    await $api(`/api/fleets/${props.selected}/remove`, {
+    await $api(`/api/groups/${props.selected}/remove`, {
         method: 'POST'
     })
     if (route.params.id == props.selected) {
@@ -94,7 +91,8 @@ const removeGroup = async () => {
 }
 
 const updateGroup = async (group) => {
-    const result = await $api(`/api/fleets/${props.selected}/update`, {
+    modals.value.edit = false
+    const result = await $api(`/api/groups/${props.selected}/update`, {
         method: 'POST',
         body: group
     })
@@ -102,19 +100,19 @@ const updateGroup = async (group) => {
     return result
 }
 
-const addCmdr = async (cmdr) => {
+const addLeader = async (leader) => {
     modals.value.commander = false
     const grp = group.value.info
-    grp.cmdr = cmdr
+    grp.leader = leader
     const result = await updateGroup(grp)
     emit('refresh')
     // do something with the updated group?
 }
 
 const removeCmdr = async () => {
-    modals.value.confirmCmdr = false
+    modals.value.confirmLeader = false
     const grp = group.value.info
-    grp.cmdr = ''
+    grp.leader = ''
     const result = await updateGroup(grp)
     emit('refresh')
 }
@@ -122,7 +120,7 @@ const removeCmdr = async () => {
 const addVehicle = async (id) => {
     modals.value.vehicle = false
 
-    const res = await $api(`/api/fleets/${props.selected}/vehicles/add`, {
+    const res = await $api(`/api/groups/${props.selected}/vehicles/add`, {
         key: 'fleetAddVehicle',
         method: 'POST',
         body: {
@@ -135,8 +133,7 @@ const addVehicle = async (id) => {
 }
 
 const removeVehicle = async (vehicle) => {
-    console.log('removing vehicle:', vehicle.id, 'from:', props.selected)
-    await $api(`/api/fleets/${props.selected}/vehicles/remove`, {
+    await $api(`/api/groups/${props.selected}/vehicles/remove`, {
         key: 'fleetRemoveVehicle',
         method: 'POST',
         body: {
@@ -149,7 +146,7 @@ const removeVehicle = async (vehicle) => {
 
 const setGroup = async () => {
     groupStatus.value = 'pending'
-    const res = await $api(`/api/fleets/${props.selected}`, {
+    const res = await $api(`/api/groups/${props.selected}`, {
         key: 'getFleetGroup',
         onRequest() {
             console.log('getFleetGroup called')
@@ -157,7 +154,6 @@ const setGroup = async () => {
     })
 
     if (res.status == 'success') {
-        console.log('got new group data', status)
         group.value = res.data
         groupStatus.value = 'success'
     } else {
@@ -167,7 +163,7 @@ const setGroup = async () => {
 
 // Repurpose to get assignments for the group.
 
-const {status, data: vehicles, refresh} = await useAPI(() => `/api/fleets/${props.selected}/vehicles`, {
+const {status, data: vehicles, refresh} = await useAPI(() => `/api/groups/${props.selected}/vehicles`, {
     key: 'getFleetGroupVehicles'
 })
 
@@ -183,21 +179,21 @@ watch(
 
 <template>
     <WidgetsLoading v-if="status == 'pending' || groupStatus == 'pending'"/>
-    <div v-else-if="status == 'success'" class="fleet-group">
+    <div v-else-if="status = 'success'" class="fleet-group">
         <div class="info">
             <div class="info-panel no-grow">
                 <panel :title="group.info.name" title-size="small" class="commander">
-                    <div v-if="group.cmdr" class="assigned">
-                        <h5>Group Commander</h5>
-                        <citizen-portrait :citizen="group.cmdr" :show-name="true">
+                    <div v-if="group.leader" class="assigned">
+                        <h5>Group Leader</h5>
+                        <citizen-portrait :citizen="group.leader" :show-name="true">
                             <div class="mask"></div>
-                            <img v-if="canEdit" @click="modals.confirmCmdr = true" class="edit" src="@/assets/delete.png">
+                            <img v-if="canEdit" @click="modals.confirmLeader = true" class="edit" src="@/assets/delete.png">
                         </citizen-portrait>
                     </div>
                     <div v-else class="unassigned">
-                        <h5>Group Commander</h5>
+                        <h5>Group Leader</h5>
                         <div class="bg">
-                            <img v-if="canEdit" @click="modals.commander = true" src="@/assets/plus.png" class="add-new"/>
+                            <img v-if="canEdit" @click="modals.leader = true" src="@/assets/plus.png" class="add-new"/>
                             <div v-else class="add-new" />
                         </div>
                         <div class="name">Unassigned</div>
@@ -224,21 +220,21 @@ watch(
             </div>
         </div>
         <layout-modal v-if="modals.group" title="Add Subgroup" @close="modals.group = false">
-            <forms-fleet @submit="addGroup" />
+            <forms-group type="vehicle" @submit="addGroup" />
         </layout-modal>
         <layout-modal v-if="modals.edit" title="Edit Subgroup" @close="modals.edit = false">
-            <forms-fleet :group="group.info" @submit="updateGroup" />
+            <forms-group :group="group.info" @submit="updateGroup" />
         </layout-modal>
         <modal-confirm v-if="modals.confirm" @confirm="removeGroup" @cancel="modals.confirm = false"></modal-confirm>
-        <modal-confirm v-if="modals.confirmCmdr" @confirm="removeCmdr" @cancel="modals.confirmCmdr = false"></modal-confirm>
+        <modal-confirm v-if="modals.confirmLeader" @confirm="removeCmdr" @cancel="modals.confirmLeader = false"></modal-confirm>
         <!--layout-modal v-if="modals.confirm" title="Are you sure?" @close="modals.confirm = false" :show-close="false">
             <div class="confirm">
                 <img class="button" src="@/assets/tick.png" @click="removeGroup">
                 <img class="button" src="@/assets/delete.png"  @click="modals.confirm = false">
             </div>
         </layout-modal-->
-        <layout-modal v-if="modals.commander" title="Add Commander" @close="modals.commander = false">
-            <forms-commander @submit="addCmdr" />
+        <layout-modal v-if="modals.leader" title="Add Leader" @close="modals.leader = false">
+            <forms-commander @submit="addLeader" />
         </layout-modal>
         <layout-modal v-if="modals.vehicle" title="Add Vehicle" @close="modals.vehicle = false">
             <forms-fleet-vehicle 

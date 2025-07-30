@@ -146,14 +146,14 @@ const setChartScale = (newScale) => {
             :style="{ transform: transformVal, cursor: cursorVal}"
             @mousedown="pan && panStartHandler($event)"
             @mousemove="pan && panning && panHandler($event)">
-            <layout-chart-fleet-node 
+            <layout-chart-org-node 
                 :datasource="datasource"
                 :selected="selected"
                 @setSelected = "setSelected">
                 <template v-for="slot in Object.keys($slots)" :slot="slot" slot-scope="scope">
                     <slot :name="slot" v-bind="scope"></slot>
                 </template>
-            </layout-chart-fleet-node>
+            </layout-chart-org-node>
         </div>
     </div>
 </template>

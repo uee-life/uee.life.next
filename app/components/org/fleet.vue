@@ -47,7 +47,7 @@ const { data: fleets, status, refresh } = useAPI(`/api/orgs/${props.org.id}/flee
         <WidgetsLoading v-else />
         <panel-button v-if="isOwner" text="Add Fleet" class="add-fleet" @click="modals.fleet = true" />
         <layout-modal v-if="modals.fleet" title="Add Fleet" @close="modals.fleet = false">
-            <forms-fleet @submit="addFleet"/>
+            <forms-group type="vehicle" @submit="addFleet"/>
         </layout-modal>
     </div>
 </template>

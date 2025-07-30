@@ -37,7 +37,7 @@ const setSelected = (id) => {
                     {{ datasource.info.name }}
                   </div>
                   <div class="content">{{ datasource.info.purpose }}</div>
-                  <citizen-portrait v-if="datasource.cmdr" :citizen="datasource.cmdr" size="tiny" shape="round" class="node-cmdr"/>
+                  <citizen-portrait v-if="datasource.leader" :citizen="datasource.leader" size="tiny" shape="round" class="node-cmdr"/>
                   <div v-else class="node-no-cmdr"></div>
               </slot>
             </div>
@@ -59,11 +59,11 @@ const setSelected = (id) => {
             </tr>
             <tr class="nodes">
             <td colspan="2" v-for="group in datasource.groups" :key="group.id">
-                <layout-chart-fleet-node :datasource="group" @setSelected="setSelected" :selected="selected">
-                <template v-for="slot in Object.keys($slots)" :slot="slot" slot-scope="scope">
-                    <slot :name="slot" ></slot>
-                </template>
-                </layout-chart-fleet-node>
+                <layout-chart-org-node :datasource="group" @setSelected="setSelected" :selected="selected">
+                  <template v-for="slot in Object.keys($slots)" :slot="slot" slot-scope="scope">
+                      <slot :name="slot" ></slot>
+                  </template>
+                </layout-chart-org-node>
             </td>
             </tr>
         </template>

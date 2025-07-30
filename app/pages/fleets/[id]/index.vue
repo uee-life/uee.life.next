@@ -86,7 +86,7 @@
         }
     }
 
-    const {status, data: fleet, refresh} = await useAPI(() => `/api/fleets/${route.params.id}`, {
+    const {status, data: fleet, refresh} = await useAPI(() => `/api/groups/${route.params.id}`, {
         key: 'getFleet',
         server: false,
         lazy: true,

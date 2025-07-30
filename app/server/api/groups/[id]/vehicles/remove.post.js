@@ -4,7 +4,7 @@ export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)
 
-    const group = await getVehicleGroup(data.groupID)
+    const group = await getGroup(data.groupID)
 
     if (user && user.verified && group.admins.some(e => e.handle == user.handle)) {
         const error = await removeVehicle(data.vehicleID, data.groupID)
@@ -19,23 +19,28 @@ export default defineAuthenticatedEventHandler(async (event) => {
 })
 
 const removeVehicle = async (vehicleID, groupID) => {
-    // first, remove any org assignments to that vehicle
-    const group = await getVehicleGroup(groupID)
-    console.log(group)
-    await clearAssignments(vehicleID, group.org.id)
-    const query = 
-        `MATCH (v:Vehicle {id: $vehicleID})-[r:PART_OF]->(g:VehicleGroup {id: $groupID})
-         DELETE r`
+    // remove vehicles connection with the group
+    // then delete any vehicle assignments associated with that group
+    const query = `
+        MATCH (v:Vehicle {id: $vehicleID})-[r:PART_OF]->(g:Group {id: $groupID})-[:BELONGS_TO | PART_OF]->{0,10}(o:Organization|Citizen)
+        DELETE r
+        WITH v, o
+        OPTIONAL MATCH (o)<-[:OWNED_BY]-(a:Assignment)-[:ATTACHED_TO]->(v)
+        DETACH DELETE a
+    `
 
     const params = {
         vehicleID: vehicleID.toUpperCase(),
         groupID: groupID
     }
 
-    const { error } = await writeQuery(query, params)
+    const { result, error } = await writeQuery(query, params)
     if (error) {
         return error
     } else {
+        if (result[0] && result[0].owner) {
+            await clearAssignments(vehicleID, result[0].owner.id)
+        }
         return null
     }
 }

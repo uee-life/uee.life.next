@@ -9,18 +9,18 @@ export default defineAuthenticatedEventHandler(async (event) => {
     // (parent cmdr, or org director)
 
     // get citizen info, and create the entity if it doesn't exist yet
-    if (group) {
+    if (group && user && user.verified) {
         const parentVG = await getVehicleGroup(parentID)
 
-        if (user && user.verified && parentVG.admins.some(e => e.handle == user.handle)) {
+        if (parentVG.admins.some(e => e.handle == user.handle)) {
             const newGroupID = await addGroup(parentID, group)
             if (!newGroupID) {
                 console.error(`Couldn't create new group`)
-                return apiError(`Couldn't create new group`, 400)
+                return apiError(event, `Couldn't create new group`, 400)
             } else {
                 if (group.cmdr) {
                     const cmdr = await getCitizen(group.cmdr, true)
-                    addCommander(cmdr, newGroupID)
+                    assignGroupLeader(cmdr, newGroupID, 'Commander')
                 }
                 return apiSuccess("Group updated")
             }
@@ -35,8 +35,8 @@ export default defineAuthenticatedEventHandler(async (event) => {
 
 const addGroup = async (parentID, group) => {
     const query = `
-        MATCH (parent:VehicleGroup {id: $id})
-        MERGE (g:VehicleGroup {name: $name})
+        MATCH (parent:Group {id: $id})
+        MERGE (g:Group {name: $name, type: 'vehicle'})
         MERGE (g)-[:PART_OF]->(parent)
         SET g = {
             id: toUpper(left(randomUUID(), 8)),

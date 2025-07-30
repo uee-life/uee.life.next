@@ -15,7 +15,7 @@ const isAdmin = computed({
 
 //const vehicle = ref({})
 
-const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id}/model`, {
+const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id}`, {
     key: 'getVehicle',
     onResponse({response}) {
         /*if (response._data.status == 'success') {
@@ -43,16 +43,16 @@ const {status, data: vehicle, refresh} = useAPI(`/api/vehicles/${route.params.id
         </client-only>
         <layout-banner 
             display="full"
-            :name="vehicle.data.model.model"
-            :tag="vehicle.data.model.name"
-            :type="vehicle.data.model.career + ' / ' + vehicle.data.model.role"
-            :image="`/images/ships/${vehicle.data.model.identifier}.jpg`"
-            :logo="`/images/manufacturers/${vehicle.data.manufacturer.id}.png`"
+            :name="vehicle.data.model"
+            :tag="vehicle.data.name"
+            :type="vehicle.data.career + ' / ' + vehicle.data.role"
+            :image="`/images/ships/${vehicle.data.identifier}.jpg`"
+            :logo="`/images/manufacturers/${vehicle.data.manufacturer.tag}.png`"
             />
         <panel title="Description" title-size="small">
-            {{ vehicle.data.model.description }}
+            {{ vehicle.data.description }}
         </panel>
-        <vehicle-model  :vehicle="vehicle.data.model" />
+        <vehicle-model  :vehicle="vehicle.data" />
         <panel title="manufacturer info" title-size="small">
             <layout-info :items="{
                 name: vehicle.data.manufacturer.name,

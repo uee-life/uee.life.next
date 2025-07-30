@@ -1,7 +1,7 @@
 <script setup>
 const { $api } = useNuxtApp()
 
-const emit = defineEmits(['refresh', 'reset', 'return'])
+const emit = defineEmits(['refresh', 'return'])
 
 const props = defineProps({
     group: {
@@ -30,7 +30,7 @@ const isCmdr = computed({
     get() {
         return auth.isAuthenticated
             && auth.user.verified == 1
-            && auth.citizen.handle == group.value.cmdr.handle
+            && auth.citizen.handle == group.value.leader.handle
     }
 })
 
@@ -56,8 +56,8 @@ const route = useRoute()
 
 const modals = ref({
     group: false,
-    commander: false,
-    vehicle: false,
+    leader: false,
+    member: false,
     edit: false,
     confirm: false,
     confirmCmdr: false
@@ -73,7 +73,7 @@ const addGroup = async (group) => {
     modals.value.group = false
     console.log('adding group: ')
     console.log(group)
-    const result = await $api(`/api/groups/org/${props.selected}/add`, {
+    const result = await $api(`/api/groups/${props.selected}/add`, {
         method: 'POST',
         body: group
     })
@@ -83,18 +83,18 @@ const addGroup = async (group) => {
 const removeGroup = async () => {
     modals.value.confirm = false
     console.log(`removing group: ${props.selected}`)
-    await $api(`/api/groups/org//${props.selected}/remove`, {
+    await $api(`/api/groups/${props.selected}/remove`, {
         method: 'POST'
     })
     if (route.params.id == props.selected) {
         emit('return')
     } else {
-        emit('reset')
+        emit('refresh')
     }
 }
 
 const updateGroup = async (group) => {
-    const result = await $api(`/api/groups/org/${props.selected}/update`, {
+    const result = await $api(`/api/groups/${props.selected}/update`, {
         method: 'POST',
         body: group
     })
@@ -102,19 +102,19 @@ const updateGroup = async (group) => {
     return result
 }
 
-const addCmdr = async (cmdr) => {
-    modals.value.commander = false
+const addLeader = async (leader) => {
+    modals.value.leader = false
     const grp = group.value.info
-    grp.cmdr = cmdr
+    grp.leader = leader
     const result = await updateGroup(grp)
     emit('refresh')
     // do something with the updated group?
 }
 
-const removeCmdr = async () => {
-    modals.value.confirmCmdr = false
+const removeLeader = async () => {
+    modals.value.leaderConfirm = false
     const grp = group.value.info
-    grp.cmdr = ''
+    grp.leader = ''
     const result = await updateGroup(grp)
     emit('refresh')
 }
@@ -122,7 +122,7 @@ const removeCmdr = async () => {
 const addMember = async (id) => {
     modals.value.vehicle = false
 
-    const res = await $api(`/api/groups/org/${props.selected}/members/add`, {
+    const res = await $api(`/api/groups/${props.selected}/members/add`, {
         key: 'groupOrgAddVehicle',
         method: 'POST',
         body: {
@@ -134,13 +134,13 @@ const addMember = async (id) => {
     refresh()
 }
 
-const removeMember = async (vehicle) => {
-    console.log('removing vehicle:', vehicle.id, 'from:', props.selected)
-    await $api(`/api/groups/org/${props.selected}/vehicles/remove`, {
-        key: 'groupOrgRemoveVehicle',
+const removeMember = async (member) => {
+    console.log('removing member:', member.id, 'from:', props.selected)
+    await $api(`/api/groups/${props.selected}/member/remove`, {
+        key: 'groupOrgRemoveMember',
         method: 'POST',
         body: {
-            vehicleID: vehicle.id,
+            memberID: member.id,
             groupID: props.selected
         }
     })
@@ -163,7 +163,7 @@ const setGroup = async () => {
 
 // Repurpose to get assignments for the group.
 
-const {status, data: vehicles, refresh} = await useAPI(() => `/api/groups/org/${props.selected}/members`)
+const {status, data: members, refresh} = await useAPI(() => `/api/groups/${props.selected}/members`)
 
 watch(
     () => props.selected,
@@ -180,18 +180,18 @@ watch(
     <div v-else-if="status == 'success'" class="org-group">
         <div class="info">
             <div class="info-panel no-grow">
-                <panel-dock :title="group.info.name" title-size="small" class="commander">
-                    <div v-if="group.cmdr" class="assigned">
-                        <h5>Group Commander</h5>
-                        <citizen-portrait :citizen="group.cmdr" :show-name="true">
+                <panel-dock :title="group.info.name" title-size="small" class="leader">
+                    <div v-if="group.leader" class="assigned">
+                        <h5>Group Leader</h5>
+                        <citizen-portrait :citizen="group.leader" :show-name="true">
                             <div class="mask"></div>
-                            <img v-if="canEdit" @click="modals.confirmCmdr = true" class="edit" src="@/assets/delete.png">
+                            <img v-if="canEdit" @click="modals.leaderConfirm = true" class="edit" src="@/assets/delete.png">
                         </citizen-portrait>
                     </div>
                     <div v-else class="unassigned">
-                        <h5>Group Commander</h5>
+                        <h5>Group Leader</h5>
                         <div class="bg">
-                            <img v-if="canEdit" @click="modals.commander = true" src="@/assets/plus.png" class="add-new"/>
+                            <img v-if="canEdit" @click="modals.leader = true" src="@/assets/plus.png" class="add-new"/>
                             <div v-else class="add-new" />
                         </div>
                         <div class="name">Unassigned</div>
@@ -205,7 +205,7 @@ watch(
                     <input v-if="isAdmin" class="tool-button" @click="modals.confirm = true" type="button" value="Delete Group">
                     <input v-if="isAdmin" class="tool-button" @click="modals.edit = true" type="button" value="Edit Group">
                     <input class="tool-button" @click="modals.group = true" type="button" value="Add Subgroup">
-                    <input class="tool-button" @click="modals.vehicle = true" type="button" value="Add Vehicle">
+                    <input class="tool-button" @click="modals.member = true" type="button" value="Add Member">
                 </panel>
                 <!--vehicle-collection 
                     :vehicles="vehicles.data" 
@@ -219,26 +219,25 @@ watch(
             </div>
         </div>
         <layout-modal v-if="modals.group" title="Add Subgroup" @close="modals.group = false">
-            <forms-fleet @submit="addGroup" />
+            <forms-group type="org" @submit="addGroup" />
         </layout-modal>
         <layout-modal v-if="modals.edit" title="Edit Subgroup" @close="modals.edit = false">
-            <forms-fleet :group="group.info" @submit="updateGroup" />
+            <forms-group :group="group.info" @submit="updateGroup" />
         </layout-modal>
         <modal-confirm v-if="modals.confirm" @confirm="removeGroup" @cancel="modals.confirm = false"></modal-confirm>
-        <modal-confirm v-if="modals.confirmCmdr" @confirm="removeCmdr" @cancel="modals.confirmCmdr = false"></modal-confirm>
+        <modal-confirm v-if="modals.leaderConfirm" @confirm="removeLeader" @cancel="modals.leaderConfirm = false"></modal-confirm>
         <!--layout-modal v-if="modals.confirm" title="Are you sure?" @close="modals.confirm = false" :show-close="false">
             <div class="confirm">
                 <img class="button" src="@/assets/tick.png" @click="removeGroup">
                 <img class="button" src="@/assets/delete.png"  @click="modals.confirm = false">
             </div>
         </layout-modal-->
-        <layout-modal v-if="modals.commander" title="Add Commander" @close="modals.commander = false">
-            <forms-commander @submit="addCmdr" />
+        <layout-modal v-if="modals.leader" title="Add Commander" @close="modals.leader = false">
+            <forms-commander @submit="addLeader" />
         </layout-modal>
-        <layout-modal v-if="modals.vehicle" title="Add Vehicle" @close="modals.vehicle = false">
-            <forms-fleet-vehicle 
-                :vehicle-pool="vehiclePool" 
-                @add="addVehicle"/>
+        <layout-modal v-if="modals.member" title="Add Member" @close="modals.member = false">
+            <forms-crew 
+                @add="addMember"/>
         </layout-modal>
     </div>
     <WidgetsNoResult v-else="status == 'error'" text="Group not found"/>
@@ -293,7 +292,7 @@ watch(
 
 }
 
-.info .commander {
+.info .leader {
     height: fit-content;
     max-height: fit-content;
     margin: 10px;

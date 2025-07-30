@@ -1,10 +1,10 @@
 // Authenticated
-// Authorized: Fleet admins
+// Authorized: Group admins
 export default defineAuthenticatedEventHandler(async (event) => {
     const user = await loadUser(event.context.user)
     const data = await readBody(event)
 
-    const group = await getVehicleGroup(data.groupID)
+    const group = await getGroup(data.groupID)
 
     if (user && user.verified && group.admins.some(e => e.handle == user.handle)) {
         const error = await addVehicle(data.vehicleID, group)
@@ -22,7 +22,7 @@ const addVehicle = async (vehicleID, group) => {
     // need to first add the vehicle to the vehicle group
     const addVehicle = 
         `MATCH (s:Vehicle {id: $vehicleID})-[:INSTANCE_OF]-(v:VehicleModel)
-         MATCH (g:VehicleGroup {id: $groupID})
+         MATCH (g:Group {id: $groupID})
          MERGE (s)-[:PART_OF]->(g)
          return g.id as id,
                 v as vehicle`

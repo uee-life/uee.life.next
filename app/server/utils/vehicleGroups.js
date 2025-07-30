@@ -1,13 +1,13 @@
 
 export const getVehicleGroup = async (identifier, subgroups=true) => {
     const query =
-        `MATCH (g:VehicleGroup)-[:PART_OF]->{0,10}(f:VehicleGroup)-[:BELONGS_TO]->(o:Organization)
+        `MATCH (g:Group)-[:PART_OF]->{0,10}(f:Group)-[:BELONGS_TO]->(o:Organization)
          WHERE g.id =~ $id
          RETURN g as info,
                 f as fleet,
                 o as org,
                 COLLECT {
-                    MATCH (sg:VehicleGroup)-[:PART_OF]->(g)
+                    MATCH (sg:Group)-[:PART_OF]->(g)
                     return sg.id
                 } as groups`
     const { result } = await readQuery(query, {id: '(?i)'+identifier.toUpperCase()})
@@ -34,10 +34,10 @@ export const getVehicleGroup = async (identifier, subgroups=true) => {
 }
 
 
-export const getParentGroup = async (identifier) => {
+export const getParentVehicleGroup = async (identifier) => {
     const query = `
-        MATCH (g {id: $id})-[:PART_OF]->{0,1}(parent:VehicleGroup)
-        MATCH (parent)-[:PART_OF]->{0,10}(f:VehicleGroup)-[:BELONGS_TO]->(o:Organization)
+        MATCH (g {id: $id})-[:PART_OF]->{0,1}(parent:Group)
+        MATCH (parent)-[:PART_OF]->{0,10}(f:Group)-[:BELONGS_TO]->(o:Organization)
         RETURN parent as info,
             f as fleet,
             o as org,
@@ -74,7 +74,7 @@ const getGroupAdmins = async (groupID, orgID) => {
 export const getCmdrList = async (groupID) => {
     // returns all commanders from the selected group up to fleet commander
     const query = `
-        MATCH (v:VehicleGroup {id: $id})-[:PART_OF]->{0,10}(g:VehicleGroup)
+        MATCH (v:Group {id: $id})-[:PART_OF]->{0,10}(g:Group)
         RETURN COLLECT {
             MATCH (c:Citizen)-[:ASSIGNED_TO]->(a:Assignment {type: 'Leader'})-[:ATTACHED_TO]->(g) return c
         } as commanders
@@ -96,7 +96,7 @@ export const getCmdrList = async (groupID) => {
 export const clearCommander = async (groupID) => {
     // clear old commander
     const removeQuery = `
-        MATCH (a:Assignment {type: 'Leader'})-[:ATTACHED_TO]->(:VehicleGroup {id: $id})
+        MATCH (a:Assignment {type: 'Leader'})-[:ATTACHED_TO]->(:Group {id: $id})
         DETACH DELETE a
     `
     const { error } = await writeQuery(removeQuery, {
@@ -108,14 +108,14 @@ export const addCommander = async (citizen, groupID) => {
     // get or create an assignment
     // add new commander
     const addQuery = `
-        MATCH (g:VehicleGroup {id: $id})
+        MATCH (g:Group {id: $id})
         MATCH (c:Citizen)
         WHERE c.id =~ $handle
         WITH c, g
         MERGE (c)-[:ASSIGNED_TO {role: 'Commander', assigned: datetime()}]->(a:Assignment)-[:ATTACHED_TO]->(g)
         SET a = {
             id: toUpper(left(randomUUID(), 8)),
-            type: 'Leader',
+            type: 'Leadership',
             desription: 'Group Leadership',
             max_assigned: 1
         }

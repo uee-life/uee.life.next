@@ -44,7 +44,7 @@ const parseSlots = (data) => {
         <div class="vehicle-info">
             <panel title="Hull Info" titleSize="small" class="info-panel medium">
                 <layout-info :items="{
-                    Make: vehicle.manufacturer,
+                    Make: vehicle.manufacturer.name,
                     model: vehicle.model,
                     role: `${vehicle.career} - ${vehicle.role}`,
                 }" />

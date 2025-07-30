@@ -33,7 +33,6 @@ async function getOrgShips() {
             //fleet.value = response.data
         }
     })
-    console.log(fleet.value)
 }
 
 const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
@@ -80,7 +79,7 @@ const {status, data: org} = useAPI(`/api/orgs/${route.params.id}`, {
                         ORG CHART
                     </template>
                     <template #tab-content-organization>
-                        <org-organization :org="org.data"/>
+                        <org-chart :org="org.data"/>
                     </template>
 
                     <template #tab-title-vehicles>

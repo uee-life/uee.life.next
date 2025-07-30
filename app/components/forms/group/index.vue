@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submit" class="fleet-form">
+    <form @submit.prevent="submit" class="group-form">
         <label for="name">Group Name:</label>
         <div>
             <input class="input" type="text" id="name" v-model="data.name" maxlength="16">
@@ -8,8 +8,8 @@
         <label for="purpose">Purpose:</label>
         <input class="input" type="text" id="purpose" v-model="data.purpose">
         <template v-if="!group">
-            <label for="commander">Commander (optional):</label>
-            <forms-input-citizen @selected="selected" />
+            <label for="leader">Leader (optional):</label>
+            <forms-input-citizen @selected="selected" id="leader"/>
         </template>
         <input type="submit" value="Submit" />
     </form>
@@ -18,14 +18,18 @@
 <script setup>
 const emit = defineEmits(['submit'])
 const props = defineProps({
+    type: {
+        type: String,
+        default: ''
+    },
     group: {
         type: Object,
         default: function () {
             return {
                 name: '',
                 purpose: '',
-                cmdr: '',
-                type: 'vehicle'
+                leader: '',
+                type: ''
             }
         }
     }
@@ -38,7 +42,7 @@ const error = ref({
 })
 
 const selected = (citizen) => {
-    data.value.cmdr = citizen.handle
+    data.value.leader = citizen.handle
 }
 
 const submit = async () => {
@@ -47,6 +51,8 @@ const submit = async () => {
         error.value.name = '* A name is required!'
         return
     }
+
+    data.value.type = props.type
 
     emit('submit', data.value)
 }
