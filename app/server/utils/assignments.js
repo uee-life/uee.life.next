@@ -94,6 +94,20 @@ export const getAssignment = async (assignmentID) => {
     return await getLegacyAssignment(assignmentID)
 }
 
+const fixAssignment = async (assignmentID) => {
+    /**
+     * Steps to fix:
+     * 1 - (a)-attached_to->(t) becomes (t)-assigned_to->(a)
+     * 2a - if owner (o) is an org:
+     *    (a)-attached_to->(t)-part_of->(g) becomes (t)-assigned_to->(a)-attached_to->(g)
+     * 2b - if owner (o) is a citizen:
+     *    (a)-attached_to->(t) becomes (t)-assigned_to->(a)
+     * 3 - owned_by relationships removed
+     * 4 - (a:Crew) becomes (a:Vehicle)
+     * 
+     */
+}
+
 // This is SLOW (3s)
 export const getLegacyAssignment = async (assignmentID) => {
     console.log('calling getAssignment for:', assignmentID)
@@ -218,9 +232,10 @@ export const clearAllAssignments = async (targetID) => {
 }
 
 // gets all assignments owned by a given owner and attached to a given entity
-export const getAssignments = async (targetID, ownerID) => {
+export const getAssignments = async (targetID) => {
     const query = `
-        MATCH (target)<-[:ASSIGNED_TO]-(a:Assignment)-[:OWNED_BY]->(owner)
+        MATCH (target)-[:ASSIGNED_TO]->(a:Assignment)
+        
         WHERE target.id =~ $targetID
         return a.id as assignment
     `
@@ -228,9 +243,12 @@ export const getAssignments = async (targetID, ownerID) => {
         ownerID: ownerID,
         targetID: `(?i)${targetID}`
     })
-    const assignments = []
+    let assignments = []
     for (const res of result) {
         assignments.push(await getAssignment(res.assignment))
+    }
+    if (assignments.length == 0) {
+        assignments = await getLegacyAssignments(targetID)
     }
     return assignments
 }
